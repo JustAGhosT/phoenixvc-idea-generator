@@ -2,11 +2,13 @@ import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import EmailProvider from "next-auth/providers/email"
 import { SupabaseAdapter } from "@auth/supabase-adapter"
-import type { NextAuthOptions } from "next-auth"
-import { getServerSession as getNextAuthServerSession } from "next-auth"
 
-// Define the auth configuration
-export const authOptions: NextAuthOptions = {
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -42,13 +44,9 @@ export const authOptions: NextAuthOptions = {
     error: "/auth/error",
     verifyRequest: "/auth/verify-request",
   },
-}
+})
 
-// Export a function to get the server session
-export function getServerAuthSession() {
-  return getNextAuthServerSession(authOptions)
+// Export getServerAuthSession for backward compatibility
+export async function getServerAuthSession() {
+  return await auth()
 }
-
-// Create the NextAuth handler
-const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST, authOptions as auth }
