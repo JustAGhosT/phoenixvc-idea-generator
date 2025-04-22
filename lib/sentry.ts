@@ -81,19 +81,6 @@ export function clearUser() {
 }
 
 /**
- * Start a new transaction for performance monitoring
- * @param name Transaction name
- * @param op Operation type
- * @returns Transaction object
- */
-export function startTransaction(name: string, op: string) {
-  if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-    return Sentry.startTransaction({ name, op })
-  }
-  return null
-}
-
-/**
  * Set a tag for the current scope
  * @param key Tag key
  * @param value Tag value

@@ -67,10 +67,10 @@
     "next-auth": "latest",
     "@auth/supabase-adapter": "latest",
     "react-chartjs-2": "latest",
-    "@sentry/nextjs": "latest",
     "ai": "latest",
     "@ai-sdk/deepinfra": "latest",
-    "@fal-ai/serverless-client": "latest"
+    "@fal-ai/serverless-client": "latest",
+    "@sentry/nextjs": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

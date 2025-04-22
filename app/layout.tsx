@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata } from "next/types"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -17,7 +17,7 @@ import { SearchProvider } from "@/contexts/search-context"
 import { NotificationProvider } from "@/contexts/notification-context"
 import { BreadcrumbProvider } from "@/contexts/breadcrumb-context"
 import { Breadcrumb } from "@/components/breadcrumb"
-import { initSentry } from "@/utils/sentry"
+import { initSentry } from "@/lib/sentry"
 import { Suspense } from "react"
 
 // Initialize Sentry
