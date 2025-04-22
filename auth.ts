@@ -40,6 +40,8 @@ const authOptions = {
     error: "/auth/error",
     verifyRequest: "/auth/verify-request",
   },
+  // Add the required secret
+  secret: process.env.NEXTAUTH_SECRET || "your-development-secret-do-not-use-in-production",
 }
 
 // Comment out the problematic parts
@@ -56,12 +58,14 @@ const handler = NextAuth(authOptions)
 // Export the handler for API routes
 export { handler as GET, handler as POST }
 
-// Export a simple auth function that returns null
+// Export a simple auth function
 export const auth = async () => {
-  return null
+  // In a real implementation, this would check the session
+  return { user: null }
 }
 
 // Export getServerAuthSession for backward compatibility
 export async function getServerAuthSession() {
-  return null
+  // In a real implementation, this would return the session
+  return { user: null }
 }
