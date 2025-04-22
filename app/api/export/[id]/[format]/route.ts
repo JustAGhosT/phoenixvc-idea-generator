@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getIdea } from "@/lib/db"
 import { exportToJson, exportToCsv, exportToMarkdown, exportToPdf } from "@/lib/export"
-import { auth } from "@/auth"
+import { getServerAuthSession } from "@/auth"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string; format: string } }) {
   try {
-    const session = await auth()
+    const session = await getServerAuthSession()
 
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

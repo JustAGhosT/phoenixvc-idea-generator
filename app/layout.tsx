@@ -9,6 +9,15 @@ import { Toaster } from "@/components/ui/toaster"
 import { SessionProvider } from "next-auth/react"
 import { QuoteDisplay } from "@/components/quote-display"
 import { getServerAuthSession } from "@/auth"
+import { GlobalErrorHandler } from "@/components/global-error-handler"
+import { initSentry } from "@/lib/sentry"
+import { ErrorBoundary } from "@/components/error-boundary"
+
+// Initialize Sentry
+if (typeof window !== "undefined") {
+  // Only initialize in the browser
+  initSentry()
+}
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -34,10 +43,13 @@ export default async function RootLayout({
             <SidebarProvider>
               <div className="flex min-h-screen">
                 <AppSidebar />
-                <main className="flex-1 overflow-auto">{children}</main>
+                <main className="flex-1 overflow-auto">
+                  <ErrorBoundary>{children}</ErrorBoundary>
+                </main>
               </div>
               <Toaster />
               <QuoteDisplay />
+              <GlobalErrorHandler />
             </SidebarProvider>
           </ThemeProvider>
         </SessionProvider>

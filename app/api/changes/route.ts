@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getChanges, recordChange } from "@/lib/db"
-import { auth } from "@/auth"
+import { getServerAuthSession } from "@/auth"
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    const session = await getServerAuthSession()
 
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

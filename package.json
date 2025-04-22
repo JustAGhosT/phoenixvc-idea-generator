@@ -66,9 +66,10 @@
     "jspdf-autotable": "latest",
     "next-auth": "latest",
     "@auth/supabase-adapter": "latest",
+    "react-chartjs-2": "latest",
+    "@sentry/nextjs": "latest",
     "ai": "latest",
     "@ai-sdk/deepinfra": "latest",
-    "react-chartjs-2": "latest",
     "@fal-ai/serverless-client": "latest"
   },
   "devDependencies": {

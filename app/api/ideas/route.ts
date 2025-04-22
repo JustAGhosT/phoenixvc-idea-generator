@@ -1,32 +1,32 @@
 import type { NextRequest } from "next/server"
 import { getIdeas, createIdea } from "@/lib/db"
-import { handleApiError, apiResponse } from "@/lib/api-utils"
-import { getServerAuthSession } from "@/auth"
+import { apiResponse, createApiRoute, createProtectedApiRoute } from "@/lib/api-utils"
+import { ValidationError } from "@/lib/error-handler"
+import { createLogger } from "@/lib/logger"
 
-export async function GET() {
-  try {
-    const ideas = await getIdeas()
-    return apiResponse(ideas)
-  } catch (error) {
-    return handleApiError(error, "Failed to fetch ideas")
+const logger = createLogger("api:ideas")
+
+// Get all ideas - public endpoint with error handling
+export const GET = createApiRoute(async () => {
+  logger.info("Fetching all ideas")
+  const ideas = await getIdeas()
+  logger.debug(`Retrieved ${ideas.length} ideas`)
+  return apiResponse(ideas)
+}, "Failed to fetch ideas")
+
+// Create a new idea - protected endpoint with error handling
+export const POST = createProtectedApiRoute(async (request: NextRequest, user) => {
+  const idea = await request.json()
+
+  // Validate required fields
+  if (!idea.title) {
+    logger.warn("Attempted to create idea without title", { userId: user.id })
+    throw new ValidationError("Title is required")
   }
-}
 
-export async function POST(request: NextRequest) {
-  try {
-    const session = await getServerAuthSession()
+  logger.info("Creating new idea", { ideaTitle: idea.title, userId: user.id })
+  const newIdea = await createIdea(idea, user.id)
 
-    if (!session || !session.user) {
-      return apiResponse({ error: "Unauthorized" }, 401)
-    }
-
-    const idea = await request.json()
-    const newIdea = await createIdea(idea, session.user.id)
-    return apiResponse(newIdea, 201)
-  } catch (error) {
-    if (error instanceof Error && error.message === "Unauthorized") {
-      return apiResponse({ error: "Unauthorized" }, 401)
-    }
-    return handleApiError(error, "Failed to create idea")
-  }
-}
+  logger.info("Idea created successfully", { ideaId: newIdea.id, userId: user.id })
+  return apiResponse(newIdea, 201)
+}, "Failed to create idea")

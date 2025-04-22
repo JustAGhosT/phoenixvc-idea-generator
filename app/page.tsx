@@ -5,10 +5,15 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, BarChart3, FileText, PenSquare } from "lucide-react"
 import { getIdeas } from "@/lib/db"
 import { calculateTechnicalFeasibility, calculatePotentialImpact } from "@/lib/ai"
-import { getServerSession } from "next-auth"
-import { authConfig } from "@/app/api/auth/[...nextauth]/auth"
+import { getServerAuthSession } from "@/auth"
+import { setTag } from "@/lib/sentry"
 
 export default async function Home() {
+  // Add Sentry tag for this page
+  if (typeof window !== "undefined") {
+    setTag("page", "home")
+  }
+
   // Fetch ideas from the database
   const ideas = await getIdeas()
 
@@ -46,7 +51,7 @@ export default async function Home() {
   // Top ideas by rating
   const topIdeas = [...ideas].sort((a, b) => b.rating - a.rating).slice(0, 3)
 
-  const session = await getServerSession(authConfig)
+  const session = await getServerAuthSession()
 
   return (
     <div className="container mx-auto py-6">

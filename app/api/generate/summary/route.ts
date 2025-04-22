@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authConfig } from "@/app/api/auth/[...nextauth]/auth"
+import { getServerAuthSession } from "@/auth"
 import { saveProjectSummary } from "@/lib/analysis-db"
 import { generateText } from "ai"
 import { deepinfra } from "@ai-sdk/deepinfra"
@@ -8,7 +7,7 @@ import { deepinfra } from "@ai-sdk/deepinfra"
 export async function POST(req: Request) {
   try {
     // Check authentication
-    const session = await getServerSession(authConfig)
+    const session = await getServerAuthSession()
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }

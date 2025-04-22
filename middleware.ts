@@ -1,24 +1,46 @@
 import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
+import { apiMonitorMiddleware } from "./middleware/api-monitor"
+import { createLogger } from "@/lib/logger"
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-  // Get auth cookie
-  const authCookie =
-    request.cookies.get("next-auth.session-token")?.value ||
-    request.cookies.get("__Secure-next-auth.session-token")?.value
+const logger = createLogger("middleware")
 
-  // If there's no auth cookie, redirect to sign in
-  if (!authCookie) {
-    const signInUrl = new URL("/auth/signin", request.url)
-    signInUrl.searchParams.set("callbackUrl", request.nextUrl.pathname)
-    return NextResponse.redirect(signInUrl)
+// Check if the request is for an API route
+function isApiRoute(pathname: string): boolean {
+  return pathname.startsWith("/api/")
+}
+
+export async function middleware(request) {
+  const { pathname } = new URL(request.url)
+
+  // Apply API monitoring middleware for API routes
+  if (isApiRoute(pathname)) {
+    return apiMonitorMiddleware(request, async () => {
+      // Continue with the request
+      return NextResponse.next()
+    })
   }
 
-  // Continue with the request if authenticated
+  // For non-API routes that require authentication
+  const protectedRoutes = ["/editor/", "/compare", "/changes/", "/audio-logs", "/scaling", "/settings"]
+
+  const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route))
+
+  if (isProtectedRoute) {
+    // Check for authentication cookie
+    const authCookie = request.cookies.get("next-auth.session-token")
+
+    if (!authCookie) {
+      logger.warn(`Unauthorized access attempt to ${pathname}`, {
+        ip: request.headers.get("x-forwarded-for") || request.ip || "unknown",
+        userAgent: request.headers.get("user-agent") || "unknown",
+      })
+      return NextResponse.redirect(new URL("/auth/signin", request.url))
+    }
+  }
+
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/editor/:path*", "/compare", "/changes/:path*", "/audio-logs", "/scaling", "/settings"],
+  matcher: ["/api/:path*", "/editor/:path*", "/compare", "/changes/:path*", "/audio-logs", "/scaling", "/settings"],
 }
