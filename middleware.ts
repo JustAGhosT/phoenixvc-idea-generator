@@ -1,15 +1,21 @@
 import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/auth"
+import type { NextRequest } from "next/server"
 
-export async function middleware() {
-  // Use getServerSession with the authOptions
-  const session = await getServerSession(authOptions)
+// This function can be marked `async` if using `await` inside
+export function middleware(request: NextRequest) {
+  // Get auth cookie
+  const authCookie =
+    request.cookies.get("next-auth.session-token")?.value ||
+    request.cookies.get("__Secure-next-auth.session-token")?.value
 
-  if (!session) {
-    return NextResponse.redirect(new URL("/auth/signin", process.env.NEXTAUTH_URL))
+  // If there's no auth cookie, redirect to sign in
+  if (!authCookie) {
+    const signInUrl = new URL("/auth/signin", request.url)
+    signInUrl.searchParams.set("callbackUrl", request.nextUrl.pathname)
+    return NextResponse.redirect(signInUrl)
   }
 
+  // Continue with the request if authenticated
   return NextResponse.next()
 }
 

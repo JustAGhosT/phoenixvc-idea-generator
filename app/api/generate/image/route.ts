@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
-import { authConfig } from "@/app/api/auth/[...nextauth]/auth"
+import { authOptions } from "@/auth"
 import { saveProjectVisualization } from "@/lib/analysis-db"
-import { generateImage } from "@fal-ai/serverless-client"
+import * as fal from "@fal-ai/serverless-client"
 
 export async function POST(req: Request) {
   try {
     // Check authentication
-    const session = await getServerSession(authConfig)
+    const session = await getServerSession(authOptions)
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -20,13 +20,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 })
     }
 
+    // Configure Fal AI client
+    fal.config({
+      credentials: process.env.FAL_KEY,
+    })
+
     // Generate image using Fal AI
-    const result = await generateImage({
-      prompt,
-      modelName: "stable-diffusion-xl",
-      width: 1024,
-      height: 1024,
-      numberOfImages: 1,
+    const result = await fal.run({
+      modelId: "fal-ai/stable-diffusion-xl",
+      input: {
+        prompt,
+        width: 1024,
+        height: 1024,
+        num_images: 1,
+      },
     })
 
     if (!result.images || result.images.length === 0) {
