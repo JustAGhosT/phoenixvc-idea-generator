@@ -13,7 +13,12 @@ import { QuoteDisplay } from "@/components/quote-display"
 import { getServerAuthSession } from "@/auth"
 import { GlobalErrorHandler } from "@/components/global-error-handler"
 import { ErrorBoundary } from "@/components/error-boundary"
+import { SearchProvider } from "@/contexts/search-context"
+import { NotificationProvider } from "@/contexts/notification-context"
+import { BreadcrumbProvider } from "@/contexts/breadcrumb-context"
+import { Breadcrumb } from "@/components/breadcrumb"
 import { initSentry } from "@/utils/sentry"
+import { Suspense } from "react"
 
 // Initialize Sentry
 if (typeof window !== "undefined") {
@@ -42,23 +47,32 @@ export default async function RootLayout({
       <body className={inter.className}>
         <SessionProvider session={session}>
           <ThemeProvider attribute="class" defaultTheme="light">
-            <SidebarProvider>
-              <div className="flex min-h-screen flex-col">
-                <div className="flex flex-1">
-                  <AppSidebar />
-                  <div className="flex flex-1 flex-col">
-                    <Header />
-                    <main className="flex-1 overflow-auto p-4 md:p-6">
-                      <ErrorBoundary>{children}</ErrorBoundary>
-                    </main>
-                    <Footer />
-                  </div>
-                </div>
-              </div>
-              <Toaster />
-              <QuoteDisplay />
-              <GlobalErrorHandler />
-            </SidebarProvider>
+            <SearchProvider>
+              <NotificationProvider>
+                <BreadcrumbProvider>
+                  <SidebarProvider>
+                    <div className="flex min-h-screen flex-col">
+                      <div className="flex flex-1">
+                        <AppSidebar />
+                        <div className="flex flex-1 flex-col">
+                          <Header />
+                          <main className="flex-1 overflow-auto p-4 md:p-6">
+                            <Suspense fallback={<div>Loading breadcrumbs...</div>}>
+                              <Breadcrumb />
+                            </Suspense>
+                            <ErrorBoundary>{children}</ErrorBoundary>
+                          </main>
+                          <Footer />
+                        </div>
+                      </div>
+                    </div>
+                    <Toaster />
+                    <QuoteDisplay />
+                    <GlobalErrorHandler />
+                  </SidebarProvider>
+                </BreadcrumbProvider>
+              </NotificationProvider>
+            </SearchProvider>
           </ThemeProvider>
         </SessionProvider>
       </body>

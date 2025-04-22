@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="border-t bg-background">
       <div className="container flex flex-col items-center justify-between gap-4 py-6 md:h-16 md:flex-row md:py-0">
         <div className="flex items-center gap-2">
-          <LineChart className="h-5 w-5 text-primary" />
+          <LineChart className="h-5 w-5 text-brand-primary" />
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} DeFi Risk Intelligence. All rights reserved.
           </p>

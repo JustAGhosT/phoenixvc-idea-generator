@@ -102,7 +102,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="flex items-center justify-between p-4">
         <div className="flex items-center gap-2">
-          <LineChart className="h-6 w-6 text-primary" />
+          <LineChart className="h-6 w-6 text-brand-primary" />
           <span className="font-bold text-lg">DeFi Risk Intel</span>
         </div>
         <SidebarTrigger />
@@ -138,7 +138,7 @@ export function AppSidebar() {
                       {item.icon}
                       <span>{item.title}</span>
                       {item.badge && (
-                        <Badge className="ml-auto bg-primary text-primary-foreground text-xs">{item.badge}</Badge>
+                        <Badge className="ml-auto bg-brand-primary text-white text-xs">{item.badge}</Badge>
                       )}
                     </Link>
                   </SidebarMenuButton>
@@ -188,7 +188,7 @@ export function AppSidebar() {
       <SidebarFooter className="p-4">
         <div className="flex flex-col gap-2 rounded-lg bg-muted p-3">
           <div className="flex items-center gap-2">
-            <Lightbulb className="h-5 w-5 text-amber-500" />
+            <Lightbulb className="h-5 w-5 text-brand-secondary" />
             <span className="font-medium">Pro Tip</span>
           </div>
           <p className="text-xs text-muted-foreground">

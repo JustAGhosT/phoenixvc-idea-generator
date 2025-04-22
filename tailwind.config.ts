@@ -61,6 +61,16 @@ const config = {
           accent: "hsl(var(--sidebar-accent))",
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
         },
+        // Brand colors
+        brand: {
+          primary: "#e96b32", // Orange
+          secondary: "#ef984b", // Light orange
+          tertiary: "#c32a46", // Red/burgundy
+          dark: "#181026", // Dark purple
+          purple: "#3b354e", // Purple
+          gray: "#939598", // Gray
+          white: "#ffffff", // White
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -76,10 +86,25 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        fadeIn: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        slideDown: {
+          from: { height: "0", opacity: "0" },
+          to: { height: "var(--radix-dropdown-menu-content-height)", opacity: "1" },
+        },
+        slideUp: {
+          from: { height: "var(--radix-dropdown-menu-content-height)", opacity: "1" },
+          to: { height: "0", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fadeIn 0.2s ease-out",
+        "slide-down": "slideDown 0.2s ease-out",
+        "slide-up": "slideUp 0.2s ease-out",
       },
     },
   },
