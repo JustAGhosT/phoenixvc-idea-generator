@@ -7,15 +7,15 @@ import { createContext, useContext, useEffect, useState } from "react"
 export interface Breadcrumb {
   label: string
   href: string
+  id: string
 }
 
 interface BreadcrumbContextProps {
   breadcrumbs: Breadcrumb[]
   setBreadcrumbs: (breadcrumbs: Breadcrumb[]) => void
   addBreadcrumb: (breadcrumb: Breadcrumb) => void
-  removeBreadcrumb: (href: string) => void
+  removeBreadcrumb: (id: string) => void
   clearBreadcrumbs: () => void
-  // New methods for enhanced functionality
   generateFromPath: (path: string) => void
   setCurrentPageLabel: (label: string) => void
 }
@@ -39,38 +39,30 @@ interface BreadcrumbProviderProps {
 
 const STORAGE_KEY = "app_breadcrumbs"
 
-/**
- * Converts a URL path to a set of breadcrumbs
- */
 function pathToBreadcrumbs(path: string): Breadcrumb[] {
-  // Always start with home
   const breadcrumbs: Breadcrumb[] = [
-    { label: "Home", href: "/" }
+    { label: "Home", href: "/", id: "home" }
   ]
   
-  // Skip if we're on the home page
   if (path === "/") return breadcrumbs
   
-  // Split the path and create breadcrumbs
   const segments = path.split("/").filter(Boolean)
   let currentPath = ""
   
   segments.forEach((segment, index) => {
     currentPath += `/${segment}`
-    
-    // Format the label (capitalize, replace hyphens with spaces)
     let label = segment
       .replace(/-/g, " ")
       .replace(/\b\w/g, char => char.toUpperCase())
     
-    // Handle dynamic route segments (those starting with [)
     if (segment.startsWith("[") && segment.endsWith("]")) {
       label = "Details"
     }
     
     breadcrumbs.push({
       label,
-      href: currentPath
+      href: currentPath,
+      id: `breadcrumb-${index}`
     })
   })
   
@@ -79,14 +71,13 @@ function pathToBreadcrumbs(path: string): Breadcrumb[] {
 
 export function BreadcrumbProvider({ 
   children, 
-  initialBreadcrumbs = [{ label: "Home", href: "/" }],
+  initialBreadcrumbs = [{ label: "Home", href: "/", id: "home" }],
   persistInLocalStorage = true,
   autoGenerateFromRoute = true
 }: BreadcrumbProviderProps) {
   const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>(initialBreadcrumbs)
   const pathname = usePathname()
   
-  // Load breadcrumbs from localStorage on mount
   useEffect(() => {
     if (persistInLocalStorage) {
       const savedBreadcrumbs = localStorage.getItem(STORAGE_KEY)
@@ -101,14 +92,12 @@ export function BreadcrumbProvider({
     }
   }, [persistInLocalStorage])
   
-  // Save breadcrumbs to localStorage when they change
   useEffect(() => {
     if (persistInLocalStorage) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(breadcrumbs))
     }
   }, [breadcrumbs, persistInLocalStorage])
   
-  // Generate breadcrumbs from route when pathname changes
   useEffect(() => {
     if (autoGenerateFromRoute && pathname) {
       generateFromPath(pathname)
@@ -117,10 +106,8 @@ export function BreadcrumbProvider({
   
   const addBreadcrumb = (breadcrumb: Breadcrumb) => {
     setBreadcrumbs(prev => {
-      // Check if breadcrumb already exists
       const exists = prev.some(b => b.href === breadcrumb.href)
       if (exists) {
-        // Update the label if it exists
         return prev.map(b => 
           b.href === breadcrumb.href ? { ...b, label: breadcrumb.label } : b
         )
@@ -129,8 +116,8 @@ export function BreadcrumbProvider({
     })
   }
 
-  const removeBreadcrumb = (href: string) => {
-    setBreadcrumbs(prev => prev.filter(b => b.href !== href))
+  const removeBreadcrumb = (id: string) => {
+    setBreadcrumbs(prev => prev.filter(b => b.id !== id))
   }
   
   const clearBreadcrumbs = () => {
@@ -144,9 +131,8 @@ export function BreadcrumbProvider({
   
   const setCurrentPageLabel = (label: string) => {
     setBreadcrumbs(prev => {
-      if (prev.length === 0) return [{ label, href: pathname || "/" }]
+      if (prev.length === 0) return [{ label, href: pathname || "/", id: "home" }]
       
-      // Update the last breadcrumb (current page)
       const updated = [...prev]
       updated[updated.length - 1] = {
         ...updated[updated.length - 1],
@@ -171,5 +157,4 @@ export function BreadcrumbProvider({
   )
 }
 
-// Export a consistent hook name to avoid confusion
 export const useBreadcrumbs = useBreadcrumbContext;

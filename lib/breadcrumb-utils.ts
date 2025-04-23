@@ -1,7 +1,7 @@
 /**
  * Utilities for working with breadcrumbs
  */
-import type { Breadcrumb } from "@/contexts/features/breadcrumb-context"
+import type { Breadcrumb } from "@/lib/types"
 
 /**
  * Maps route patterns to human-readable names
@@ -41,7 +41,11 @@ export const dynamicRouteLabels: Record<string, (param: string) => string> = {
 export function buildBreadcrumbs(path: string, params?: Record<string, string>): Breadcrumb[] {
   // Always start with home
   const breadcrumbs: Breadcrumb[] = [
-    { label: routeLabels["/"] || "Home", href: "/" }
+    { 
+      id: "home", 
+      label: routeLabels["/"] || "Home", 
+      path: "/" 
+    }
   ]
   
   // Skip if we're on the home page
@@ -80,8 +84,9 @@ export function buildBreadcrumbs(path: string, params?: Record<string, string>):
       }
       
       breadcrumbs.push({
+        id: `segment-${index}`,
         label,
-        href: actualPath
+        path: actualPath
       })
     } else {
       // Static segment
@@ -93,12 +98,18 @@ export function buildBreadcrumbs(path: string, params?: Record<string, string>):
           .replace(/\b\w/g, char => char.toUpperCase())
       
       breadcrumbs.push({
+        id: `segment-${index}`,
         label,
-        href: currentPath
+        path: currentPath
       })
     }
   })
   
+  // Set the last breadcrumb as active
+  if (breadcrumbs.length > 0) {
+    breadcrumbs[breadcrumbs.length - 1].isActive = true
+}
+
   return breadcrumbs
 }
 
@@ -114,9 +125,9 @@ export function buildBreadcrumbs(path: string, params?: Record<string, string>):
  * useEffect(() => {
  *   setBreadcrumbs(createBreadcrumbTrail(
  *     [
- *       { label: "Dashboard", href: "/dashboard" },
- *       { label: "Projects", href: "/dashboard/projects" },
- *       { label: "Project ABC", href: "/dashboard/projects/abc" }
+ *       { id: "dashboard", label: "Dashboard", path: "/dashboard" },
+ *       { id: "projects", label: "Projects", path: "/dashboard/projects" },
+ *       { id: "project-abc", label: "Project ABC", path: "/dashboard/projects/abc" }
  *     ]
  *   ))
  * }, [])
@@ -124,8 +135,8 @@ export function buildBreadcrumbs(path: string, params?: Record<string, string>):
  */
 export function createBreadcrumbTrail(trail: Breadcrumb[]): Breadcrumb[] {
   // Always ensure Home is the first breadcrumb
-  if (trail.length === 0 || trail[0].href !== "/") {
-    return [{ label: "Home", href: "/" }, ...trail]
+  if (trail.length === 0 || trail[0].path !== "/") {
+    return [{ id: "home", label: "Home", path: "/" }, ...trail]
   }
   return trail
 }
