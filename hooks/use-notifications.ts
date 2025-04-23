@@ -1,6 +1,7 @@
 "use client"
 
-import { useNotificationContext, type Notification, type NotificationType } from "@/contexts/features/notification-context"
+import { useNotificationContext } from "@/contexts/features/notification-context"
+import { Notification, NotificationType, ToastOptions } from "@/lib/notification-types"
 
 /**
  * A simplified hook for using the notification system
@@ -14,83 +15,133 @@ import { useNotificationContext, type Notification, type NotificationType } from
  * 
  * // Show an error notification
  * notifications.error("Error", "Something went wrong")
+ * 
+ * // Show a toast notification
+ * notifications.toast.info("This is a toast message")
  * ```
  */
 export function useNotifications() {
-  const {
-    showSuccess,
-    showError,
-    showWarning,
-    showInfo,
-    addNotification,
-    removeNotification,
-    markAsRead,
-    markAllAsRead,
-    clearAllNotifications,
-    notifications,
-    unreadCount,
-  } = useNotificationContext()
+  const context = useNotificationContext()
 
   return {
     /**
      * Show a success notification
      */
     success: (title: string, message: string, options?: Partial<Notification>) => 
-      showSuccess(title, message, options),
+      context.showSuccess(title, message, options),
     
     /**
      * Show an error notification
      */
     error: (title: string, message: string, options?: Partial<Notification>) => 
-      showError(title, message, options),
+      context.showError(title, message, options),
     
     /**
      * Show a warning notification
      */
     warning: (title: string, message: string, options?: Partial<Notification>) => 
-      showWarning(title, message, options),
+      context.showWarning(title, message, options),
     
     /**
      * Show an info notification
      */
     info: (title: string, message: string, options?: Partial<Notification>) => 
-      showInfo(title, message, options),
+      context.showInfo(title, message, options),
     
     /**
      * Add a custom notification
      */
     add: (notification: Omit<Notification, "id" | "date" | "read"> & { id?: string, date?: Date, read?: boolean }) => 
-      addNotification(notification),
+      context.addNotification(notification),
     
     /**
      * Remove a notification by ID
      */
-    remove: (id: string) => removeNotification(id),
+    remove: (id: string) => context.removeNotification(id),
     
     /**
      * Mark a notification as read
      */
-    markRead: (id: string) => markAsRead(id),
+    markRead: (id: string) => context.markAsRead(id),
+    
+    /**
+     * Mark a notification as unread
+     */
+    markUnread: (id: string) => context.markAsUnread(id),
     
     /**
      * Mark all notifications as read
      */
-    markAllRead: () => markAllAsRead(),
+    markAllRead: () => context.markAllAsRead(),
     
     /**
      * Clear all notifications
      */
-    clearAll: () => clearAllNotifications(),
+    clearAll: () => context.clearAllNotifications(),
     
     /**
      * Get all notifications
      */
-    getAll: () => notifications,
+    getAll: () => context.notifications,
+    
+    /**
+     * Get unread notifications
+     */
+    getUnread: () => context.getUnreadNotifications(),
+    
+    /**
+     * Get notifications by type
+     */
+    getByType: (type: NotificationType) => context.getNotificationsByType(type),
+    
+    /**
+     * Get notifications by category
+     */
+    getByCategory: (category: string) => context.getNotificationsByCategory(category),
     
     /**
      * Get the count of unread notifications
      */
-    unreadCount,
+    unreadCount: context.unreadCount,
+    
+    /**
+     * Check if connected to the notification server
+     */
+    isConnected: context.isConnected,
+    
+    /**
+     * Get the connection status
+     */
+    connectionStatus: context.connectionStatus,
+    
+    /**
+     * Toast notification helpers
+     */
+    toast: {
+      /**
+       * Show a success toast notification
+       */
+      success: (message: string, options?: ToastOptions) => 
+        context.toast.success(message, options),
+      
+      /**
+       * Show an error toast notification
+       */
+      error: (message: string, options?: ToastOptions) => 
+        context.toast.error(message, options),
+      
+      /**
+       * Show a warning toast notification
+       */
+      warning: (message: string, options?: ToastOptions) => 
+        context.toast.warning(message, options),
+      
+      /**
+       * Show an info toast notification
+       */
+      info: (message: string, options?: ToastOptions) => 
+        context.toast.info(message, options),
+    }
   }
 }
 
@@ -109,43 +160,6 @@ export function useNotifications() {
  * ```
  */
 export function useToast() {
-  const { showSuccess, showError, showWarning, showInfo } = useNotificationContext()
-  
-  return {
-    /**
-     * Show a success toast notification
-     */
-    success: (message: string, options?: { title?: string, duration?: number }) => 
-      showSuccess(options?.title || "Success", message, {
-        autoClose: true,
-        autoCloseDelay: options?.duration || 3000,
-      }),
-    
-    /**
-     * Show an error toast notification
-     */
-    error: (message: string, options?: { title?: string, duration?: number }) => 
-      showError(options?.title || "Error", message, {
-        autoClose: true,
-        autoCloseDelay: options?.duration || 5000,
-      }),
-    
-    /**
-     * Show a warning toast notification
-     */
-    warning: (message: string, options?: { title?: string, duration?: number }) => 
-      showWarning(options?.title || "Warning", message, {
-        autoClose: true,
-        autoCloseDelay: options?.duration || 4000,
-      }),
-    
-    /**
-     * Show an info toast notification
-     */
-    info: (message: string, options?: { title?: string, duration?: number }) => 
-      showInfo(options?.title || "Info", message, {
-        autoClose: true,
-        autoCloseDelay: options?.duration || 3000,
-      }),
-  }
+  const { toast } = useNotificationContext()
+  return toast
 }

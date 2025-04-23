@@ -1,39 +1,13 @@
 "use client"
 
-import React, { createContext, useContext, useState, useEffect } from "react"
-import { v4 as uuidv4 } from "uuid"
 import { notificationService } from "@/lib/notification-service"
-
-// Define notification types
-export type NotificationType = "info" | "success" | "warning" | "error" | "system"
-
-// Define notification priority levels
-export type NotificationPriority = "low" | "medium" | "high" | "urgent"
-
-// Define notification interface
-export interface Notification {
-  id: string
-  title: string
-  message: string
-  type: NotificationType
-  priority?: NotificationPriority
-  read: boolean
-  date: Date
-  link?: string
-  category?: string
-  actions?: NotificationAction[]
-  autoClose?: boolean
-  autoCloseDelay?: number
-  persistent?: boolean
-  icon?: React.ReactNode
-}
-
-// Define notification action interface
-export interface NotificationAction {
-  label: string
-  onClick: (notification: Notification) => void
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
-}
+import {
+  Notification,
+  NotificationType,
+  ToastOptions
+} from "@/lib/notification-types"
+import React, { createContext, useContext, useEffect, useState } from "react"
+import { v4 as uuidv4 } from "uuid"
 
 // Define notification context interface
 export interface NotificationContextProps {
@@ -59,13 +33,21 @@ export interface NotificationContextProps {
   showWarning: (title: string, message: string, options?: Partial<Notification>) => string
   showInfo: (title: string, message: string, options?: Partial<Notification>) => string
   
+  // Toast helpers
+  toast: {
+    success: (message: string, options?: ToastOptions) => string
+    error: (message: string, options?: ToastOptions) => string
+    warning: (message: string, options?: ToastOptions) => string
+    info: (message: string, options?: ToastOptions) => string
+  }
+  
   // Filtering and querying
   getUnreadNotifications: () => Notification[]
   getNotificationsByType: (type: NotificationType) => Notification[]
   getNotificationsByCategory: (category: string) => Notification[]
   
   // Backend synchronization
-  syncWithServer: () => Promise<void>
+  syncWithServer: () => Promise<boolean> // Updated return type to boolean
   connectToSSE: () => void
   disconnectFromSSE: () => void
 }
@@ -81,9 +63,6 @@ export function useNotificationContext() {
   }
   return context
 }
-
-// For backward compatibility
-export const useNotifications = useNotificationContext
 
 // Define notification provider props
 interface NotificationProviderProps {
@@ -109,7 +88,7 @@ export function NotificationProvider({
   
   // Load notifications from localStorage on mount
   useEffect(() => {
-    if (persistNotifications && !isInitialized) {
+    if (persistNotifications && !isInitialized && typeof window !== 'undefined') {
       try {
         const savedNotifications = localStorage.getItem(storageKey)
         if (savedNotifications) {
@@ -118,6 +97,7 @@ export function NotificationProvider({
           const restored = parsed.map((n: any) => ({
             ...n,
             date: new Date(n.date),
+            readAt: n.readAt ? new Date(n.readAt) : undefined
           }))
           setNotifications(restored)
         }
@@ -127,13 +107,14 @@ export function NotificationProvider({
         setIsInitialized(true)
       } catch (error) {
         console.error("Failed to load notifications from storage:", error)
+        setIsInitialized(true)
       }
     }
   }, [persistNotifications, storageKey, isInitialized])
   
   // Save notifications to localStorage when they change
   useEffect(() => {
-    if (persistNotifications && notifications.length > 0 && isInitialized) {
+    if (persistNotifications && notifications.length > 0 && isInitialized && typeof window !== 'undefined') {
       try {
         localStorage.setItem(storageKey, JSON.stringify(notifications))
       } catch (error) {
@@ -216,7 +197,7 @@ export function NotificationProvider({
   }
   
   // Sync with server
-  const syncWithServer = async () => {
+  const syncWithServer = async (): Promise<boolean> => {
     try {
       const serverNotifications = await notificationService.getNotifications()
       
@@ -277,6 +258,7 @@ export function NotificationProvider({
       autoCloseDelay: notification.autoCloseDelay,
       persistent: notification.persistent,
       icon: notification.icon,
+      metadata: notification.metadata,
     }
     
     // Add to local state
@@ -301,6 +283,7 @@ export function NotificationProvider({
         autoClose: notification.autoClose,
         autoCloseDelay: notification.autoCloseDelay,
         persistent: notification.persistent,
+        metadata: notification.metadata,
       }).catch(error => {
         console.error("Failed to create notification on server:", error)
       })
@@ -335,7 +318,7 @@ export function NotificationProvider({
   const markAsRead = (id: string) => {
     // Update local state
     setNotifications(prev =>
-      prev.map(n => (n.id === id ? { ...n, read: true } : n))
+      prev.map(n => (n.id === id ? { ...n, read: true, readAt: new Date() } : n))
     )
     
     // Update on server
@@ -348,14 +331,14 @@ export function NotificationProvider({
   const markAsUnread = (id: string) => {
     // Update local state
     setNotifications(prev =>
-      prev.map(n => (n.id === id ? { ...n, read: false } : n))
+      prev.map(n => (n.id === id ? { ...n, read: false, readAt: undefined } : n))
     )
   }
   
   // Mark all notifications as read
   const markAllAsRead = () => {
     // Update local state
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
+    setNotifications(prev => prev.map(n => ({ ...n, read: true, readAt: new Date() })))
     
     // Update on server
     notificationService.markAllAsRead().catch(error => {
@@ -369,7 +352,6 @@ export function NotificationProvider({
       title,
       message,
       type: "success",
-      autoClose: true,
       ...options,
     })
   }
@@ -401,9 +383,35 @@ export function NotificationProvider({
       title,
       message,
       type: "info",
-      autoClose: true,
       ...options,
     })
+  }
+  
+  // Toast notification helpers
+  const toast = {
+    success: (message: string, options?: ToastOptions) => 
+      showSuccess(options?.title || "Success", message, {
+        autoClose: true,
+        autoCloseDelay: options?.duration || 3000,
+      }),
+    
+    error: (message: string, options?: ToastOptions) => 
+      showError(options?.title || "Error", message, {
+        autoClose: true,
+        autoCloseDelay: options?.duration || 5000,
+      }),
+    
+    warning: (message: string, options?: ToastOptions) => 
+      showWarning(options?.title || "Warning", message, {
+        autoClose: true,
+        autoCloseDelay: options?.duration || 4000,
+      }),
+    
+    info: (message: string, options?: ToastOptions) => 
+      showInfo(options?.title || "Info", message, {
+        autoClose: true,
+        autoCloseDelay: options?.duration || 3000,
+      }),
   }
   
   // Get all unread notifications
@@ -437,6 +445,7 @@ export function NotificationProvider({
     showError,
     showWarning,
     showInfo,
+    toast,
     getUnreadNotifications,
     getNotificationsByType,
     getNotificationsByCategory,

@@ -1,39 +1,13 @@
 /**
  * Enhanced notification service for handling backend communication and real-time updates
  */
-import { NotificationType } from "@/lib/types"
-
-// Define notification types
-export interface Notification {
-  id: string
-  title: string
-  message: string
-  type: NotificationType
-  priority?: string
-  read: boolean
-  date: Date
-  readAt?: Date
-  category?: string
-  link?: string
-  autoClose?: boolean
-  autoCloseDelay?: number
-  persistent?: boolean
-}
-
-// Define notification service response type
-export interface NotificationResponse {
-  id: string
-  title: string
-  message: string
-  type: string
-  priority?: string
-  read: boolean
-  createdAt: string
-  readAt?: string
-  category?: string
-  link?: string
-  metadata?: any
-}
+import {
+  CreateNotificationOptions,
+  Notification,
+  NotificationFilterOptions,
+  NotificationResponse,
+  NotificationType
+} from "@/lib/notification-types"
 
 // Define notification service class
 class NotificationService {
@@ -147,6 +121,7 @@ class NotificationService {
 
   /**
    * Add a listener for new notifications
+   * @returns A function to remove the listener
    */
   addListener(callback: (notification: Notification) => void) {
     this.listeners.add(callback)
@@ -155,6 +130,7 @@ class NotificationService {
 
   /**
    * Add a listener for connection status changes
+   * @returns A function to remove the listener
    */
   addConnectionListener(callback: (status: 'connected' | 'disconnected' | 'error') => void) {
     this.connectionListeners.add(callback)
@@ -196,7 +172,7 @@ class NotificationService {
       title: apiNotification.title,
       message: apiNotification.message,
       type: apiNotification.type as NotificationType,
-      priority: apiNotification.priority,
+      priority: apiNotification.priority as any,
       read: apiNotification.read,
       date: new Date(apiNotification.createdAt),
       readAt: apiNotification.readAt ? new Date(apiNotification.readAt) : undefined,
@@ -205,18 +181,14 @@ class NotificationService {
       autoClose: apiNotification.metadata?.autoClose,
       autoCloseDelay: apiNotification.metadata?.autoCloseDelay,
       persistent: apiNotification.metadata?.persistent,
+      metadata: apiNotification.metadata,
     }
   }
 
   /**
    * Fetch all notifications for the current user
    */
-  async getNotifications(options: { 
-    limit?: number, 
-    read?: boolean, 
-    type?: NotificationType,
-    category?: string
-  } = {}): Promise<Notification[]> {
+  async getNotifications(options: NotificationFilterOptions = {}): Promise<Notification[]> {
     try {
       // Build query string
       const params = new URLSearchParams()
@@ -318,17 +290,7 @@ class NotificationService {
   /**
    * Create a new notification
    */
-  async createNotification(notification: {
-    title: string
-    message: string
-    type: NotificationType
-    priority?: string
-    category?: string
-    link?: string
-    autoClose?: boolean
-    autoCloseDelay?: number
-    persistent?: boolean
-  }): Promise<Notification | null> {
+  async createNotification(notification: CreateNotificationOptions): Promise<Notification | null> {
     try {
       const response = await fetch('/api/notifications', {
         method: 'POST',
@@ -363,6 +325,13 @@ class NotificationService {
       console.error('Error clearing all notifications:', error)
       return false
     }
+  }
+
+  /**
+   * Get the current connection status
+   */
+  getConnectionStatus(): 'connected' | 'disconnected' | 'error' {
+    return this.isConnected ? 'connected' : (this.reconnectAttempts > 0 ? 'error' : 'disconnected')
   }
 }
 

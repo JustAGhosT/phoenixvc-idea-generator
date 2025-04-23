@@ -1,216 +1,268 @@
 "use client"
 
+import { ConnectionStatus } from "@/components/notifications/connection-status"
 import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useNotificationContext, type NotificationType } from "@/contexts/notification-context"
-import { cn } from "@/lib/utils"
-import { formatDistanceToNow } from "date-fns"
-import { AlertTriangle, Bell, Check, CheckCircle, Info, Trash2, X } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useNotificationList } from "@/hooks/use-notification-list"
+import { Notification } from "@/lib/notification-types"
+import { Filter, Search, X } from "lucide-react"
 import { useState } from "react"
+import { NotificationDialog } from "./notification-dialog"
+import { NotificationList } from "./notification-list"
 
-export function Notifications() {
-  const { 
-    notifications, 
-    unreadCount, 
-    markAsRead, 
-    markAllAsRead, 
-    removeNotification, 
-    clearAllNotifications 
-  } = useNotificationContext()
+interface NotificationsProps {
+  initialTab?: string
+  showSearch?: boolean
+  showFilters?: boolean
+  showConnectionStatus?: boolean
+  className?: string
+}
+
+export function Notifications({
+  initialTab = "all",
+  showSearch = true,
+  showFilters = true,
+  showConnectionStatus = true,
+  className,
+}: NotificationsProps) {
+  // State for active tab
+  const [activeTab, setActiveTab] = useState<string>(initialTab)
   
-  const [open, setOpen] = useState(false)
-  const router = useRouter()
-
-  const handleNotificationClick = (id: string, link?: string) => {
-    markAsRead(id)
-    if (link) {
-      router.push(link)
+  // State for search and filters
+  const [searchQuery, setSearchQuery] = useState("")
+  const [selectedType, setSelectedType] = useState<string>("")
+  const [selectedPriority, setSelectedPriority] = useState<string>("")
+  
+  // State for notification dialog
+  const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  
+  // Get notifications based on active tab
+  const { 
+    notifications: allNotifications,
+    loading,
+    error,
+    refetch,
+    markAllAsRead,
+    clearAll,
+    connectionStatus
+  } = useNotificationList({
+    realtime: true,
+    autoFetch: true
+  })
+  
+  // Filter notifications based on tab, search query, and filters
+  const getFilteredNotifications = () => {
+    // First filter by tab
+    let filtered = allNotifications
+    
+    if (activeTab === "unread") {
+      filtered = filtered.filter(n => !n.read)
+    } else if (activeTab === "read") {
+      filtered = filtered.filter(n => n.read)
     }
-    setOpen(false)
-  }
-
-  const getNotificationIcon = (type: NotificationType) => {
-    switch (type) {
-      case "info":
-        return <Info className="h-4 w-4 text-blue-500" />
-      case "success":
-        return <CheckCircle className="h-4 w-4 text-green-500" />
-      case "warning":
-        return <AlertTriangle className="h-4 w-4 text-amber-500" />
-      case "error":
-        return <X className="h-4 w-4 text-red-500" />
-      default:
-        return <Info className="h-4 w-4 text-blue-500" />
+    
+    // Then filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(n => 
+        n.title.toLowerCase().includes(query) || 
+        n.message.toLowerCase().includes(query) ||
+        (n.category && n.category.toLowerCase().includes(query))
+      )
     }
+    
+    // Then filter by type
+    if (selectedType) {
+      filtered = filtered.filter(n => n.type === selectedType)
+    }
+    
+    // Then filter by priority
+    if (selectedPriority) {
+      filtered = filtered.filter(n => n.priority === selectedPriority)
+    }
+    
+    return filtered
   }
-
+  
+  // Handle notification click
+  const handleNotificationClick = (notification: Notification) => {
+    setSelectedNotificationId(notification.id)
+    setDialogOpen(true)
+  }
+  
+  // Reset filters
+  const resetFilters = () => {
+    setSearchQuery("")
+    setSelectedType("")
+    setSelectedPriority("")
+  }
+  
+  // Check if any filters are active
+  const hasActiveFilters = searchQuery || selectedType || selectedPriority
+  
+  // Get filtered notifications
+  const filteredNotifications = getFilteredNotifications()
+  
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-5 w-5" />
-          {unreadCount > 0 && (
-            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-brand-primary text-[10px] text-white">
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80 p-0" align="end">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="font-medium">Notifications</h3>
-          <div className="flex gap-1">
-            {unreadCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={markAllAsRead} className="h-8 px-2 text-xs">
-                <Check className="h-3.5 w-3.5 mr-1" />
-                Mark all read
-              </Button>
-            )}
-            <Button variant="ghost" size="sm" onClick={clearAllNotifications} className="h-8 px-2 text-xs">
-              <Trash2 className="h-3.5 w-3.5 mr-1" />
-              Clear all
-            </Button>
-          </div>
-        </div>
-
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="w-full grid grid-cols-3">
+    <div className={className}>
+      {/* Tabs */}
+      <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="flex justify-between items-center mb-4">
+          <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="unread">
-              Unread
-              {unreadCount > 0 && (
-                <span className="ml-1 text-xs bg-brand-primary text-white rounded-full px-1.5">{unreadCount}</span>
-              )}
-            </TabsTrigger>
+            <TabsTrigger value="unread">Unread</TabsTrigger>
             <TabsTrigger value="read">Read</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="all" className="max-h-[300px] overflow-y-auto">
-            {notifications.length === 0 ? (
-              <div className="py-8 text-center text-muted-foreground">No notifications</div>
-            ) : (
-              <div className="divide-y">
-                {notifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={cn(
-                      "p-3 cursor-pointer hover:bg-muted/50 transition-colors",
-                      !notification.read && "bg-muted/30",
-                    )}
-                    onClick={() => handleNotificationClick(notification.id, notification.link)}
+          
+          {showConnectionStatus && (
+            <ConnectionStatus />
+          )}
+        </div>
+        
+        {/* Search and filters */}
+        {(showSearch || showFilters) && (
+          <div className="mb-4 space-y-2">
+            {showSearch && (
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <Input
+                  type="search"
+                  placeholder="Search notifications..."
+                  className="pl-9"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            )}
+            
+            {showFilters && (
+              <div className="flex flex-wrap gap-2">
+                <Select value={selectedType} onValueChange={setSelectedType}>
+                  <SelectTrigger className="w-[140px]">
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All types</SelectItem>
+                    <SelectItem value="info">Info</SelectItem>
+                    <SelectItem value="success">Success</SelectItem>
+                    <SelectItem value="warning">Warning</SelectItem>
+                    <SelectItem value="error">Error</SelectItem>
+                    <SelectItem value="system">System</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Select value={selectedPriority} onValueChange={setSelectedPriority}>
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue placeholder="Filter by priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All priorities</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="urgent">Urgent</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                {hasActiveFilters && (
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={resetFilters}
+                    title="Clear filters"
                   >
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5">{getNotificationIcon(notification.type)}</div>
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-start justify-between gap-2">
-                          <p className={cn("font-medium text-sm", !notification.read && "text-brand-primary")}>
-                            {notification.title}
-                          </p>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              removeNotification(notification.id)
-                            }}
-                            className="text-muted-foreground hover:text-foreground"
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                        <p className="text-xs text-muted-foreground">{notification.message}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatDistanceToNow(notification.date, { addSuffix: true })}
-                        </p>
-                      </div>
-                    </div>
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+                
+                {hasActiveFilters && (
+                  <div className="flex items-center ml-2 text-sm text-gray-500 dark:text-gray-400">
+                    <Filter className="h-3.5 w-3.5 mr-1" />
+                    <span>
+                      {filteredNotifications.length} result{filteredNotifications.length !== 1 ? 's' : ''}
+                    </span>
                   </div>
-                ))}
+                )}
               </div>
             )}
-          </TabsContent>
-
-          <TabsContent value="unread" className="max-h-[300px] overflow-y-auto">
-            {notifications.filter((n) => !n.read).length === 0 ? (
-              <div className="py-8 text-center text-muted-foreground">No unread notifications</div>
-            ) : (
-              <div className="divide-y">
-                {notifications
-                  .filter((n) => !n.read)
-                  .map((notification) => (
-                    <div
-                      key={notification.id}
-                      className="p-3 cursor-pointer hover:bg-muted/50 transition-colors bg-muted/30"
-                      onClick={() => handleNotificationClick(notification.id, notification.link)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="mt-0.5">{getNotificationIcon(notification.type)}</div>
-                        <div className="flex-1 space-y-1">
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="font-medium text-sm text-brand-primary">{notification.title}</p>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                removeNotification(notification.id)
-                              }}
-                              className="text-muted-foreground hover:text-foreground"
-                            >
-                              <X className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-                          <p className="text-xs text-muted-foreground">{notification.message}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(notification.date, { addSuffix: true })}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="read" className="max-h-[300px] overflow-y-auto">
-            {notifications.filter((n) => n.read).length === 0 ? (
-              <div className="py-8 text-center text-muted-foreground">No read notifications</div>
-            ) : (
-              <div className="divide-y">
-                {notifications
-                  .filter((n) => n.read)
-                  .map((notification) => (
-                    <div
-                      key={notification.id}
-                      className="p-3 cursor-pointer hover:bg-muted/50 transition-colors"
-                      onClick={() => handleNotificationClick(notification.id, notification.link)}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="mt-0.5">{getNotificationIcon(notification.type)}</div>
-                        <div className="flex-1 space-y-1">
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="font-medium text-sm">{notification.title}</p>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                removeNotification(notification.id)
-                              }}
-                              className="text-muted-foreground hover:text-foreground"
-                            >
-                              <X className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-                          <p className="text-xs text-muted-foreground">{notification.message}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(notification.date, { addSuffix: true })}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-      </PopoverContent>
-    </Popover>
+          </div>
+        )}
+        
+        {/* Notification lists */}
+        <TabsContent value="all" className="m-0">
+          <NotificationList
+            notifications={filteredNotifications}
+            loading={loading}
+            error={error}
+            onRefresh={refetch}
+            onMarkAllRead={markAllAsRead}
+            onClearAll={clearAll}
+            onNotificationClick={handleNotificationClick}
+            emptyMessage={
+              hasActiveFilters 
+                ? "No notifications match your filters" 
+                : "No notifications yet"
+            }
+            maxHeight="calc(100vh - 240px)"
+          />
+        </TabsContent>
+        
+        <TabsContent value="unread" className="m-0">
+          <NotificationList
+            notifications={filteredNotifications}
+            loading={loading}
+            error={error}
+            onRefresh={refetch}
+            onMarkAllRead={markAllAsRead}
+            onClearAll={clearAll}
+            onNotificationClick={handleNotificationClick}
+            emptyMessage={
+              hasActiveFilters 
+                ? "No unread notifications match your filters" 
+                : "No unread notifications"
+            }
+            maxHeight="calc(100vh - 240px)"
+          />
+        </TabsContent>
+        
+        <TabsContent value="read" className="m-0">
+          <NotificationList
+            notifications={filteredNotifications}
+            loading={loading}
+            error={error}
+            onRefresh={refetch}
+            onMarkAllRead={markAllAsRead}
+            onClearAll={clearAll}
+            onNotificationClick={handleNotificationClick}
+            emptyMessage={
+              hasActiveFilters 
+                ? "No read notifications match your filters" 
+                : "No read notifications"
+            }
+            maxHeight="calc(100vh - 240px)"
+          />
+        </TabsContent>
+      </Tabs>
+      
+      {/* Notification dialog */}
+      {selectedNotificationId && (
+        <NotificationDialog
+          id={selectedNotificationId}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          onMarkRead={refetch}
+          onDelete={refetch}
+        />
+      )}
+    </div>
   )
 }

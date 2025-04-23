@@ -1,8 +1,10 @@
 "use client"
 
 import { ErrorMonitor } from "@/lib/error-monitoring"
-import { notificationService, type Notification } from "@/lib/notification-service"
+import { notificationService } from "@/lib/notification-service"
+import { Notification } from "@/lib/notification-types"
 import { useCallback, useEffect, useState } from "react"
+
 /**
  * Hook for accessing and managing a single notification
  * 

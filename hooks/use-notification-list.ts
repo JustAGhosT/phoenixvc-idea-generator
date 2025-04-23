@@ -1,45 +1,9 @@
 "use client"
 
 import { ErrorMonitor } from "@/lib/error-monitoring"
-import { notificationService, type Notification } from "@/lib/notification-service"
+import { notificationService } from "@/lib/notification-service"
+import { Notification } from "@/lib/notification-types"
 import { useCallback, useEffect, useState } from "react"
-
-/**
- * Options for the useNotificationList hook
- */
-export interface UseNotificationListOptions {
-  /**
-   * Maximum number of notifications to fetch
-   */
-  limit?: number
-  
-  /**
-   * Filter by read status
-   */
-  read?: boolean
-  
-  /**
-   * Filter by notification type
-   */
-  type?: Notification['type']
-  
-  /**
-   * Filter by category
-   */
-  category?: string
-  
-  /**
-   * Whether to connect to real-time updates
-   * @default true
-   */
-  realtime?: boolean
-  
-  /**
-   * Whether to fetch automatically on mount
-   * @default true
-   */
-  autoFetch?: boolean
-}
 
 /**
  * Hook for accessing and managing the list of notifications
@@ -81,7 +45,14 @@ export function useNotificationList({
   category,
   realtime = true,
   autoFetch = true
-}: UseNotificationListOptions = {}) {
+}: {
+  limit?: number
+  read?: boolean
+  type?: Notification['type']
+  category?: string
+  realtime?: boolean
+  autoFetch?: boolean
+} = {}) {
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState<boolean>(autoFetch)
   const [error, setError] = useState<Error | null>(null)
@@ -157,17 +128,26 @@ export function useNotificationList({
     
     // Add listener for new notifications
     const removeListener = notificationService.addListener((notification) => {
-      setNotifications(prev => {
-        // Check if notification already exists
-        const exists = prev.some(n => n.id === notification.id)
-        if (exists) {
-          // Update existing notification
-          return prev.map(n => n.id === notification.id ? notification : n)
-        } else {
-          // Add new notification at the beginning
-          return [notification, ...prev]
-        }
-      })
+      // Check if the notification matches our filter criteria
+      const matchesFilter = (
+        (read === undefined || notification.read === read) &&
+        (type === undefined || notification.type === type) &&
+        (category === undefined || notification.category === category)
+      )
+      
+      if (matchesFilter) {
+        setNotifications(prev => {
+          // Check if notification already exists
+          const exists = prev.some(n => n.id === notification.id)
+          if (exists) {
+            // Update existing notification
+            return prev.map(n => n.id === notification.id ? notification : n)
+          } else {
+            // Add new notification at the beginning
+            return [notification, ...prev]
+          }
+        })
+      }
     })
     
     // Add listener for connection status
@@ -185,9 +165,8 @@ export function useNotificationList({
       removeListener()
       removeConnectionListener()
       // Don't disconnect as other components might be using it
-      // notificationService.disconnect()
     }
-  }, [realtime, autoFetch, fetchNotifications])
+  }, [realtime, autoFetch, fetchNotifications, read, type, category])
 
   return {
     notifications,

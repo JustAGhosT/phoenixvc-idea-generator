@@ -1,34 +1,50 @@
 "use client"
 
 // hooks/use-theme-list.ts
-import { useState, useEffect } from "react"
+import { useCallback } from "react"
+import { useTheme } from "./use-theme"
 
+/**
+ * Hook for accessing and managing the list of available themes
+ * 
+ * @example
+ * ```tsx
+ * const { themes, currentThemeId, setTheme, isLoading, error } = useThemeList()
+ * 
+ * if (isLoading) return <Spinner />
+ * if (error) return <ErrorMessage error={error} />
+ * 
+ * return (
+ *   <div>
+ *     <h2>Available Themes</h2>
+ *     <div className="theme-grid">
+ *       {themes.map(theme => (
+ *         <ThemeCard 
+ *           key={theme.id}
+ *           theme={theme}
+ *           isActive={theme.id === currentThemeId}
+ *           onSelect={() => setTheme(theme.id)}
+ *         />
+ *       ))}
+ *     </div>
+ *   </div>
+ * )
+ * ```
+ */
 export function useThemeList() {
-  const [themes, setThemes] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const { themes, currentTheme, setTheme, isLoading, error } = useTheme()
+  
+  const currentThemeId = currentTheme.id
+  
+  const handleThemeChange = useCallback((themeId: string) => {
+    setTheme(themeId)
+  }, [setTheme])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        // Simulate fetching themes
-        setTimeout(() => {
-          setThemes([
-            { id: "1", name: "Theme 1" },
-            { id: "2", name: "Theme 2" },
-          ])
-        }, 500)
-      } catch (error: any) {
-        setError(error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
-
-  return { themes, loading, error }
+  return {
+    themes,
+    currentThemeId,
+    setTheme: handleThemeChange,
+    isLoading,
+    error
+  }
 }

@@ -1,187 +1,190 @@
 "use client"
 
-import { useNotificationContext, type Notification } from "@/contexts/features/notification-context"
-import { cn } from "@/lib/utils"
-import { AnimatePresence, motion } from "framer-motion"
-import {
-  AlertCircle,
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  X
-} from "lucide-react"
 import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
+import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { useNotifications } from "@/hooks/use-notifications"
+import { Notification } from "@/lib/notification-types"
 
-export interface ToastNotificationsProps {
-  /**
-   * Position of the toast notifications
-   * @default "bottom-right"
-   */
+interface ToastNotificationsProps {
   position?: "top-right" | "top-left" | "bottom-right" | "bottom-left" | "top-center" | "bottom-center"
-  
-  /**
-   * Maximum number of toasts to show at once
-   * @default 3
-   */
   maxToasts?: number
-  
-  /**
-   * Whether to show close buttons on toasts
-   * @default true
-   */
-  showCloseButton?: boolean
-  
-  /**
-   * Additional CSS classes
-   */
   className?: string
 }
 
-/**
- * Toast notification container that automatically displays notifications with autoClose set to true
- * 
- * @example
- * ```tsx
- * // In your layout component:
- * <ToastNotifications position="bottom-right" maxToasts={3} />
- * 
- * // Then in any component:
- * const { showSuccess, showError } = useNotificationContext()
- * 
- * // Show a toast
- * showSuccess("Success!", "Operation completed", { autoClose: true })
- * ```
- */
 export function ToastNotifications({
-  position = "bottom-right",
-  maxToasts = 3,
-  showCloseButton = true,
+  position = "top-right",
+  maxToasts = 5,
   className,
 }: ToastNotificationsProps) {
-  const { notifications, removeNotification } = useNotificationContext()
+  const [mounted, setMounted] = useState(false)
   const [toasts, setToasts] = useState<Notification[]>([])
-  
-  // Filter notifications to only show those with autoClose=true
+  const notifications = useNotifications()
+
+  // Set up listener for auto-close notifications
   useEffect(() => {
-    const autoCloseNotifications = notifications
-      .filter(n => n.autoClose)
-      .slice(0, maxToasts)
+    if (typeof window === "undefined") return
     
-    setToasts(autoCloseNotifications)
-  }, [notifications, maxToasts])
+    setMounted(true)
+    
+    // Function to handle new notifications
+    const handleNewNotification = (notification: Notification) => {
+      if (notification.autoClose) {
+        setToasts(prev => {
+          // Add to beginning and limit to maxToasts
+          const updated = [notification, ...prev].slice(0, maxToasts)
+          return updated
+        })
+        
+        // Auto-remove after delay
+        if (notification.autoCloseDelay) {
+          setTimeout(() => {
+            setToasts(prev => prev.filter(t => t.id !== notification.id))
+          }, notification.autoCloseDelay)
+        }
+      }
+    }
+    
+    // Add listener for new notifications
+    const unsubscribe = notificationService.addListener(handleNewNotification)
+    
+    return () => {
+      unsubscribe()
+    }
+  }, [maxToasts])
   
   // Get position classes
   const getPositionClasses = () => {
     switch (position) {
-      case "top-right":
-        return "top-4 right-4 flex flex-col items-end"
       case "top-left":
-        return "top-4 left-4 flex flex-col items-start"
-      case "bottom-right":
-        return "bottom-4 right-4 flex flex-col items-end"
-      case "bottom-left":
-        return "bottom-4 left-4 flex flex-col items-start"
+        return "top-4 left-4 items-start"
       case "top-center":
-        return "top-4 left-1/2 -translate-x-1/2 flex flex-col items-center"
+        return "top-4 left-1/2 -translate-x-1/2 items-center"
+      case "top-right":
+        return "top-4 right-4 items-end"
+      case "bottom-left":
+        return "bottom-4 left-4 items-start"
       case "bottom-center":
-        return "bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center"
+        return "bottom-4 left-1/2 -translate-x-1/2 items-center"
+      case "bottom-right":
+        return "bottom-4 right-4 items-end"
       default:
-        return "bottom-4 right-4 flex flex-col items-end"
+        return "top-4 right-4 items-end"
     }
   }
   
-  // Get toast icon based on type
-  const getToastIcon = (type: string) => {
+  // Get icon based on notification type
+  const getIcon = (type: Notification["type"]) => {
     switch (type) {
-      case "info":
-        return <Info className="h-5 w-5 text-blue-500" />
       case "success":
-        return <CheckCircle2 className="h-5 w-5 text-green-500" />
-      case "warning":
-        return <AlertTriangle className="h-5 w-5 text-amber-500" />
+        return <CheckCircle className="h-5 w-5 text-green-500" />
       case "error":
         return <AlertCircle className="h-5 w-5 text-red-500" />
+      case "warning":
+        return <AlertTriangle className="h-5 w-5 text-amber-500" />
+      case "info":
+      case "system":
       default:
         return <Info className="h-5 w-5 text-blue-500" />
     }
   }
   
-  // Get toast background color based on type
-  const getToastClasses = (type: string) => {
-    const baseClasses = "rounded-md shadow-lg p-4 flex items-start gap-3 w-full max-w-sm backdrop-blur-sm"
-    
+  // Get background color based on notification type
+  const getBackgroundColor = (type: Notification["type"]) => {
     switch (type) {
-      case "info":
-        return cn(baseClasses, "bg-blue-50/90 text-blue-800 dark:bg-blue-950/90 dark:text-blue-200")
       case "success":
-        return cn(baseClasses, "bg-green-50/90 text-green-800 dark:bg-green-950/90 dark:text-green-200")
-      case "warning":
-        return cn(baseClasses, "bg-amber-50/90 text-amber-800 dark:bg-amber-950/90 dark:text-amber-200")
+        return "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800"
       case "error":
-        return cn(baseClasses, "bg-red-50/90 text-red-800 dark:bg-red-950/90 dark:text-red-200")
+        return "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800"
+      case "warning":
+        return "bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
+      case "info":
+        return "bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800"
+      case "system":
+        return "bg-purple-50 border-purple-200 dark:bg-purple-900/20 dark:border-purple-800"
       default:
-        return cn(baseClasses, "bg-gray-50/90 text-gray-800 dark:bg-gray-800/90 dark:text-gray-200")
+        return "bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700"
     }
   }
   
-  return (
-    <div className={cn("fixed z-50 space-y-2", getPositionClasses(), className)}>
-      <AnimatePresence>
-        {toasts.map((toast) => (
-          <motion.div
-            key={toast.id}
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className={getToastClasses(toast.type)}
-          >
-            <div className="mt-0.5">
-              {toast.icon || getToastIcon(toast.type)}
-            </div>
+  // Remove a toast
+  const removeToast = (id: string) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id))
+  }
+  
+  // If not mounted yet (SSR), don't render
+  if (!mounted) return null
+  
+  // If no toasts, don't render
+  if (toasts.length === 0) return null
+  
+  // Create portal for toast container
+  return createPortal(
+    <div
+      className={cn(
+        "fixed z-50 flex flex-col gap-2 w-full max-w-sm pointer-events-none",
+        getPositionClasses(),
+        className
+      )}
+    >
+      {toasts.map(toast => (
+        <div
+          key={toast.id}
+          className={cn(
+            "flex items-start p-4 rounded-lg shadow-md border pointer-events-auto transform transition-all duration-300 ease-in-out",
+            getBackgroundColor(toast.type),
+            "animate-in slide-in-from-right-5"
+          )}
+          role="alert"
+        >
+          <div className="mr-3 mt-0.5">
+            {toast.icon || getIcon(toast.type)}
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            {toast.title && (
+              <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                {toast.title}
+              </h4>
+            )}
+            <p className="text-sm text-gray-700 dark:text-gray-200 mt-1">
+              {toast.message}
+            </p>
             
-            <div className="flex-1 space-y-1">
-              <div className="flex justify-between items-start">
-                <h4 className="font-medium text-sm">{toast.title}</h4>
-                
-                {showCloseButton && (
-                  <button
-                    onClick={() => removeNotification(toast.id)}
-                    className="text-current opacity-70 hover:opacity-100 -mt-1 -mr-1"
+            {/* Actions */}
+            {toast.actions && toast.actions.length > 0 && (
+              <div className="flex mt-2 space-x-2">
+                {toast.actions.map((action, index) => (
+                  <Button
+                    key={index}
+                    variant={action.variant || "outline"}
+                    size="sm"
+                    onClick={() => {
+                      action.onClick(toast)
+                      removeToast(toast.id)
+                    }}
                   >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
+                    {action.label}
+                  </Button>
+                ))}
               </div>
-              
-              <p className="text-xs opacity-90">{toast.message}</p>
-              
-              {toast.actions && toast.actions.length > 0 && (
-                <div className="flex gap-2 mt-2">
-                  {toast.actions.map((action, index) => (
-                    <button
-                      key={index}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        action.onClick(toast)
-                      }}
-                      className={cn(
-                        "px-2 py-1 text-xs rounded",
-                        action.variant === "destructive" && "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-200 dark:hover:bg-red-900/50",
-                        action.variant === "outline" && "border border-current hover:bg-current/10",
-                        action.variant === "ghost" && "hover:bg-current/10",
-                        !action.variant || action.variant === "default" && "bg-current/10 hover:bg-current/20"
-                      )}
-                    >
-                      {action.label}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </motion.div>
-        ))}
-      </AnimatePresence>
-    </div>
+            )}
+          </div>
+          
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 p-0 ml-2 -mt-1 -mr-1 text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-gray-200"
+            onClick={() => removeToast(toast.id)}
+            aria-label="Close notification"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      ))}
+    </div>,
+    document.body
   )
 }
