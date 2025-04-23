@@ -1,15 +1,12 @@
 // lib/breadcrumb-service.ts
+import { buildBreadcrumbs } from "./breadcrumb-utils"
+
 export const breadcrumbService = {
   getBreadcrumbs: async (path: string) => {
-    // In a real application, this would call an API endpoint
-    // For now, we'll just simulate with a timeout
+    // Use the new breadcrumb utilities
     return new Promise((resolve) => {
       setTimeout(() => {
-        const breadcrumbs = [
-          { label: "Home", path: "/" },
-          { label: "Current Page", path: path },
-        ]
-        resolve(breadcrumbs)
+        const breadcrumbs = buildBreadcrumbs(path)
       }, 500)
     })
   },

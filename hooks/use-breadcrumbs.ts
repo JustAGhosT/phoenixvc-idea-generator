@@ -1,13 +1,11 @@
 "use client"
 
-// hooks/use-breadcrumbs.ts
-import { useContext } from "react"
-import { BreadcrumbContext } from "@/components/breadcrumb-provider"
+import { useBreadcrumbs as useContextBreadcrumbs } from "@/contexts/features/breadcrumb-context"
 
+/**
+ * Hook for accessing and manipulating breadcrumbs
+ * This is a wrapper around the context to provide a consistent API
+ */
 export function useBreadcrumbs() {
-  const context = useContext(BreadcrumbContext)
-  if (!context) {
-    throw new Error("useBreadcrumbs must be used within a BreadcrumbProvider")
-  }
-  return context
+  return useContextBreadcrumbs()
 }

@@ -1,146 +1,88 @@
 import { supabase } from "./db"
-import type { DocumentAnalysis, SentimentAnalysis, ProjectVisualization, ProjectSummary } from "./types"
-import { snakeToCamel, camelToSnake, createTimestamp } from "./db-utils"
+import { camelToSnake, createTimestamp, snakeToCamel } from "./db-utils"
+import type { DocumentAnalysis, ProjectSummary, ProjectVisualization, SentimentAnalysis } from "./types"
+
+// Generic function to save any analysis type
+async function saveAnalysis<T>(
+  tableName: string, 
+  data: Omit<T, "id" | "createdAt">
+): Promise<T> {
+  const timestamp = createTimestamp()
+  const snakeData = camelToSnake(data)
+
+  const { data: result, error } = await supabase
+    .from(tableName)
+    .insert({
+      ...snakeData,
+      created_at: timestamp,
+    })
+    .select()
+
+  if (error) throw error
+  return snakeToCamel(result[0]) as T
+}
+
+// Generic function to get analyses
+async function getAnalyses<T>(
+  tableName: string, 
+  userId: string, 
+  projectId?: string | number
+): Promise<T[]> {
+  let query = supabase
+    .from(tableName)
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+
+  if (projectId) {
+    query = query.eq("project_id", projectId)
+  }
+
+  const { data, error } = await query
+
+  if (error) throw error
+  return data.map(snakeToCamel) as T[]
+}
+
+// Generic function to get a single analysis
+async function getAnalysis<T>(
+  tableName: string, 
+  id: string
+): Promise<T> {
+  const { data, error } = await supabase
+    .from(tableName)
+    .select("*")
+    .eq("id", id)
+    .single()
+  if (error) throw error
+  return snakeToCamel(data) as T
+}
 
 // Document Analysis
-export async function saveDocumentAnalysis(analysis: Omit<DocumentAnalysis, "id" | "createdAt">) {
-  const timestamp = createTimestamp()
-  const snakeAnalysis = camelToSnake(analysis)
+export const saveDocumentAnalysis = (analysis: Omit<DocumentAnalysis, "id" | "createdAt">) => 
+  saveAnalysis<DocumentAnalysis>("document_analyses", analysis)
 
-  const { data, error } = await supabase
-    .from("document_analyses")
-    .insert({
-      ...snakeAnalysis,
-      created_at: timestamp,
-    })
-    .select()
+export const getDocumentAnalyses = (userId: string, projectId?: string | number) => 
+  getAnalyses<DocumentAnalysis>("document_analyses", userId, projectId)
 
-  if (error) throw error
-  return snakeToCamel(data[0]) as DocumentAnalysis
-}
-
-export async function getDocumentAnalyses(userId: string, projectId?: string | number) {
-  let query = supabase
-    .from("document_analyses")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-
-  if (projectId) {
-    query = query.eq("project_id", projectId)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
-  return data.map(snakeToCamel) as DocumentAnalysis[]
-}
-
-export async function getDocumentAnalysis(id: string) {
-  const { data, error } = await supabase.from("document_analyses").select("*").eq("id", id).single()
-
-  if (error) throw error
-  return snakeToCamel(data) as DocumentAnalysis
-}
+export const getDocumentAnalysis = (id: string) => 
+  getAnalysis<DocumentAnalysis>("document_analyses", id)
 
 // Sentiment Analysis
-export async function saveSentimentAnalysis(analysis: Omit<SentimentAnalysis, "id" | "createdAt">) {
-  const timestamp = createTimestamp()
-  const snakeAnalysis = camelToSnake(analysis)
+export const saveSentimentAnalysis = (analysis: Omit<SentimentAnalysis, "id" | "createdAt">) => 
+  saveAnalysis<SentimentAnalysis>("sentiment_analyses", analysis)
 
-  const { data, error } = await supabase
-    .from("sentiment_analyses")
-    .insert({
-      ...snakeAnalysis,
-      created_at: timestamp,
-    })
-    .select()
-
-  if (error) throw error
-  return snakeToCamel(data[0]) as SentimentAnalysis
-}
-
-export async function getSentimentAnalyses(userId: string, projectId?: string | number) {
-  let query = supabase
-    .from("sentiment_analyses")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-
-  if (projectId) {
-    query = query.eq("project_id", projectId)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
-  return data.map(snakeToCamel) as SentimentAnalysis[]
-}
-
+export const getSentimentAnalyses = (userId: string, projectId?: string | number) => 
+  getAnalyses<SentimentAnalysis>("sentiment_analyses", userId, projectId)
 // Project Visualizations
-export async function saveProjectVisualization(visualization: Omit<ProjectVisualization, "id" | "createdAt">) {
-  const timestamp = createTimestamp()
-  const snakeVisualization = camelToSnake(visualization)
+export const saveProjectVisualization = (visualization: Omit<ProjectVisualization, "id" | "createdAt">) => 
+  saveAnalysis<ProjectVisualization>("project_visualizations", visualization)
 
-  const { data, error } = await supabase
-    .from("project_visualizations")
-    .insert({
-      ...snakeVisualization,
-      created_at: timestamp,
-    })
-    .select()
-
-  if (error) throw error
-  return snakeToCamel(data[0]) as ProjectVisualization
-}
-
-export async function getProjectVisualizations(userId: string, projectId?: string | number) {
-  let query = supabase
-    .from("project_visualizations")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-
-  if (projectId) {
-    query = query.eq("project_id", projectId)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
-  return data.map(snakeToCamel) as ProjectVisualization[]
-}
-
+export const getProjectVisualizations = (userId: string, projectId?: string | number) => 
+  getAnalyses<ProjectVisualization>("project_visualizations", userId, projectId)
 // Project Summaries
-export async function saveProjectSummary(summary: Omit<ProjectSummary, "id" | "createdAt">) {
-  const timestamp = createTimestamp()
-  const snakeSummary = camelToSnake(summary)
+export const saveProjectSummary = (summary: Omit<ProjectSummary, "id" | "createdAt">) => 
+  saveAnalysis<ProjectSummary>("project_summaries", summary)
 
-  const { data, error } = await supabase
-    .from("project_summaries")
-    .insert({
-      ...snakeSummary,
-      created_at: timestamp,
-    })
-    .select()
-
-  if (error) throw error
-  return snakeToCamel(data[0]) as ProjectSummary
-}
-
-export async function getProjectSummaries(userId: string, projectId?: string | number) {
-  let query = supabase
-    .from("project_summaries")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-
-  if (projectId) {
-    query = query.eq("project_id", projectId)
-  }
-
-  const { data, error } = await query
-
-  if (error) throw error
-  return data.map(snakeToCamel) as ProjectSummary[]
-}
+export const getProjectSummaries = (userId: string, projectId?: string | number) => 
+  getAnalyses<ProjectSummary>("project_summaries", userId, projectId)

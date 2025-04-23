@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
+import { type NextRequest, NextResponse } from "next/server"
 
 // Middleware to check authentication
 export async function withAuth(handler: (req: NextRequest, user: any) => Promise<NextResponse>, req: NextRequest) {
