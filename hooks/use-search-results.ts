@@ -1,38 +1,60 @@
 "use client"
 
-// hooks/use-search-results.ts
-import { useState, useEffect } from "react"
+import { searchService } from "@/lib/search-service"
+import type { SearchResult } from "@/lib/types"
+import { useCallback, useEffect, useState } from "react"
+import { useDebounce } from "./use-debounce"
+import { useResourceList } from "./use-resource-list"
 
-export function useSearchResults(term: string) {
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+/**
+ * Hook for searching and accessing search results
+ * 
+ * @example
+ * ```tsx
+ * const { results, loading, error, search } = useSearchResults()
+ * 
+ * return (
+ *   <div>
+ *     <SearchInput onSearch={search} />
+ *     {loading && <SearchSkeleton />}
+ *     {error && <ErrorMessage error={error} />}
+ *     <SearchResultsList results={results} />
+ *   </div>
+ * )
+ * ```
+ */
+export function useSearchResults(initialTerm: string = "") {
+  const [term, setTerm] = useState<string>(initialTerm)
+  const debouncedTerm = useDebounce(term, 300)
 
+  const fetchResults = useCallback(async () => {
+    if (!debouncedTerm) return []
+    return await searchService.search(debouncedTerm)
+  }, [debouncedTerm])
+
+  const result = useResourceList<SearchResult>({
+    fetchFn: fetchResults,
+    autoFetch: !!debouncedTerm,
+    errorContext: "search-results"
+  })
+
+  // Refetch when debounced term changes
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        // Simulate fetching search results
-        setTimeout(() => {
-          setResults([
-            { id: "1", title: `Result for ${term} 1` },
-            { id: "2", title: `Result for ${term} 2` },
-          ])
-        }, 500)
-      } catch (error: any) {
-        setError(error)
-      } finally {
-        setLoading(false)
-      }
+    if (debouncedTerm) {
+      result.refetch()
     }
+  }, [debouncedTerm, result.refetch])
 
-    if (term) {
-      fetchData()
-    } else {
-      setResults([])
-    }
-  }, [term])
+  const search = useCallback((newTerm: string) => {
+    setTerm(newTerm)
+  }, [])
 
-  return { results, loading, error }
+  return {
+    results: result.data,
+    loading: result.loading,
+    error: result.error,
+    search,
+    term,
+    setTerm
+  }
 }

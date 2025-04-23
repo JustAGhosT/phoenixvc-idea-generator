@@ -1,7 +1,24 @@
 /**
  * Enhanced notification service for handling backend communication and real-time updates
  */
-import { Notification, NotificationType } from "@/contexts/features/notification-context"
+import { NotificationType } from "@/lib/types"
+
+// Define notification types
+export interface Notification {
+  id: string
+  title: string
+  message: string
+  type: NotificationType
+  priority?: string
+  read: boolean
+  date: Date
+  readAt?: Date
+  category?: string
+  link?: string
+  autoClose?: boolean
+  autoCloseDelay?: number
+  persistent?: boolean
+}
 
 // Define notification service response type
 export interface NotificationResponse {
@@ -28,17 +45,17 @@ class NotificationService {
   private reconnectAttempts: number = 0
   private maxReconnectAttempts: number = 5
   private reconnectDelay: number = 2000 // Start with 2 seconds
-  
+
   /**
    * Connect to the SSE endpoint for real-time notifications
    */
   connect() {
     if (typeof window === 'undefined') return // Only run on client
     if (this.eventSource) return // Already connected
-    
+
     try {
       this.eventSource = new EventSource('/api/notifications/sse')
-      
+
       // Handle connection open
       this.eventSource.onopen = () => {
         this.isConnected = true
@@ -47,12 +64,11 @@ class NotificationService {
         this.notifyConnectionListeners('connected')
         console.log('Connected to notification stream')
       }
-      
+
       // Handle messages
       this.eventSource.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data)
-          
           // Skip connection messages
           if (data.type === 'connection') return
           
@@ -65,7 +81,7 @@ class NotificationService {
           console.error('Error processing notification event:', error)
         }
       }
-      
+
       // Handle errors
       this.eventSource.onerror = (error) => {
         this.isConnected = false
@@ -84,7 +100,7 @@ class NotificationService {
       this.reconnect()
     }
   }
-  
+
   /**
    * Disconnect from the SSE endpoint
    */
@@ -102,7 +118,7 @@ class NotificationService {
       this.reconnectTimeout = null
     }
   }
-  
+
   /**
    * Attempt to reconnect to the SSE endpoint with exponential backoff
    */
@@ -122,14 +138,13 @@ class NotificationService {
     
     // Use exponential backoff
     const delay = Math.min(this.reconnectDelay * Math.pow(1.5, this.reconnectAttempts - 1), 30000) // Max 30 seconds
-    
     console.log(`Attempting to reconnect in ${delay}ms (attempt ${this.reconnectAttempts})`)
     
     this.reconnectTimeout = setTimeout(() => {
       this.connect()
     }, delay)
   }
-  
+
   /**
    * Add a listener for new notifications
    */
@@ -137,7 +152,7 @@ class NotificationService {
     this.listeners.add(callback)
     return () => this.listeners.delete(callback)
   }
-  
+
   /**
    * Add a listener for connection status changes
    */
@@ -145,7 +160,7 @@ class NotificationService {
     this.connectionListeners.add(callback)
     return () => this.connectionListeners.delete(callback)
   }
-  
+
   /**
    * Notify all listeners of a new notification
    */
@@ -158,7 +173,7 @@ class NotificationService {
       }
     })
   }
-  
+
   /**
    * Notify all connection listeners of a status change
    */
@@ -171,7 +186,7 @@ class NotificationService {
       }
     })
   }
-  
+
   /**
    * Map API notification to client notification format
    */
@@ -181,9 +196,10 @@ class NotificationService {
       title: apiNotification.title,
       message: apiNotification.message,
       type: apiNotification.type as NotificationType,
-      priority: apiNotification.priority as any,
+      priority: apiNotification.priority,
       read: apiNotification.read,
       date: new Date(apiNotification.createdAt),
+      readAt: apiNotification.readAt ? new Date(apiNotification.readAt) : undefined,
       link: apiNotification.link,
       category: apiNotification.category,
       autoClose: apiNotification.metadata?.autoClose,
@@ -191,7 +207,7 @@ class NotificationService {
       persistent: apiNotification.metadata?.persistent,
     }
   }
-  
+
   /**
    * Fetch all notifications for the current user
    */
@@ -212,7 +228,6 @@ class NotificationService {
       const queryString = params.toString() ? `?${params.toString()}` : ''
       
       const response = await fetch(`/api/notifications${queryString}`)
-      
       if (!response.ok) {
         throw new Error(`Failed to fetch notifications: ${response.status}`)
       }
@@ -226,27 +241,25 @@ class NotificationService {
       return []
     }
   }
-  
+
   /**
    * Fetch a single notification by ID
    */
   async getNotificationById(id: string): Promise<Notification | null> {
     try {
       const response = await fetch(`/api/notifications/${id}`)
-      
       if (!response.ok) {
         throw new Error(`Failed to fetch notification: ${response.status}`)
       }
       
       const data: NotificationResponse = await response.json()
-      
       return this.mapApiNotificationToClient(data)
     } catch (error) {
       console.error(`Error fetching notification ${id}:`, error)
       return null
     }
   }
-  
+
   /**
    * Mark a notification as read
    */
@@ -255,14 +268,13 @@ class NotificationService {
       const response = await fetch(`/api/notifications/${id}/read`, {
         method: 'PUT'
       })
-      
       return response.ok
     } catch (error) {
       console.error(`Error marking notification ${id} as read:`, error)
       return false
     }
   }
-  
+
   /**
    * Mark all notifications as read
    */
@@ -281,14 +293,13 @@ class NotificationService {
       const response = await fetch(`/api/notifications/read-all${queryString}`, {
         method: 'PUT'
       })
-      
       return response.ok
     } catch (error) {
       console.error('Error marking all notifications as read:', error)
       return false
     }
   }
-  
+
   /**
    * Delete a notification
    */
@@ -297,14 +308,13 @@ class NotificationService {
       const response = await fetch(`/api/notifications/${id}`, {
         method: 'DELETE'
       })
-      
       return response.ok
     } catch (error) {
       console.error(`Error deleting notification ${id}:`, error)
       return false
     }
   }
-  
+
   /**
    * Create a new notification
    */
@@ -333,14 +343,13 @@ class NotificationService {
       }
       
       const data: NotificationResponse = await response.json()
-      
       return this.mapApiNotificationToClient(data)
     } catch (error) {
       console.error('Error creating notification:', error)
       return null
     }
   }
-  
+
   /**
    * Clear all notifications
    */
@@ -349,7 +358,6 @@ class NotificationService {
       const response = await fetch('/api/notifications', {
         method: 'DELETE'
       })
-      
       return response.ok
     } catch (error) {
       console.error('Error clearing all notifications:', error)

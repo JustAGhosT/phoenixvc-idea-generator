@@ -1,30 +1,30 @@
 "use client"
 
-// hooks/use-breadcrumb-service.ts
-import { useState, useEffect } from "react"
 import { breadcrumbService } from "@/lib/breadcrumb-service"
 import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export function useBreadcrumbService() {
   const [breadcrumbs, setBreadcrumbs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<any>(null)
   const pathname = usePathname()
 
-  const fetchBreadcrumbs = async (path: string) => {
+  const fetchBreadcrumbs = useCallback(async (path: string) => {
     setLoading(true)
+    setError(null)
     try {
       const data = await breadcrumbService.getBreadcrumbs(path)
       setBreadcrumbs(data)
-    } catch (error) {
-      console.error("Error fetching breadcrumbs:", error)
+    } catch (err) {
+      setError(err)
+      console.error("Error fetching breadcrumbs:", err)
     } finally {
       setLoading(false)
     }
-  }
-
+  }, [])
   useEffect(() => {
     fetchBreadcrumbs(pathname)
-  }, [pathname])
-
-  return { breadcrumbs, loading, fetchBreadcrumbs }
+  }, [pathname, fetchBreadcrumbs])
+  return { breadcrumbs, loading, error, fetchBreadcrumbs }
 }
