@@ -28,3 +28,26 @@ Continue building your app on:
 2. Deploy your chats from the v0 interface
 3. Changes are automatically pushed to this repository
 4. Vercel deploys the latest version from this repository
+
+## Running the project in a dev environment
+
+To run the project in a development environment, follow these steps:
+
+1. Install dependencies:
+   ```sh
+   pnpm install
+   ```
+
+2. Run the project:
+   ```sh
+   pnpm dev
+   ```
+
+## Devcontainer
+
+To install `devcontainer`, follow these steps:
+
+1. Install `devcontainer`:
+   ```sh
+   pnpm add devcontainer
+   ```
