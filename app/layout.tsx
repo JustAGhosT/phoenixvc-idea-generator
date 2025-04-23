@@ -8,8 +8,6 @@ import { AppSidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
-import { SessionProvider } from "next-auth/react"
-import { QuoteDisplay } from "@/components/quote-display"
 import { getServerAuthSession } from "@/auth"
 import { GlobalErrorHandler } from "@/components/global-error-handler"
 import { ErrorBoundary } from "@/components/error-boundary"
@@ -33,6 +31,8 @@ export const metadata: Metadata = {
   description: "AI-powered risk analysis for DeFi projects",
     generator: 'v0.dev'
 }
+import { QuoteDisplay } from "@/components/quote-display"
+import ClientSessionProvider from "@/components/client-session-provider"
 
 export default async function RootLayout({
   children,
@@ -45,7 +45,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <SessionProvider session={session}>
+        <ClientSessionProvider session={session}>
           <ThemeProvider attribute="class" defaultTheme="light">
             <SearchProvider>
               <NotificationProvider>
@@ -74,7 +74,7 @@ export default async function RootLayout({
               </NotificationProvider>
             </SearchProvider>
           </ThemeProvider>
-        </SessionProvider>
+        </ClientSessionProvider>
       </body>
     </html>
   )
