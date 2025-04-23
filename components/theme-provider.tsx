@@ -1,7 +1,13 @@
 "use client"
 
-import { ThemeProvider as NextThemesProvider, type ThemeProviderProps } from "next-themes"
+// This file re-exports the theme context from the contexts folder
+// It's here to maintain backward compatibility with existing imports
 
-export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
-}
+import {
+  ThemeProvider as OriginalThemeProvider,
+  useTheme,
+  useThemeContext
+} from "@/contexts/core/theme-context"
+
+export { useTheme, useThemeContext }
+export const ThemeProvider = OriginalThemeProvider

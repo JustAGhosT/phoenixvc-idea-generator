@@ -1,29 +1,22 @@
 "use client"
 
-import { Breadcrumb } from "@/components/breadcrumb"
-import ClientSessionProvider from "@/components/client-session-provider"
-import { ErrorBoundary } from "@/components/error-boundary"
-import { Footer } from "@/components/footer"
-import { GlobalErrorHandler } from "@/components/global-error-handler"
-import { Header } from "@/components/header"
-import { QuoteDisplay } from "@/components/quote-display"
-import { AppSidebar } from "@/components/sidebar"
-import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
-import { BreadcrumbProvider } from "@/contexts/breadcrumb-context"
-import { NotificationProvider } from "@/contexts/notification-context"
-import { SearchProvider } from "@/contexts/search-context"
-import { SidebarProvider } from "@/contexts/sidebar-context"
-import { initSentry } from "@/utils/sentry"
+import { AuthProvider } from "@/contexts/core/auth-context"
+import { ThemeProvider } from "@/contexts/core/theme-context"
+import { BreadcrumbProvider } from "@/contexts/features/breadcrumb-context"
+import { NotificationProvider } from "@/contexts/features/notification-context"
+import { SearchProvider } from "@/contexts/features/search-context"
+import { SidebarProvider } from "@/contexts/features/sidebar-context"
 import { Session } from "next-auth"
 import { Suspense } from "react"
+import { AppSidebar } from "./app-sidebar"
 import { AuthRedirect } from "./auth-redirect"
-
-// Initialize Sentry
-if (typeof window !== "undefined") {
-  // Only initialize in the browser
-  initSentry()
-}
+import { Breadcrumb } from "./breadcrumb"
+import { ErrorBoundary } from "./error-boundary"
+import { Footer } from "./footer"
+import { GlobalErrorHandler } from "./global-error-handler"
+import { Header } from "./header"
+import { QuoteDisplay } from "./quote-display"
 
 export default function RootClientLayout({
   children,
@@ -33,8 +26,8 @@ export default function RootClientLayout({
   session: Session | null
 }) {
   return (
-    <ClientSessionProvider session={session}>
-      <ThemeProvider attribute="class" defaultTheme="light">
+    <AuthProvider session={session}>
+      <ThemeProvider defaultTheme="light">
         <SearchProvider>
           <NotificationProvider>
             <BreadcrumbProvider>
@@ -66,6 +59,6 @@ export default function RootClientLayout({
           </NotificationProvider>
         </SearchProvider>
       </ThemeProvider>
-    </ClientSessionProvider>
+    </AuthProvider>
   )
 }

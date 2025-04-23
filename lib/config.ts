@@ -1,3 +1,52 @@
+// Environment variable configuration
+export const env = {
+  app: {
+    baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
+    apiUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api',
+    version: process.env.NEXT_PUBLIC_APP_VERSION || '0.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    logLevel: process.env.LOG_LEVEL || 'info',
+  },
+  auth: {
+    nextAuthSecret: process.env.NEXTAUTH_SECRET,
+    nextAuthUrl: process.env.NEXTAUTH_URL,
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  },
+  database: {
+    url: process.env.DATABASE_URL,
+    supabaseUrl: process.env.SUPABASE_URL,
+    supabaseAnonKey: process.env.SUPABASE_ANON_KEY,
+    supabaseServiceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  },
+  services: {
+    sentryDsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    falKey: process.env.FAL_KEY,
+    deepInfraKey: process.env.DEEPINFRA_API_KEY,
+  }
+};
+
+// Validate required environment variables
+export function validateEnvConfig() {
+  const requiredVars = [
+    'NEXTAUTH_SECRET',
+    'NEXTAUTH_URL',
+    'DATABASE_URL',
+    'SUPABASE_URL',
+    'SUPABASE_ANON_KEY'
+  ];
+  
+  const missing = requiredVars.filter(
+    varName => !process.env[varName]
+  );
+  
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(', ')}`
+    );
+  }
+}
+
 // Change detection thresholds
 export const CHANGE_THRESHOLDS = {
   // Percentage change threshold for numeric values
@@ -123,3 +172,17 @@ export const QUOTES = [
 export const SYNERGY_THRESHOLDS = {
   MIN_VALUABLE_SCORE: 60,
 }
+
+// Export a combined config object for convenience
+export const config = {
+  env,
+  changeThresholds: CHANGE_THRESHOLDS,
+  audioSettings: AUDIO_SETTINGS,
+  aiSettings: AI_SETTINGS,
+  evaluationWeights: EVALUATION_WEIGHTS,
+  quotes: QUOTES,
+  synergyThresholds: SYNERGY_THRESHOLDS,
+};
+
+// Default export for convenience
+export default config;
