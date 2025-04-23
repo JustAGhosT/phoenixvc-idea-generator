@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Mic, MicOff, Play, Pause, Save } from "lucide-react"
 import { startRecording, stopRecording, uploadAudio } from "@/lib/audio"

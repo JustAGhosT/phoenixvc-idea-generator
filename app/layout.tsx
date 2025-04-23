@@ -16,7 +16,7 @@ import { NotificationProvider } from "@/contexts/notification-context"
 import { BreadcrumbProvider } from "@/contexts/breadcrumb-context"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { initSentry } from "@/lib/sentry"
-import { Suspense } from "react"
+import { Suspense, useRef } from "react"
 
 // Initialize Sentry
 if (typeof window !== "undefined") {

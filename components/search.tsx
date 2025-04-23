@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useEffect } from "react"
+import { React, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -42,8 +42,8 @@ export function Search() {
   } = useSearch()
 
   const router = useRouter()
-  const searchRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const searchRef = React.useRef<HTMLDivElement>(null)
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
   // Close search dropdown when clicking outside
   useOnClickOutside(searchRef, () => setIsSearchOpen(false))

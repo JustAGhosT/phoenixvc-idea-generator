@@ -7,6 +7,7 @@ import { getIdeas } from "@/lib/db"
 import { calculateTechnicalFeasibility, calculatePotentialImpact } from "@/lib/ai"
 import { getServerAuthSession } from "@/auth"
 import { setTag } from "@/lib/sentry"
+import { useRef } from "react"
 
 export default async function Home() {
   // Add Sentry tag for this page

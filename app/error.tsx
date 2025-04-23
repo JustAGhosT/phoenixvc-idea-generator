@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { ErrorPage } from "@/components/error-page"
 import { captureClientError } from "@/lib/client-error-handler"
 
