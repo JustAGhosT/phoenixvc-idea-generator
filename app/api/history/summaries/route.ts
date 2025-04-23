@@ -14,6 +14,10 @@ export async function GET(req: Request) {
     const url = new URL(req.url)
     const projectId = url.searchParams.get("projectId")
 
+    if (!projectId) {
+      return NextResponse.json({ error: "Missing projectId" }, { status: 400 })
+    }
+
     // Fetch project summaries
     const summaries = await getProjectSummaries(session.user.id, projectId || undefined)
 

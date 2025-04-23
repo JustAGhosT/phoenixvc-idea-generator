@@ -54,7 +54,10 @@ export function DocumentAnalysis() {
   }
 
   const analyzeDocument = async () => {
-    if (!file) return
+    if (!file) {
+      setError("Please upload a file before analyzing.")
+      return
+    }
 
     setIsAnalyzing(true)
     setProgress(0)

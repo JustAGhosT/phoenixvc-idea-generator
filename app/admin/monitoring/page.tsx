@@ -53,6 +53,9 @@ export default function MonitoringDashboard() {
     setIsLoading(true)
     try {
       const response = await fetch("/api/health")
+      if (!response.ok) {
+        throw new Error(`Failed to fetch health status: ${response.statusText}`)
+      }
       const data = await response.json()
       setHealthStatus(data)
     } catch (error) {
@@ -75,10 +78,11 @@ export default function MonitoringDashboard() {
   const fetchErrorLogs = async () => {
     try {
       const response = await fetch("/api/logs/errors")
-      if (response.ok) {
-        const data = await response.json()
-        setErrorLogs(data)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch error logs: ${response.statusText}`)
       }
+      const data = await response.json()
+      setErrorLogs(data)
     } catch (error) {
       console.error("Failed to fetch error logs:", error)
     }
@@ -88,10 +92,11 @@ export default function MonitoringDashboard() {
   const fetchPerformanceMetrics = async () => {
     try {
       const response = await fetch("/api/metrics/performance")
-      if (response.ok) {
-        const data = await response.json()
-        setPerformanceMetrics(data)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch performance metrics: ${response.statusText}`)
       }
+      const data = await response.json()
+      setPerformanceMetrics(data)
     } catch (error) {
       console.error("Failed to fetch performance metrics:", error)
     }

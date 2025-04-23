@@ -128,6 +128,10 @@ export function ChangeHistory({ ideaId }: ChangeHistoryProps) {
     return <div className="text-center py-8 text-red-500">{error}</div>
   }
 
+  if (!ideaId) {
+    return <div className="text-center py-8 text-red-500">Error: Missing ideaId parameter</div>
+  }
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">

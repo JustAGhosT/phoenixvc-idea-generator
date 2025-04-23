@@ -68,6 +68,9 @@ export function ImageGenerator({ projectName, projectDescription = "" }: ImageGe
       }
 
       const data = await response.json()
+      if (!data.imageUrl) {
+        throw new Error("AI response does not contain images")
+      }
       setGeneratedImage(data.imageUrl)
       toast({
         title: "Image Generated",
