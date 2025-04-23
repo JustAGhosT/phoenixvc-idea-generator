@@ -1,6 +1,6 @@
 "use client"
 
-import { Component, type ErrorInfo, type ReactNode } from "react"
+import { Component, type ErrorInfo, type ReactNode, lazy, Suspense } from "react"
 import { captureException } from "@/lib/sentry"
 import { createLogger } from "@/lib/logger"
 import { Button } from "@/components/ui/button"
@@ -19,6 +19,11 @@ interface State {
   hasError: boolean
   error: Error | null
 }
+
+// Dynamically import SessionProvider as a client component
+const SessionProviderClient = lazy(() =>
+  import("next-auth/react").then((module) => ({ default: module.SessionProvider })),
+)
 
 /**
  * Error boundary component to catch and handle errors in the component tree
@@ -88,6 +93,10 @@ export class ErrorBoundary extends Component<Props, State> {
       )
     }
 
-    return this.props.children
+    return (
+      <Suspense fallback={null}>
+        <SessionProviderClient>{this.props.children}</SessionProviderClient>
+      </Suspense>
+    )
   }
 }
