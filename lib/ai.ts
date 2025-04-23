@@ -1,4 +1,4 @@
-import { AI_SETTINGS } from "./config"
+import { AI_SETTINGS, CHANGE_THRESHOLDS } from "./config"
 import type { Idea } from "./types"
 
 /**
@@ -50,7 +50,7 @@ export function analyzeSentiment(text: string): {
   const sentimentScore = ((positiveCount - negativeCount) / Math.max(1, totalWords)) * 10
 
   // Normalize to 0-1 range
-  const score = Math.min(Math.max(0.5 + sentimentScore * AI_SETTINGS.SENTIMENT_SENSITIVITY, 0), 1)
+  const score = Math.min(Math.max(0.5 + sentimentScore * CHANGE_THRESHOLDS.SENTIMENT_SENSITIVITY, 0), 1)
 
   // Determine sentiment category
   let sentiment: "positive" | "neutral" | "negative" = "neutral"

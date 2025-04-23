@@ -1,9 +1,9 @@
-import { auth } from "@/auth"
+import { getServerAuthSession } from "@/auth"
 import { type NextRequest, NextResponse } from "next/server"
 
 // Middleware to check authentication
 export async function withAuth(handler: (req: NextRequest, user: any) => Promise<NextResponse>, req: NextRequest) {
-  const session = await auth()
+  const session = await getServerAuthSession()
 
   if (!session || !session.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

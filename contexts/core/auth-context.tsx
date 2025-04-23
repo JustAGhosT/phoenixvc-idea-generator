@@ -9,7 +9,7 @@ export type UserRole = "user" | "admin" | "editor" | "viewer"
 
 // Extended user type with roles
 export interface ExtendedUser {
-  id?: string
+  id: string  // Make id required to match the Session interface
   name?: string | null
   email?: string | null
   image?: string | null
@@ -17,8 +17,8 @@ export interface ExtendedUser {
 }
 
 // Extended session type with our custom properties
-export interface ExtendedSession extends Session {
-  user?: ExtendedUser
+export interface ExtendedSession extends Omit<Session, 'user'> {
+  user: ExtendedUser  // Make user required and use our ExtendedUser type
   expires: string
 }
 
@@ -77,12 +77,18 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
   // Update user and roles when session changes
   useEffect(() => {
     if (session?.user) {
+      // Ensure the user has an id property (required by ExtendedUser)
+      const extendedUser: ExtendedUser = {
+        ...session.user,
+        id: session.user.id || '',  // Provide a default empty string if id is missing
+        roles: (session.user as any).roles || ["user"]  // Cast to any to access potential roles
+      }
+      
       // Extract user from session
-      setUser(session.user as ExtendedUser)
+      setUser(extendedUser)
       
       // Extract roles from user or set default role
-      const userRoles = (session.user as ExtendedUser).roles || ["user"]
-      setRoles(userRoles)
+      setRoles(extendedUser.roles || ["user"])
     } else {
       setUser(null)
       setRoles([])
@@ -120,9 +126,14 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
     return roles.includes(roleOrRoles)
   }
   
-  // Create the context value
+  // Create the context value with proper type casting
+  const contextSession = session ? {
+    ...session,
+    user: user as ExtendedUser  // Cast to ExtendedUser since we've ensured it has the required properties
+  } : null
+  
   const value: AuthContextType = {
-    session: session as ExtendedSession | null,
+    session: contextSession as ExtendedSession | null,
     status,
     user,
     roles,
@@ -131,8 +142,8 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
     signIn,
     signOut,
     hasRole
-  }
-  
+}
+
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 

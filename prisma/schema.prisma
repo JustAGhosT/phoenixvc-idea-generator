@@ -13,13 +13,15 @@ datasource db {
 
 // Define your models here
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?        @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  notifications Notification[] // Add relation to notifications
+  roles         String[]       @default(["user"]) // Add roles for RBAC
 }
 
 model Account {
@@ -55,4 +57,28 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+// New Notification model
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String   // "info", "success", "warning", "error", "system"
+  priority  String   @default("medium") // "low", "medium", "high", "urgent"
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  readAt    DateTime?
+  category  String?
+  link      String?
+  metadata  Json?    // For additional properties like autoClose, persistent, etc.
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+  @@index([type])
+  @@index([category])
 }
