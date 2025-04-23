@@ -1,30 +1,9 @@
 "use client"
 
-// components/search-provider.tsx
-import type React from "react"
-import { createContext, useContext, useState } from "react"
+// This file re-exports the search context from the contexts folder
+// It's here to maintain backward compatibility with existing imports
 
-interface SearchContextProps {
-  searchTerm: string
-  setSearchTerm: (term: string) => void
-}
+import { SearchProvider as OriginalSearchProvider, useSearch, useSearchContext } from "@/contexts/search-context"
 
-const SearchContext = createContext<SearchContextProps | undefined>(undefined)
-
-export function useSearchContext() {
-  const context = useContext(SearchContext)
-  if (!context) {
-    throw new Error("useSearchContext must be used within a SearchProvider")
-  }
-  return context
-}
-
-interface SearchProviderProps {
-  children: React.ReactNode
-}
-
-export function SearchProvider({ children }: SearchProviderProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-
-  return <SearchContext.Provider value={{ searchTerm, setSearchTerm }}>{children}</SearchContext.Provider>
-}
+export { useSearch, useSearchContext }
+export const SearchProvider = OriginalSearchProvider

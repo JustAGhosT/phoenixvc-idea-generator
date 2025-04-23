@@ -1,10 +1,10 @@
 "use client"
 
-import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { ideas } from "@/lib/data"
 import { useDebounce } from "@/hooks/use-debounce"
+import { ideas } from "@/lib/data"
+import { useRouter } from "next/navigation"
+import type React from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
 export type SearchResult = {
   id: string | number
@@ -24,12 +24,15 @@ type SearchContextType = {
   addRecentSearch: (result: SearchResult) => void
   clearRecentSearches: () => void
   isSearchOpen: boolean
-  setIsSearchOpen: (isOpen: boolean) => void
+  toggleSearch: () => void
+  openSearch: () => void
+  closeSearch: () => void
   performSearch: (term?: string) => void
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined)
 
+// Export both names for compatibility
 export const useSearch = () => {
   const context = useContext(SearchContext)
   if (!context) {
@@ -38,6 +41,7 @@ export const useSearch = () => {
   return context
 }
 
+export const useSearchContext = useSearch;
 export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState("")
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
@@ -47,6 +51,9 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
   const router = useRouter()
 
+  const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
+  const openSearch = () => setIsSearchOpen(true);
+  const closeSearch = () => setIsSearchOpen(false);
   // Load recent searches from localStorage on mount
   useEffect(() => {
     const savedSearches = localStorage.getItem("recentSearches")
@@ -99,7 +106,6 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           url: `/editor/${idea.id}`,
         }))
 
-      // Add some mock templates and documents
       if ("template".includes(searchFor.toLowerCase())) {
         results.push({
           id: "template-1",
@@ -166,7 +172,9 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         addRecentSearch,
         clearRecentSearches,
         isSearchOpen,
-        setIsSearchOpen,
+        toggleSearch,
+        openSearch,
+        closeSearch,
         performSearch,
       }}
     >

@@ -1,69 +1,69 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
+import { createContext, useContext, useState } from "react"
 
 export interface Breadcrumb {
   label: string
   href: string
 }
 
-type BreadcrumbContextType = {
+interface BreadcrumbContextProps {
   breadcrumbs: Breadcrumb[]
   setBreadcrumbs: (breadcrumbs: Breadcrumb[]) => void
+  addBreadcrumb: (breadcrumb: Breadcrumb) => void
+  removeBreadcrumb: (href: string) => void
+  clearBreadcrumbs: () => void
 }
 
-const BreadcrumbContext = createContext<BreadcrumbContextType | undefined>(undefined)
+const BreadcrumbContext = createContext<BreadcrumbContextProps | undefined>(undefined)
 
-export const useBreadcrumbs = () => {
+export function useBreadcrumbContext() {
   const context = useContext(BreadcrumbContext)
   if (!context) {
-    throw new Error("useBreadcrumbs must be used within a BreadcrumbProvider")
+    throw new Error("useBreadcrumbContext must be used within a BreadcrumbProvider")
   }
   return context
 }
 
-export const BreadcrumbProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>([])
-  const pathname = usePathname()
-
-  // Generate breadcrumbs based on pathname
-  useEffect(() => {
-    const generateBreadcrumbs = () => {
-      const paths = pathname.split("/").filter(Boolean)
-
-      // Always start with home
-      const crumbs: Breadcrumb[] = [{ label: "Home", href: "/" }]
-
-      // Build up the breadcrumbs based on the path
-      let currentPath = ""
-      paths.forEach((path, i) => {
-        currentPath += `/${path}`
-
-        // Special cases for known routes
-        if (path === "editor" && paths[i + 1] === "new") {
-          crumbs.push({ label: "New Project", href: currentPath + "/new" })
-          return
-        }
-
-        if (path === "editor" && paths[i + 1] && paths[i + 1] !== "new") {
-          crumbs.push({ label: "Editor", href: currentPath })
-          crumbs.push({ label: `Project ${paths[i + 1]}`, href: `${currentPath}/${paths[i + 1]}` })
-          return
-        }
-
-        // Format the label (capitalize, replace hyphens with spaces)
-        const label = path.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())
-
-        crumbs.push({ label, href: currentPath })
-      })
-
-      setBreadcrumbs(crumbs)
-    }
-
-    generateBreadcrumbs()
-  }, [pathname])
-
-  return <BreadcrumbContext.Provider value={{ breadcrumbs, setBreadcrumbs }}>{children}</BreadcrumbContext.Provider>
+interface BreadcrumbProviderProps {
+  children: React.ReactNode
 }
+
+export function BreadcrumbProvider({ children }: BreadcrumbProviderProps) {
+  const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[]>([
+    { label: "Home", href: "/" }
+  ])
+
+  const addBreadcrumb = (breadcrumb: Breadcrumb) => {
+    setBreadcrumbs(prev => {
+      // Check if breadcrumb already exists
+      const exists = prev.some(b => b.href === breadcrumb.href)
+      if (exists) return prev
+      return [...prev, breadcrumb]
+    })
+  }
+
+  const removeBreadcrumb = (href: string) => {
+    setBreadcrumbs(prev => prev.filter(b => b.href !== href))
+  }
+  const clearBreadcrumbs = () => {
+    setBreadcrumbs([{ label: "Home", href: "/" }])
+  }
+
+  return (
+    <BreadcrumbContext.Provider 
+      value={{ 
+        breadcrumbs, 
+        setBreadcrumbs, 
+        addBreadcrumb, 
+        removeBreadcrumb, 
+        clearBreadcrumbs 
+      }}
+    >
+      {children}
+    </BreadcrumbContext.Provider>
+  )
+}
+
+export const useBreadcrumbs = useBreadcrumbContext;

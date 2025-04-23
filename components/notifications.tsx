@@ -1,18 +1,25 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Bell, Check, Trash2, Info, AlertTriangle, CheckCircle, X } from "lucide-react"
-import { useNotifications, type NotificationType } from "@/contexts/notification-context"
+import { useNotificationContext, type NotificationType } from "@/contexts/notification-context"
 import { cn } from "@/lib/utils"
 import { formatDistanceToNow } from "date-fns"
+import { AlertTriangle, Bell, Check, CheckCircle, Info, Trash2, X } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 export function Notifications() {
-  const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification, clearAllNotifications } =
-    useNotifications()
+  const { 
+    notifications, 
+    unreadCount, 
+    markAsRead, 
+    markAllAsRead, 
+    removeNotification, 
+    clearAllNotifications 
+  } = useNotificationContext()
+  
   const [open, setOpen] = useState(false)
   const router = useRouter()
 

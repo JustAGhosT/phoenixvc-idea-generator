@@ -1,5 +1,7 @@
+"use client"
+
 import { Chart, registerables } from "chart.js"
-import { Bar, Pie, Radar, Line } from "react-chartjs-2"
+import { Bar, Line, Pie, Radar } from "react-chartjs-2"
 
 Chart.register(...registerables)
 

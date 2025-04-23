@@ -1,10 +1,15 @@
 "use client"
 
-import dynamic from "next/dynamic"
+import { Session } from "next-auth"
+import { SessionProvider } from "next-auth/react"
+import { ReactNode } from "react"
 
-// Dynamically import SessionProvider as a client component
-const SessionProvider = dynamic(() => import("next-auth/react").then((mod) => mod.SessionProvider), {
-  ssr: false,
-})
-
-export default SessionProvider
+export default function ClientSessionProvider({
+  children,
+  session
+}: {
+  children: ReactNode
+  session: Session | null
+}) {
+  return <SessionProvider session={session}>{children}</SessionProvider>
+}
