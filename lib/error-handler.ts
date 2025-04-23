@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createLogger } from "./logger"
+import { captureException, setUser } from "./sentry"
 
 const logger = createLogger("error-handler")
 
@@ -29,6 +30,7 @@ export function createErrorResponse(error: unknown, defaultMessage = "An unexpec
   // Handle known AppError instances
   if (error instanceof AppError) {
     logger.error(`${error.message}`, error, { statusCode: error.statusCode, ...error.context })
+    captureException(error, { statusCode: error.statusCode, ...error.context })
 
     return NextResponse.json(
       {
@@ -43,6 +45,7 @@ export function createErrorResponse(error: unknown, defaultMessage = "An unexpec
   // Handle standard Error instances
   if (error instanceof Error) {
     logger.error(`Unhandled error: ${error.message}`, error)
+    captureException(error)
 
     return NextResponse.json(
       {

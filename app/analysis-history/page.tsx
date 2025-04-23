@@ -34,31 +34,35 @@ export default function AnalysisHistoryPage() {
     try {
       // Fetch document analyses
       const docResponse = await fetch("/api/history/documents")
-      if (docResponse.ok) {
-        const data = await docResponse.json()
-        setDocumentAnalyses(data)
+      if (!docResponse.ok) {
+        throw new Error(`Failed to fetch document analyses: ${docResponse.statusText}`)
       }
+      const docData = await docResponse.json()
+      setDocumentAnalyses(docData)
 
       // Fetch sentiment analyses
       const sentimentResponse = await fetch("/api/history/sentiment")
-      if (sentimentResponse.ok) {
-        const data = await sentimentResponse.json()
-        setSentimentAnalyses(data)
+      if (!sentimentResponse.ok) {
+        throw new Error(`Failed to fetch sentiment analyses: ${sentimentResponse.statusText}`)
       }
+      const sentimentData = await sentimentResponse.json()
+      setSentimentAnalyses(sentimentData)
 
       // Fetch visualizations
       const vizResponse = await fetch("/api/history/visualizations")
-      if (vizResponse.ok) {
-        const data = await vizResponse.json()
-        setVisualizations(data)
+      if (!vizResponse.ok) {
+        throw new Error(`Failed to fetch visualizations: ${vizResponse.statusText}`)
       }
+      const vizData = await vizResponse.json()
+      setVisualizations(vizData)
 
       // Fetch summaries
       const summaryResponse = await fetch("/api/history/summaries")
-      if (summaryResponse.ok) {
-        const data = await summaryResponse.json()
-        setSummaries(data)
+      if (!summaryResponse.ok) {
+        throw new Error(`Failed to fetch summaries: ${summaryResponse.statusText}`)
       }
+      const summaryData = await summaryResponse.json()
+      setSummaries(summaryData)
     } catch (error) {
       console.error("Error fetching analysis history:", error)
     } finally {

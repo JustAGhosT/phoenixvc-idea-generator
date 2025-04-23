@@ -1,4 +1,3 @@
-// app/api/breadcrumbs/route.ts
 import { NextResponse } from "next/server"
 import { breadcrumbService } from "@/lib/breadcrumb-service"
 

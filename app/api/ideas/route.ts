@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server"
 import { getIdeas, createIdea } from "@/lib/db"
-import { apiResponse, createApiRoute, createProtectedApiRoute } from "@/lib/api-utils"
+import { apiResponse, createProtectedApiRoute, createApiRoute } from "@/lib/api-utils"
 import { ValidationError } from "@/lib/error-handler"
 import { createLogger } from "@/lib/logger"
 

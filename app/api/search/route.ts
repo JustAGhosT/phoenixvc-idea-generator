@@ -1,4 +1,3 @@
-// app/api/search/route.ts
 import { NextResponse } from "next/server"
 import { searchService } from "@/lib/search-service"
 

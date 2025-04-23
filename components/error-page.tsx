@@ -10,6 +10,9 @@ interface ErrorPageProps {
   error?: Error
   reset?: () => void
   showHome?: boolean
+  errorCode?: string
+  possibleCauses?: string[]
+  possibleSolutions?: string[]
 }
 
 /**
@@ -21,6 +24,9 @@ export function ErrorPage({
   error,
   reset,
   showHome = true,
+  errorCode,
+  possibleCauses,
+  possibleSolutions,
 }: ErrorPageProps) {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -31,6 +37,34 @@ export function ErrorPage({
 
         <h1 className="text-2xl font-bold mb-2">{title}</h1>
         <p className="text-muted-foreground mb-6">{description}</p>
+
+        {errorCode && (
+          <div className="mb-4">
+            <p className="text-sm font-medium">Error Code: {errorCode}</p>
+          </div>
+        )}
+
+        {possibleCauses && possibleCauses.length > 0 && (
+          <div className="mb-4 text-left">
+            <p className="text-sm font-medium">Possible Causes:</p>
+            <ul className="list-disc list-inside text-sm">
+              {possibleCauses.map((cause, index) => (
+                <li key={index}>{cause}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {possibleSolutions && possibleSolutions.length > 0 && (
+          <div className="mb-4 text-left">
+            <p className="text-sm font-medium">Possible Solutions:</p>
+            <ul className="list-disc list-inside text-sm">
+              {possibleSolutions.map((solution, index) => (
+                <li key={index}>{solution}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {process.env.NODE_ENV !== "production" && error && (
           <div className="mb-6 p-4 bg-muted rounded-md text-left overflow-auto max-h-[200px]">
