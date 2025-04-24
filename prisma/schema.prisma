@@ -6,10 +6,10 @@ generator client {
   output   = "../node_modules/.prisma/client"
 }
 
-// For development with SQLite
+// Updated to use PostgreSQL
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // Define your models here
@@ -22,7 +22,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   notifications Notification[] // Add relation to notifications
-  role          String         @default("user") // Changed from String[] to String for SQLite compatibility
+  role          String         @default("user") 
   userRoles     UserRole[]     // Add relation to UserRole model
 }
 
@@ -75,7 +75,7 @@ model Notification {
   readAt     DateTime?
   category   String?
   link       String?
-  metadata   String?   // For SQLite, use String instead of Json
+  metadata   Json?     // Changed from String to Json for PostgreSQL
   persistent Boolean   @default(false)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -86,7 +86,7 @@ model Notification {
   @@index([category])
 }
 
-// For handling multiple roles per user in SQLite
+// For handling multiple roles per user
 model UserRole {
   id     String @id @default(cuid())
   userId String

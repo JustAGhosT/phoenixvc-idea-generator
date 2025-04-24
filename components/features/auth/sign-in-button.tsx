@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { signIn, useSession } from "next-auth/react"
+import { useAuth } from "@/hooks/use-auth"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 
@@ -17,7 +17,7 @@ export function SignInButton({ variant = "default" }: { variant?: "default" | "o
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const pathname = usePathname()
-  const { status } = useSession()
+  const { isAuthenticated, signIn } = useAuth()
   
   const handleSignIn = async (provider: string) => {
     setIsLoading(true)
@@ -28,7 +28,7 @@ export function SignInButton({ variant = "default" }: { variant?: "default" | "o
   }
   
   // If the user is already signed in, don't show the button
-  if (status === "authenticated") {
+  if (isAuthenticated) {
     return null
   }
 

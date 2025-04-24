@@ -510,7 +510,7 @@ export class NotificationService {
   /**
    * Clear all notifications
    */
-  public async clearNotifications(): Promise<void> {
+  public async clearAllNotifications(): Promise<void> {
     this.notifications = []
     
     // Save to localStorage
@@ -539,7 +539,7 @@ export class NotificationService {
   /**
    * Subscribe to individual notification events
    */
-  public onNotification(listener: NotificationListener): () => void {
+  public addListener(listener: NotificationListener): () => void {
     this.notificationListeners.push(listener)
     return () => {
       this.notificationListeners = this.notificationListeners.filter(l => l !== listener)
@@ -549,7 +549,7 @@ export class NotificationService {
   /**
    * Subscribe to notifications list updates
    */
-  public onNotificationsChanged(listener: NotificationsListener): () => void {
+  public addNotificationsListener(listener: NotificationsListener): () => void {
     this.notificationsListeners.push(listener)
     // Initial notification
     listener([...this.notifications])
@@ -561,7 +561,7 @@ export class NotificationService {
   /**
    * Subscribe to connection status changes
    */
-  public onConnectionStatusChanged(listener: ConnectionStatusListener): () => void {
+  public addConnectionListener(listener: ConnectionStatusListener): () => void {
     this.connectionListeners.add(listener)
     // Initial notification
     listener(this.getConnectionStatus())
@@ -639,3 +639,6 @@ export class NotificationService {
     })
   }
 }
+
+// Export the singleton instance
+export const notificationService = NotificationService.getInstance();

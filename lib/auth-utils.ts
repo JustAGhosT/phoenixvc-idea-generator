@@ -1,5 +1,7 @@
+import { getServerAuthSession } from "@/auth"
 import { ExtendedUser, UserRole } from "@/contexts/core/auth-context"
 import { jwtDecode } from "jwt-decode"
+import { redirect } from "next/navigation"
 
 /**
  * Type for JWT token payload with custom claims
@@ -41,11 +43,17 @@ export function getUserFromToken(token: string): ExtendedUser | null {
   try {
     const decoded = jwtDecode<JwtPayload>(token)
     
+    // Check if required fields exist
+    if (!decoded.sub) {
+      console.warn("JWT token missing subject (sub) claim")
+      return null
+    }
+    
     return {
-      id: decoded.sub,
-      name: decoded.name,
-      email: decoded.email,
-      image: decoded.picture,
+      id: decoded.sub, // This is the only required field
+      name: decoded.name || null,
+      email: decoded.email || null,
+      image: decoded.picture || null,
       roles: decoded.roles || ["user"]
     }
   } catch (error) {
@@ -53,6 +61,35 @@ export function getUserFromToken(token: string): ExtendedUser | null {
     return null
   }
 }
+
+/**
+ * Utility function to check authentication on server components
+ * Returns the session if authenticated, otherwise redirects to login
+ */
+export async function requireAuth() {
+  const session = await getServerAuthSession();
+  
+  if (!session) {
+    // Redirect to login page with return URL
+    redirect("/auth/signin?callbackUrl=" + encodeURIComponent(window.location.pathname));
+  }
+  
+  return session;
+}
+
+/**
+ * Utility function to check authentication without redirecting
+ * Returns the session if authenticated, otherwise returns null
+ */
+export async function getAuthSession() {
+  try {
+    return await getServerAuthSession();
+  } catch (error) {
+    console.error("Error getting auth session:", error);
+    return null;
+  }
+}
+
 
 /**
  * Checks if a token is expired

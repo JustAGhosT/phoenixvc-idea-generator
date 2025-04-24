@@ -1,20 +1,16 @@
 "use client"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { ModeToggle } from "@/components/mode-toggle"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
-  BarChart3,
-  FileText,
-  Home,
-  History,
-  PlusCircle,
-  Settings,
-  FileAudio,
-  TrendingUp,
-  AlertTriangle,
-  LineChart,
-  FileSearch,
-} from "lucide-react"
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Sidebar,
   SidebarContent,
@@ -26,18 +22,22 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { ModeToggle } from "@/components/mode-toggle"
-import { useSession } from "next-auth/react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  AlertTriangle,
+  BarChart3,
+  FileAudio,
+  FileSearch,
+  FileText,
+  History,
+  Home,
+  LineChart,
+  PlusCircle,
+  Settings,
+  TrendingUp,
+} from "lucide-react"
+import { useSession } from "next-auth/react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 export function AppSidebar() {
   const pathname = usePathname()

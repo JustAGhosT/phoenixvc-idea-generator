@@ -1,24 +1,76 @@
 "use client"
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ProjectSummary } from "@/components/features/analysis/project-summary"
+import { SentimentAnalysis } from "@/components/features/analysis/sentiment-analysis"
+import { FileUploader } from "@/components/features/media/file-uploader"
+import { ImageGenerator } from "@/components/features/media/image-generator"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
-import { useSession } from "next-auth/react"
-import { FileUploader } from "@/components/file-uploader"
-import { ImageGenerator } from "@/components/image-generator"
-import { ProjectSummary } from "@/components/project-summary"
-import { SentimentAnalysis } from "@/components/sentiment-analysis"
-import { DocumentAnalysis } from "@/components/document-analysis"
-import { Loader2, FileText, MessageSquare, ImageIcon, FileBarChart, ArrowRight } from "lucide-react"
+import { useAuth } from "@/hooks/use-auth"
+import { ArrowRight, FileBarChart, FileText, ImageIcon, Loader2, MessageSquare } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
+
+// Define types for analysis results to avoid 'any' types
+interface AnalysisResult {
+  summary: string;
+  riskFactors: Array<{
+    category: string;
+    description: string;
+    severity: string;
+    recommendation: string;
+  }>;
+  strengths: string[];
+  tokenomics: {
+    distribution: Record<string, string>;
+    vesting: string;
+  };
+  technicalArchitecture: string;
+  securityMeasures: string;
+}
+
+// Define the SentimentAnalysisResult type to match what the component expects
+interface SentimentAnalysisResult {
+  overallSentiment: {
+    positive: number;
+    neutral: number;
+    negative: number;
+  };
+  platforms: Array<{
+    platform: string;
+    positive: number;
+    neutral: number;
+    negative: number;
+    volume: number;
+    trending: "up" | "down" | "stable";
+    topTopics: string[];
+    timeData: {
+      labels: string[];
+      positive: number[];
+      neutral: number[];
+      negative: number[];
+    };
+  }>;
+  riskFactors: Array<{
+    category: string;
+    severity: "high" | "medium" | "low";
+    description: string;
+  }>;
+  topKeywords: Array<{
+    word: string;
+    sentiment: "positive" | "neutral" | "negative";
+    count: number;
+  }>;
+  summary: string;
+}
 
 export default function RiskAnalysisPage() {
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState("document")
   const [projectName, setProjectName] = useState("")
@@ -27,11 +79,11 @@ export default function RiskAnalysisPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [documentFile, setDocumentFile] = useState<File | null>(null)
   const [documentType, setDocumentType] = useState<"whitepaper" | "code">("whitepaper")
-  const [analysisResults, setAnalysisResults] = useState<any>(null)
-  const [sentimentResults, setSentimentResults] = useState<any>(null)
+  const [analysisResults, setAnalysisResults] = useState<AnalysisResult | null>(null)
+  const [sentimentResults, setSentimentResults] = useState<SentimentAnalysisResult | undefined>(undefined)
   const [projectId, setProjectId] = useState<string | null>(null)
 
-  const handleDocumentUpload = (file: File | null) => {
+  const handleDocumentUpload = (file: File) => {
     setDocumentFile(file)
     if (file) {
       toast({
@@ -51,7 +103,7 @@ export default function RiskAnalysisPage() {
       return
     }
 
-    if (!session?.user) {
+    if (!user) {
       toast({
         title: "Authentication required",
         description: "Please sign in to analyze documents.",
@@ -159,7 +211,7 @@ export default function RiskAnalysisPage() {
       return
     }
 
-    if (!session?.user) {
+    if (!user) {
       toast({
         title: "Authentication required",
         description: "Please sign in to analyze sentiment.",
@@ -202,7 +254,7 @@ export default function RiskAnalysisPage() {
         variant: "destructive",
       })
 
-      // For demo purposes, set mock sentiment results
+      // For demo purposes, set mock sentiment results with proper types
       setSentimentResults({
         overallSentiment: {
           positive: 65,
@@ -364,14 +416,10 @@ export default function RiskAnalysisPage() {
                     </TabsList>
                   </Tabs>
                 </div>
+                {/* Fixed FileUploader props */}
                 <FileUploader
                   accept={documentType === "whitepaper" ? ".pdf,.doc,.docx" : ".zip,.tar.gz,.rar"}
                   onFileUpload={handleDocumentUpload}
-                  description={
-                    documentType === "whitepaper"
-                      ? "Upload a whitepaper (PDF, DOC, DOCX)"
-                      : "Upload a code repository (ZIP, TAR.GZ, RAR)"
-                  }
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -433,12 +481,34 @@ export default function RiskAnalysisPage() {
               </TabsList>
 
               <TabsContent value="document">
-                <DocumentAnalysis
-                  file={documentFile}
-                  fileType={documentType}
-                  onAnalysisComplete={(results) => setAnalysisResults(results)}
-                  analysisResults={analysisResults}
-                />
+                {/* Using custom DocumentAnalysis component */}
+                <div>
+                  {analysisResults && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium">Analysis Results</h3>
+                      <p>{analysisResults.summary}</p>
+                      <div>
+                        <h4 className="font-medium mb-2">Risk Factors</h4>
+                        <div className="space-y-2">
+                          {analysisResults.riskFactors.map((risk, index) => (
+                            <div key={index} className="border rounded-lg p-3">
+                              <div className="flex justify-between items-start mb-2">
+                                <div className="font-medium">{risk.category}</div>
+                                <div className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">
+                                  {risk.severity.charAt(0).toUpperCase() + risk.severity.slice(1)} Risk
+                                </div>
+                              </div>
+                              <p className="text-sm mb-2">{risk.description}</p>
+                              <div className="text-sm">
+                                <span className="font-medium">Recommendation:</span> {risk.recommendation}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </TabsContent>
 
               <TabsContent value="sentiment">
@@ -446,14 +516,18 @@ export default function RiskAnalysisPage() {
               </TabsContent>
 
               <TabsContent value="visualization">
-                <ImageGenerator projectId={projectId} projectName={projectName || "DeFi Project"} />
+                {/* Fixed ImageGenerator props */}
+                <ImageGenerator 
+                  projectName={projectName || "DeFi Project"} 
+                  projectDescription={projectDescription}
+                />
               </TabsContent>
 
               <TabsContent value="summary">
+                {/* Fixed ProjectSummary props */}
                 <ProjectSummary
                   projectName={projectName || "DeFi Project"}
-                  projectId={projectId}
-                  documentAnalysis={analysisResults}
+                  documentAnalysis={analysisResults || undefined}
                   sentimentAnalysis={sentimentResults}
                 />
               </TabsContent>

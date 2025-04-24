@@ -1,32 +1,31 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { AudioRecorder } from "@/components/features/media/audio-recorder"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/components/ui/use-toast"
+import { useAuth } from "@/hooks/use-auth"
 import type { Idea } from "@/lib/types"
 import { ArrowLeft, Copy, Download, Save } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
 import Link from "next/link"
-import { AudioRecorder } from "@/components/audio-recorder"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
-// Add these imports at the top of the file
-import { AIRecommendations } from "@/components/ai-recommendations"
-import { SynergyEvaluation } from "@/components/synergy-evaluation"
-import { ImpactAssessment } from "@/components/impact-assessment"
-import { ChangeHistory } from "@/components/change-history"
+import { AIRecommendations } from "@/components/features/analysis/ai-recommendations"
+import { ImpactAssessment } from "@/components/features/analysis/impact-assessment"
+import { SynergyEvaluation } from "@/components/features/analysis/synergy-evaluation"
+import { ChangeHistory } from "@/components/misc/change-history"
 
 export default function EditorPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const { toast } = useToast()
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const [idea, setIdea] = useState<Idea | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -59,7 +58,7 @@ export default function EditorPage({ params }: { params: { id: string } }) {
   }, [params.id])
 
   const handleSave = async () => {
-    if (!idea || !session) return
+    if (!idea || !user) return
 
     setIsSaving(true)
 
@@ -224,7 +223,7 @@ ${idea.scenarios.map((s) => `- ${s}`).join("\n")}
   }
 
   const handleDelete = async () => {
-    if (!idea || !session) return
+    if (!idea || !user) return
 
     if (!confirm("Are you sure you want to delete this idea? This action cannot be undone.")) {
       return

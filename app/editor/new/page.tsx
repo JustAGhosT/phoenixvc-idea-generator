@@ -13,8 +13,8 @@ import type { Idea } from "@/lib/types"
 import { ArrowLeft, Save } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import Link from "next/link"
-import { AudioRecorder } from "@/components/audio-recorder"
-import { useSession } from "next-auth/react"
+import { AudioRecorder } from "@/components/features/media/audio-recorder" // Fixed import path
+import { useAuth } from "@/hooks/use-auth" // Changed from useSession to useAuth
 
 // Empty idea template
 const emptyIdea: Idea = {
@@ -81,7 +81,7 @@ export default function NewIdeaPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { toast } = useToast()
-  const { data: session } = useSession()
+  const { user, isAuthenticated } = useAuth() // Changed from useSession to useAuth
   const [idea, setIdea] = useState<Idea>(emptyIdea)
   const [isLoading, setIsLoading] = useState(false)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
@@ -116,7 +116,7 @@ export default function NewIdeaPage() {
   }, [templateId, toast])
 
   const handleSave = async () => {
-    if (!session) {
+    if (!isAuthenticated) { // Changed from session to isAuthenticated
       toast({
         title: "Authentication required",
         description: "Please sign in to save your project idea.",

@@ -4,6 +4,97 @@ import { NextAuthOptions, Session } from "next-auth"
 import { getServerSession } from "next-auth/next"
 import GoogleProvider from "next-auth/providers/google"
 
+// Create a custom adapter with comprehensive error handling
+const createPrismaAdapter = () => {
+  const adapter = PrismaAdapter(prisma);
+  
+  // Wrap all critical methods with error handling
+  const wrapMethod = (methodName: string, originalMethod: any) => {
+    if (!originalMethod) return undefined;
+    
+    return async (...args: any[]) => {
+      try {
+        return await originalMethod(...args);
+      } catch (error) {
+        console.error(`Error in ${methodName}:`, error);
+        
+        // For getSessionAndUser specifically, try to recover the session
+        // This is critical for maintaining authentication across pages
+        if (methodName === 'getSessionAndUser' && args[0]) {
+          try {
+            // Try a direct query as a fallback
+            const sessionToken = args[0];
+            const session = await prisma.session.findUnique({
+              where: { sessionToken },
+              include: { user: true },
+            });
+            
+            if (session) {
+              return {
+                session: {
+                  sessionToken: session.sessionToken,
+                  userId: session.userId,
+                  expires: session.expires,
+                },
+                user: session.user,
+              };
+            }
+          } catch (fallbackError) {
+            console.error("Fallback session retrieval failed:", fallbackError);
+          }
+        }
+        
+        // For read methods, return null
+        if (
+          methodName.startsWith('get') || 
+          methodName === 'getUserByAccount' || 
+          methodName === 'getUserByEmail'
+        ) {
+          return null;
+        }
+        
+        // For critical write operations, throw the error
+        throw error;
+      }
+    };
+  };
+  
+  // Add error handling to all critical methods
+  if (adapter.getSessionAndUser) {
+    adapter.getSessionAndUser = wrapMethod('getSessionAndUser', adapter.getSessionAndUser);
+  }
+  
+  if (adapter.getUserByAccount) {
+    adapter.getUserByAccount = wrapMethod('getUserByAccount', adapter.getUserByAccount);
+  }
+  
+  if (adapter.getUserByEmail) {
+    adapter.getUserByEmail = wrapMethod('getUserByEmail', adapter.getUserByEmail);
+  }
+  
+  if (adapter.createUser) {
+    adapter.createUser = wrapMethod('createUser', adapter.createUser);
+  }
+  
+  if (adapter.linkAccount) {
+    adapter.linkAccount = wrapMethod('linkAccount', adapter.linkAccount);
+  }
+  
+  if (adapter.createSession) {
+    adapter.createSession = wrapMethod('createSession', adapter.createSession);
+  }
+  
+  if (adapter.updateSession) {
+    adapter.updateSession = wrapMethod('updateSession', adapter.updateSession);
+  }
+  
+  if (adapter.deleteSession) {
+    adapter.deleteSession = wrapMethod('deleteSession', adapter.deleteSession);
+  }
+  
+  return adapter;
+};
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -11,7 +102,12 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
-  adapter: PrismaAdapter(prisma),
+  adapter: createPrismaAdapter(),
+  session: {
+    strategy: "database",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
   callbacks: {
     async session({ session, user }) {
       if (session.user) {
@@ -53,7 +149,9 @@ export const authOptions: NextAuthOptions = {
       console.warn(`Auth warning: ${code}`)
     },
     debug(code, metadata) {
-      console.log(`Auth debug: ${code}`, metadata)
+      if (process.env.NODE_ENV === "development") {
+        console.log(`Auth debug: ${code}`, metadata)
+      }
     },
   },
 };

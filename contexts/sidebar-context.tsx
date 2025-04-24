@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useEffect, useState } from "react"
 
 interface SidebarContextProps {
   isOpen: boolean
@@ -24,7 +24,26 @@ interface SidebarProviderProps {
 }
 
 export function SidebarProvider({ children }: SidebarProviderProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  // Initialize sidebar based on screen size
+  const [isOpen, setIsOpen] = useState(true)
+
+  // Update sidebar state on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== 'undefined') {
+        setIsOpen(window.innerWidth >= 768) // 768px is the md breakpoint in Tailwind
+      }
+    }
+    
+    // Set initial state
+    handleResize()
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize)
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const toggleSidebar = () => setIsOpen(!isOpen)
   const closeSidebar = () => setIsOpen(false)

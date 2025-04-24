@@ -1,16 +1,16 @@
 "use client"
 
-import { useEffect } from "react"
+import { useAuth } from "@/hooks/use-auth"
 import { initClientErrorHandling } from "@/lib/client-error-handler"
-import { initSentry, setUser, clearUser } from "@/lib/sentry"
-import { useSession } from "next-auth/react"
+import { clearUser, initSentry, setUser } from "@/lib/sentry"
+import { useEffect } from "react"
 
 /**
  * Global error handler component that initializes error handling
  * and sets up user context for error tracking
  */
 export function GlobalErrorHandler() {
-  const { data: session } = useSession()
+  const { user } = useAuth()
 
   useEffect(() => {
     // Initialize Sentry
@@ -25,18 +25,18 @@ export function GlobalErrorHandler() {
     }
   }, [])
 
-  // Set user context for error tracking when session changes
+  // Set user context for error tracking when user changes
   useEffect(() => {
-    if (session?.user) {
+    if (user) {
       setUser({
-        id: session.user.id,
-        email: session.user.email || undefined,
-        username: session.user.name || undefined,
+        id: user.id,
+        email: user.email || undefined,
+        username: user.name || undefined,
       })
     } else {
       clearUser()
     }
-  }, [session])
+  }, [user])
 
   // This component doesn't render anything
   return null

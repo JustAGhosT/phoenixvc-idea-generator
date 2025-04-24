@@ -1,20 +1,20 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { FileText, MessageSquare, ImageIcon, FileBarChart, ExternalLink, Search } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useAuth } from "@/hooks/use-auth"
 import { format } from "date-fns"
+import { ExternalLink, FileBarChart, FileText, ImageIcon, MessageSquare, Search } from "lucide-react"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 export default function AnalysisHistoryPage() {
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState("documents")
   const [searchTerm, setSearchTerm] = useState("")
   const [isLoading, setIsLoading] = useState(true)
@@ -24,10 +24,10 @@ export default function AnalysisHistoryPage() {
   const [summaries, setSummaries] = useState<any[]>([])
 
   useEffect(() => {
-    if (session?.user) {
+    if (user) {
       fetchAnalysisHistory()
     }
-  }, [session])
+  }, [user])
 
   const fetchAnalysisHistory = async () => {
     setIsLoading(true)

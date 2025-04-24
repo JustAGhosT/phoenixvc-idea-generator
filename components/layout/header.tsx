@@ -1,25 +1,25 @@
 "use client"
 
+import { SignInButton } from "@/components/features/auth/sign-in-button"
 import { Button } from "@/components/ui/button"
-import { Bell, Menu, Search, User } from "lucide-react"
-import { signOut, useSession } from "next-auth/react"
+import { useNotificationContext } from "@/contexts/features/notification-context"
+import { useSearchContext } from "@/contexts/search-context"
+import { useSidebarContext } from "@/contexts/sidebar-context"
+import { useAuth } from "@/hooks/use-auth"
+import { Menu, Search, User } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { SignInButton } from "./sign-in-button"
-import { useSidebarContext } from "@/contexts/sidebar-context"
-import { useSearchContext } from "@/contexts/search-context"
-import { useNotificationContext } from "@/contexts/notification-context"
 import { Notifications } from "./notifications"
 
 export function Header() {
   const { toggleSidebar } = useSidebarContext()
   const { toggleSearch } = useSearchContext()
   const { unreadCount } = useNotificationContext()
-  const { data: session, status } = useSession()
+  const { user, status, isAuthenticated, signOut } = useAuth()
   const router = useRouter()
   
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: "/" })
+    await signOut()
   }
 
   return (
@@ -50,7 +50,7 @@ export function Header() {
             <span className="sr-only">Search</span>
           </Button>
           <Notifications />
-          {status === "authenticated" ? (
+          {isAuthenticated ? (
             <div className="flex items-center gap-2">
               <Button
                 variant="ghost"
@@ -58,10 +58,10 @@ export function Header() {
                 asChild
               >
                 <Link href="/profile">
-                  {session?.user?.image ? (
+                  {user?.image ? (
                     <img 
-                      src={session.user.image} 
-                      alt={session.user.name || "User"} 
+                      src={user.image} 
+                      alt={user.name || "User"} 
                       className="h-8 w-8 rounded-full"
                     />
                   ) : (
