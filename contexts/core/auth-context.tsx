@@ -89,9 +89,26 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
       
       // Extract roles from user or set default role
       setRoles(extendedUser.roles || ["user"])
+
+      // Initialize notification service with user context
+      if (typeof window !== 'undefined') {
+        // Import dynamically to avoid SSR issues
+        import('@/lib/notification-service').then(({ NotificationService }) => {
+          const notificationService = NotificationService.getInstance();
+          notificationService.connect();
+        });
+    }
     } else {
       setUser(null)
       setRoles([])
+
+      // Disconnect notification service when user logs out
+      if (typeof window !== 'undefined') {
+        import('@/lib/notification-service').then(({ NotificationService }) => {
+          const notificationService = NotificationService.getInstance();
+          notificationService.disconnect();
+        });
+      }
     }
   }, [session])
   

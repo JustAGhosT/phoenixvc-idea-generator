@@ -22,8 +22,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   notifications Notification[] // Add relation to notifications
-  role          String         @default("user") // Changed from String[] to String for SQLite compatibility
-  userRoles     UserRole[]     // Add relation to UserRole model
+  roles         String[]       // Add roles for RBAC
 }
 
 model Account {
@@ -63,20 +62,19 @@ model VerificationToken {
 
 // New Notification model
 model Notification {
-  id         String    @id @default(cuid())
-  userId     String
-  title      String
-  message    String
-  type       String    // "info", "success", "warning", "error", "system"
-  priority   String    @default("medium") // "low", "medium", "high", "urgent"
-  read       Boolean   @default(false)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  readAt     DateTime?
-  category   String?
-  link       String?
-  metadata   String?   // For SQLite, use String instead of Json
-  persistent Boolean   @default(false)
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String   // "info", "success", "warning", "error", "system"
+  priority  String   @default("medium") // "low", "medium", "high", "urgent"
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  readAt    DateTime?
+  category  String?
+  link      String?
+  metadata  String?  // For SQLite, use String instead of Json
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -84,16 +82,4 @@ model Notification {
   @@index([read])
   @@index([type])
   @@index([category])
-}
-
-// For handling multiple roles per user in SQLite
-model UserRole {
-  id     String @id @default(cuid())
-  userId String
-  role   String
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, role])
-  @@index([userId])
 }

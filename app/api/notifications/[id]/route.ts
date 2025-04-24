@@ -1,43 +1,49 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getServerAuthSession } from "@/lib/auth-server"
-import { db } from "@/lib/db"
+import { createProtectedApiRoute } from "@/lib/api-utils"
+import { prisma } from "@/lib/prisma"
+import { NextResponse } from "next/server"
 
 /**
  * GET /api/notifications/[id]
- * Retrieves a specific notification by ID
+ * Get a specific notification by ID
  */
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+async function getNotification(req: Request, user: any) {
+  // Extract the ID from the URL
+  const id = req.url.split('/').pop()
+  
+  if (!id) {
+    return NextResponse.json(
+      { error: "Missing notification ID" },
+      { status: 400 }
+    )
+  }
+  
   try {
-    // Check authentication
-    const session = await getServerAuthSession()
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const userId = session.user.id
-    const id = params.id
-
-    // Fetch notification from database
-    const notification = await db.notification.findUnique({
+    // Get the notification
+    const notification = await prisma.notification.findUnique({
       where: {
         id,
-        userId,
       },
     })
-
+    
+    // Check if notification exists
     if (!notification) {
       return NextResponse.json(
         { error: "Notification not found" },
         { status: 404 }
       )
     }
-
+    
+    // Check if user owns the notification
+    if (notification.userId !== user.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 403 }
+      )
+    }
+    
     return NextResponse.json(notification)
   } catch (error) {
-    console.error(`Error fetching notification ${params.id}:`, error)
+    console.error(`Error fetching notification ${id}:`, error)
     return NextResponse.json(
       { error: "Failed to fetch notification" },
       { status: 500 }
@@ -46,114 +52,61 @@ export async function GET(
 }
 
 /**
- * PUT /api/notifications/[id]
- * Updates a specific notification
+ * DELETE /api/notifications/[id]
+ * Delete a specific notification by ID
  */
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    // Check authentication
-    const session = await getServerAuthSession()
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const userId = session.user.id
-    const id = params.id
-    
-    // Parse request body
-    const body = await req.json()
-    
-    // Check if notification exists and belongs to user
-    const existingNotification = await db.notification.findUnique({
-      where: {
-        id,
-        userId,
-      },
-    })
-
-    if (!existingNotification) {
-      return NextResponse.json(
-        { error: "Notification not found" },
-        { status: 404 }
-      )
-    }
-    
-    // Update notification
-    const notification = await db.notification.update({
-      where: {
-        id,
-      },
-      data: {
-        title: body.title,
-        message: body.message,
-        read: body.read,
-        type: body.type,
-        priority: body.priority,
-        category: body.category,
-        link: body.link,
-        metadata: body.metadata,
-      },
-    })
-
-    return NextResponse.json(notification)
-  } catch (error) {
-    console.error(`Error updating notification ${params.id}:`, error)
+async function deleteNotification(req: Request, user: any) {
+  // Extract the ID from the URL
+  const id = req.url.split('/').pop()
+  
+  if (!id) {
     return NextResponse.json(
-      { error: "Failed to update notification" },
-      { status: 500 }
+      { error: "Missing notification ID" },
+      { status: 400 }
     )
   }
-}
-
-/**
- * DELETE /api/notifications/[id]
- * Deletes a specific notification
- */
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+  
   try {
-    // Check authentication
-    const session = await getServerAuthSession()
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const userId = session.user.id
-    const id = params.id
-
-    // Check if notification exists and belongs to user
-    const existingNotification = await db.notification.findUnique({
+    // First check if the notification exists and belongs to the user
+    const notification = await prisma.notification.findUnique({
       where: {
         id,
-        userId,
       },
     })
-
-    if (!existingNotification) {
+    
+    // Check if notification exists
+    if (!notification) {
       return NextResponse.json(
         { error: "Notification not found" },
         { status: 404 }
       )
     }
     
-    // Delete notification
-    await db.notification.delete({
+    // Check if user owns the notification
+    if (notification.userId !== user.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 403 }
+      )
+    }
+    
+    // Delete the notification
+    await prisma.notification.delete({
       where: {
         id,
       },
     })
-
+    
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error(`Error deleting notification ${params.id}:`, error)
+    console.error(`Error deleting notification ${id}:`, error)
     return NextResponse.json(
       { error: "Failed to delete notification" },
       { status: 500 }
     )
   }
 }
+
+// Create the API route handlers
+export const GET = createProtectedApiRoute(getNotification, "Failed to fetch notification")
+export const DELETE = createProtectedApiRoute(deleteNotification, "Failed to delete notification")

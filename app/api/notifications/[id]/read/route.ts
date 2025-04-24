@@ -1,57 +1,69 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getServerAuthSession } from "@/lib/auth-server"
-import { db } from "@/lib/db"
+import { createProtectedApiRoute } from "@/lib/api-utils"
+import { prisma } from "@/lib/prisma"
+import { NextResponse } from "next/server"
 
 /**
  * PUT /api/notifications/[id]/read
- * Marks a specific notification as read
+ * Mark a specific notification as read
  */
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+async function markAsRead(req: Request, user: any) {
+  // Extract the ID from the URL
+  const urlParts = req.url.split('/')
+  const id = urlParts[urlParts.length - 2] // Get the ID part (second to last segment)
+  
+  if (!id) {
+    return NextResponse.json(
+      { error: "Missing notification ID" },
+      { status: 400 }
+    )
+  }
+  
   try {
-    // Check authentication
-    const session = await getServerAuthSession()
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const userId = session.user.id
-    const id = params.id
-
-    // Check if notification exists and belongs to user
-    const existingNotification = await db.notification.findUnique({
+    // First check if the notification exists and belongs to the user
+    const notification = await prisma.notification.findUnique({
       where: {
         id,
-        userId,
       },
     })
-
-    if (!existingNotification) {
+    
+    // Check if notification exists
+    if (!notification) {
       return NextResponse.json(
         { error: "Notification not found" },
         { status: 404 }
       )
     }
     
-    // Update notification read status
-    const notification = await db.notification.update({
-      where: {
-        id,
-      },
-      data: {
-        read: true,
-        readAt: new Date(),
-      },
-    })
-
-    return NextResponse.json(notification)
+    // Check if user owns the notification
+    if (notification.userId !== user.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 403 }
+      )
+    }
+    
+    // Mark as read if not already read
+    if (!notification.read) {
+      await prisma.notification.update({
+        where: {
+          id,
+        },
+        data: {
+          read: true,
+          readAt: new Date(),
+        },
+      })
+    }
+    
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error(`Error marking notification ${params.id} as read:`, error)
+    console.error(`Error marking notification ${id} as read:`, error)
     return NextResponse.json(
       { error: "Failed to mark notification as read" },
       { status: 500 }
     )
   }
 }
+
+// Create the API route handler
+export const PUT = createProtectedApiRoute(markAsRead, "Failed to mark notification as read")

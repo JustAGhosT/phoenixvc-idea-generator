@@ -1,69 +1,49 @@
-import { NextRequest, NextResponse } from "next/server"
-import { getServerAuthSession } from "@/lib/auth-server"
-import { db } from "@/lib/db"
-import { z } from "zod"
-
-// Schema for notification creation
-const createNotificationSchema = z.object({
-  title: z.string().min(1).max(100),
-  message: z.string().min(1).max(500),
-  type: z.enum(["info", "success", "warning", "error", "system"]),
-  priority: z.enum(["low", "medium", "high", "urgent"]).optional().default("medium"),
-  category: z.string().optional(),
-  link: z.string().optional(),
-  autoClose: z.boolean().optional(),
-  autoCloseDelay: z.number().optional(),
-  persistent: z.boolean().optional(),
-})
+import { createProtectedApiRoute } from "@/lib/api-utils"
+import { NotificationType } from "@/lib/notification-types"
+import { prisma } from "@/lib/prisma"
+import { NextResponse } from "next/server"
 
 /**
  * GET /api/notifications
- * Retrieves all notifications for the current user
+ * Get all notifications for the current user
  */
-export async function GET(req: NextRequest) {
+async function getNotifications(req: Request, user: any) {
+  const { searchParams } = new URL(req.url)
+  
+  // Parse query parameters for filtering
+  const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : undefined
+  const read = searchParams.has("read") ? searchParams.get("read") === "true" : undefined
+  const type = searchParams.get("type") as NotificationType | null
+  const category = searchParams.get("category")
+  
+  // Build the query
+  const where: any = {
+    userId: user.id,
+  }
+  
+  // Add optional filters
+  if (read !== undefined) {
+    where.read = read;
+  }
+  
+  if (type) {
+    where.type = type;
+  }
+  
+  if (category) {
+    where.category = category;
+  }
+  
   try {
-    // Check authentication
-    const session = await getServerAuthSession()
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const userId = session.user.id
-
-    // Get query parameters
-    const { searchParams } = new URL(req.url)
-    const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 50
-    const read = searchParams.get("read") === "true" ? true : 
-                searchParams.get("read") === "false" ? false : undefined
-    const type = searchParams.get("type") || undefined
-    const category = searchParams.get("category") || undefined
-    
-    // Build query
-    let query: any = {
-      userId,
-    }
-    
-    if (read !== undefined) {
-      query.read = read
-    }
-    
-    if (type) {
-      query.type = type
-    }
-    
-    if (category) {
-      query.category = category
-    }
-
-    // Fetch notifications from database
-    const notifications = await db.notification.findMany({
-      where: query,
+    // Get notifications
+    const notifications = await prisma.notification.findMany({
+      where,
       orderBy: {
-        createdAt: "desc"
+        createdAt: "desc",
       },
       take: limit,
     })
-
+    
     return NextResponse.json(notifications)
   } catch (error) {
     console.error("Error fetching notifications:", error)
@@ -76,57 +56,48 @@ export async function GET(req: NextRequest) {
 
 /**
  * POST /api/notifications
- * Creates a new notification
+ * Create a new notification
  */
-export async function POST(req: NextRequest) {
+async function createNotification(req: Request, user: any) {
   try {
-    // Check authentication
-    const session = await getServerAuthSession()
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const userId = session.user.id
-    
-    // Parse request body
     const body = await req.json()
     
-    // Validate request body
-    const validatedData = createNotificationSchema.parse(body)
-    
-    // Create notification in database
-    const notification = await db.notification.create({
-      data: {
-        userId,
-        title: validatedData.title,
-        message: validatedData.message,
-        type: validatedData.type,
-        priority: validatedData.priority,
-        category: validatedData.category,
-        link: validatedData.link,
-        read: false,
-        metadata: {
-          autoClose: validatedData.autoClose,
-          autoCloseDelay: validatedData.autoCloseDelay,
-          persistent: validatedData.persistent,
-        },
-      },
-    })
-    
-    // Broadcast the new notification to connected clients
-    if (global.notificationEventSource) {
-      global.notificationEventSource.sendNotification(userId, notification)
-    }
-
-    return NextResponse.json(notification, { status: 201 })
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+    // Validate required fields
+    if (!body.title || !body.message || !body.type) {
       return NextResponse.json(
-        { error: "Invalid request data", details: error.errors },
+        { error: "Missing required fields: title, message, type" },
         { status: 400 }
       )
     }
     
+    // Extract metadata from body if present
+    let metadata = null
+    if (body.metadata || body.autoClose || body.autoCloseDelay || body.persistent) {
+      metadata = JSON.stringify({
+        ...(body.metadata || {}),
+        ...(body.autoClose !== undefined && { autoClose: body.autoClose }),
+        ...(body.autoCloseDelay !== undefined && { autoCloseDelay: body.autoCloseDelay }),
+        ...(body.persistent !== undefined && { persistent: body.persistent }),
+      })
+    }
+    
+    // Create the notification
+    const notification = await prisma.notification.create({
+      data: {
+        userId: user.id,
+        title: body.title,
+        message: body.message,
+        type: body.type,
+        priority: body.priority || "medium",
+        category: body.category,
+        link: body.link,
+        metadata,
+        persistent: body.persistent || false,
+      },
+    })
+    
+    return NextResponse.json(notification)
+  } catch (error) {
     console.error("Error creating notification:", error)
     return NextResponse.json(
       { error: "Failed to create notification" },
@@ -137,30 +108,19 @@ export async function POST(req: NextRequest) {
 
 /**
  * DELETE /api/notifications
- * Clears all non-persistent notifications for the current user
+ * Clear all notifications for the current user
  */
-export async function DELETE(req: NextRequest) {
+async function clearAllNotifications(req: Request, user: any) {
   try {
-    // Check authentication
-    const session = await getServerAuthSession()
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const userId = session.user.id
-    
-    // Delete non-persistent notifications
-    const { count } = await db.notification.deleteMany({
+    // Delete all non-persistent notifications
+    await prisma.notification.deleteMany({
       where: {
-        userId,
-        metadata: {
-          path: ["persistent"],
-          not: true
-        }
+        userId: user.id,
+        persistent: false,
       },
     })
     
-    return NextResponse.json({ success: true, count }, { status: 200 })
+    return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Error clearing notifications:", error)
     return NextResponse.json(
@@ -169,3 +129,8 @@ export async function DELETE(req: NextRequest) {
     )
   }
 }
+
+// Create the API route handlers
+export const GET = createProtectedApiRoute(getNotifications, "Failed to fetch notifications")
+export const POST = createProtectedApiRoute(createNotification, "Failed to create notification")
+export const DELETE = createProtectedApiRoute(clearAllNotifications, "Failed to clear notifications")

@@ -1,238 +1,86 @@
 "use client"
 
-import { NotificationConnectionStatus } from "@/components/notifications/connection-status"
-import { ToastNotifications } from "@/components/notifications/toast-notifications"
+import { Notifications } from "@/components/features/notification/notifications"
+import { ConnectionStatus } from "@/components/notifications/connection-status"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
-import { NotificationPriority, NotificationType, useNotificationContext } from "@/contexts/features/notification-context"
 import { useNotifications } from "@/hooks/use-notifications"
-import { usePage } from "@/hooks/use-page"
 import { useState } from "react"
 
-/**
- * Notification demo page
- * Showcases all the notification features
- */
-export default function NotificationDemoPage() {
-  // Set page title and breadcrumb
-  usePage({ title: "Notification Demo" })
-  
+export default function NotificationDemo() {
   const notifications = useNotifications()
-  const { connectToSSE, disconnectFromSSE } = useNotificationContext()
+  const [title, setTitle] = useState("Test Notification")
+  const [message, setMessage] = useState("This is a test notification message.")
+  const [type, setType] = useState("info")
+  const [category, setCategory] = useState("demo")
   
-  // Form state for creating notifications
-  const [title, setTitle] = useState("Sample Notification")
-  const [message, setMessage] = useState("This is a sample notification message.")
-  const [type, setType] = useState<NotificationType>("info")
-  const [priority, setPriority] = useState<NotificationPriority>("medium")
-  const [category, setCategory] = useState("General")
-  const [autoClose, setAutoClose] = useState(false)
-  const [autoCloseDelay, setAutoCloseDelay] = useState(5000)
-  const [link, setLink] = useState("/dashboard")
-  const [persistent, setPersistent] = useState(false)
-  
-  // Toast form state
-  const [toastMessage, setToastMessage] = useState("This is a toast notification")
-  const [toastType, setToastType] = useState<NotificationType>("success")
-  const [toastDuration, setToastDuration] = useState(3000)
-  
-  // Handle creating a notification
-  const handleCreateNotification = () => {
+  const createNotification = () => {
     notifications.add({
       title,
       message,
-      type,
-      priority,
+      type: type as any,
       category,
-      autoClose,
-      autoCloseDelay,
-      link: link || undefined,
-      persistent,
-      actions: [
-        {
-          label: "View",
-          onClick: (notification) => {
-            window.location.href = `/notifications/${notification.id}`
-          },
-          variant: "default"
-        },
-        {
-          label: "Dismiss",
-          onClick: (notification) => {
-            notifications.remove(notification.id)
-          },
-          variant: "secondary"
-        }
-      ]
     })
   }
   
-  // Handle showing a toast
-  const handleShowToast = () => {
-    switch (toastType) {
-      case "success":
-        notifications.success("Success", toastMessage, { 
-          autoClose: true, 
-          autoCloseDelay: toastDuration 
-        })
-        break
-      case "error":
-        notifications.error("Error", toastMessage, { 
-          autoClose: true, 
-          autoCloseDelay: toastDuration 
-        })
-        break
-      case "warning":
-        notifications.warning("Warning", toastMessage, { 
-          autoClose: true, 
-          autoCloseDelay: toastDuration 
-        })
-        break
-      case "info":
-        notifications.info("Information", toastMessage, { 
-          autoClose: true, 
-          autoCloseDelay: toastDuration 
-        })
-        break
-      default:
-        notifications.info("Information", toastMessage, { 
-          autoClose: true, 
-          autoCloseDelay: toastDuration 
-        })
-    }
+  const createSuccessNotification = () => {
+    notifications.success("Success", "Operation completed successfully")
   }
   
-  // Create a demo notification of each type
-  const createDemoNotifications = () => {
-    notifications.success("Success Notification", "This is a success notification example.", {
-      category: "Demo",
-      priority: "low"
-    })
-    
-    notifications.error("Error Notification", "This is an error notification example.", {
-      category: "Demo",
-      priority: "high"
-    })
-    
-    notifications.warning("Warning Notification", "This is a warning notification example.", {
-      category: "Demo",
-      priority: "medium"
-    })
-    
-    notifications.info("Info Notification", "This is an info notification example.", {
-      category: "Demo",
-      priority: "low"
-    })
-    
-    notifications.add({
-      title: "Urgent Notification",
-      message: "This is an urgent notification that requires immediate attention.",
-      type: "error",
-      priority: "urgent",
-      category: "Demo",
-      persistent: true
-    })
+  const createErrorNotification = () => {
+    notifications.error("Error", "Something went wrong")
   }
   
-  // Force disconnect/connect for testing
-  const forceDisconnect = () => {
-    disconnectFromSSE()
+  const createWarningNotification = () => {
+    notifications.warning("Warning", "This action may have consequences")
   }
   
-  const forceReconnect = () => {
-    connectToSSE()
+  const createInfoNotification = () => {
+    notifications.info("Information", "Here's something you should know")
+  }
+  
+  const createToast = () => {
+    notifications.toast.success("This is a toast notification")
   }
   
   return (
-    <div className="container py-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Notification Demo</h1>
-          <p className="text-muted-foreground mt-1">
-            Explore and test the notification system
-          </p>
-        </div>
-        
-        {/* Connection status indicator */}
-        <NotificationConnectionStatus />
-      </div>
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">Notification Demo</h1>
       
-      {/* Real-time connection card */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Real-time Connection</CardTitle>
-          <CardDescription>
-            Test the real-time notification connection status
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              The notification system uses Server-Sent Events (SSE) to receive real-time notifications.
-              You can test the connection status by using the buttons below.
-            </p>
-            
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <NotificationConnectionStatus showReconnectButton={false} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Create Custom Notification</CardTitle>
+              <CardDescription>Fill out the form to create a custom notification</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Title</label>
+                <Input 
+                  value={title} 
+                  onChange={(e) => setTitle(e.target.value)} 
+                  placeholder="Notification title"
+                />
               </div>
               
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={forceDisconnect}>
-                  Force Disconnect
-                </Button>
-                <Button variant="outline" size="sm" onClick={forceReconnect}>
-                  Force Connect
-                </Button>
+              <div>
+                <label className="block text-sm font-medium mb-1">Message</label>
+                <Textarea 
+                  value={message} 
+                  onChange={(e) => setMessage(e.target.value)} 
+                  placeholder="Notification message"
+                  rows={3}
+                />
               </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Create Notification</CardTitle>
-            <CardDescription>
-              Create a custom notification with various options
-            </CardDescription>
-          </CardHeader>
-          
-          <CardContent className="space-y-4">
-            <div className="grid gap-2">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Notification title"
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Notification message"
-                rows={3}
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="type">Type</Label>
-                <Select value={type} onValueChange={(value) => setType(value as NotificationType)}>
-                  <SelectTrigger id="type">
+              
+              <div>
+                <label className="block text-sm font-medium mb-1">Type</label>
+                <Select value={type} onValueChange={setType}>
+                  <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -245,272 +93,68 @@ export default function NotificationDemoPage() {
                 </Select>
               </div>
               
-              <div className="grid gap-2">
-                <Label htmlFor="priority">Priority</Label>
-                <Select value={priority} onValueChange={(value) => setPriority(value as NotificationPriority)}>
-                  <SelectTrigger id="priority">
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="urgent">Urgent</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="category">Category</Label>
-              <Input
-                id="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Notification category"
-              />
-            </div>
-            
-            <div className="grid gap-2">
-              <Label htmlFor="link">Link (optional)</Label>
-              <Input
-                id="link"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-                placeholder="URL to navigate to when clicked"
-              />
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="auto-close"
-                checked={autoClose}
-                onCheckedChange={setAutoClose}
-              />
-              <Label htmlFor="auto-close">Auto-close notification</Label>
-            </div>
-            
-            {autoClose && (
-              <div className="grid gap-2">
-                <Label htmlFor="auto-close-delay">Auto-close delay (ms)</Label>
-                <Input
-                  id="auto-close-delay"
-                  type="number"
-                  value={autoCloseDelay}
-                  onChange={(e) => setAutoCloseDelay(parseInt(e.target.value))}
-                  min={1000}
-                  step={1000}
+              <div>
+                <label className="block text-sm font-medium mb-1">Category</label>
+                <Input 
+                  value={category} 
+                  onChange={(e) => setCategory(e.target.value)} 
+                  placeholder="Notification category"
                 />
-              </div>
-            )}
-            
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="persistent"
-                checked={persistent}
-                onCheckedChange={setPersistent}
-              />
-              <Label htmlFor="persistent">Persistent (won't be cleared by "Clear All")</Label>
-            </div>
-          </CardContent>
-          
-          <CardFooter>
-            <Button onClick={handleCreateNotification} className="w-full">
-              Create Notification
-            </Button>
-          </CardFooter>
-        </Card>
-        
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Toast Notifications</CardTitle>
-              <CardDescription>
-                Show temporary toast notifications
-              </CardDescription>
-            </CardHeader>
-            
-            <CardContent className="space-y-4">
-              <div className="grid gap-2">
-                <Label htmlFor="toast-message">Message</Label>
-                <Input
-                  id="toast-message"
-                  value={toastMessage}
-                  onChange={(e) => setToastMessage(e.target.value)}
-                  placeholder="Toast message"
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="toast-type">Type</Label>
-                  <Select value={toastType} onValueChange={(value) => setToastType(value as NotificationType)}>
-                    <SelectTrigger id="toast-type">
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="info">Info</SelectItem>
-                      <SelectItem value="success">Success</SelectItem>
-                      <SelectItem value="warning">Warning</SelectItem>
-                      <SelectItem value="error">Error</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="grid gap-2">
-                  <Label htmlFor="toast-duration">Duration (ms)</Label>
-                  <Input
-                    id="toast-duration"
-                    type="number"
-                    value={toastDuration}
-                    onChange={(e) => setToastDuration(parseInt(e.target.value))}
-                    min={1000}
-                    step={1000}
-                  />
-                </div>
               </div>
             </CardContent>
-            
             <CardFooter>
-              <Button onClick={handleShowToast} className="w-full">
-                Show Toast
-              </Button>
+              <Button onClick={createNotification}>Create Notification</Button>
             </CardFooter>
           </Card>
           
+          <div className="mt-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Quick Notifications</CardTitle>
+                <CardDescription>Create predefined notifications</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={createSuccessNotification} className="bg-green-500 hover:bg-green-600">Success</Button>
+                  <Button onClick={createErrorNotification} variant="destructive">Error</Button>
+                  <Button onClick={createWarningNotification} className="bg-amber-500 hover:bg-amber-600">Warning</Button>
+                  <Button onClick={createInfoNotification} variant="default">Info</Button>
+                  <Button onClick={createToast} variant="outline">Toast</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="mt-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Connection Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center space-x-2">
+                  <ConnectionStatus showText={true} />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        
+        <div>
           <Card>
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>
-                Test notification system features
-              </CardDescription>
+              <CardTitle>Notifications</CardTitle>
+              <CardDescription>Your notification center</CardDescription>
             </CardHeader>
-            
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <Button onClick={createDemoNotifications}>
-                  Create Demo Notifications
-                </Button>
-                
-                <Button variant="outline" onClick={() => notifications.markAllRead()}>
-                  Mark All as Read
-                </Button>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" onClick={() => notifications.clearAll()}>
-                  Clear All Notifications
-                </Button>
-                
-                <Button 
-                  variant="secondary" 
-                  onClick={() => window.location.href = "/notifications"}
-                >
-                  View Notification Center
-                </Button>
-              </div>
+            <CardContent>
+              <Notifications 
+                showSearch={true}
+                showFilters={true}
+                showConnectionStatus={true}
+              />
             </CardContent>
           </Card>
         </div>
       </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Current Notifications</CardTitle>
-          <CardDescription>
-            You have {notifications.getAll().length} notifications ({notifications.unreadCount} unread)
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          {notifications.getAll().length === 0 ? (
-            <div className="py-8 text-center text-muted-foreground">
-              No notifications to display. Create some using the form above.
-            </div>
-          ) : (
-            <Tabs defaultValue="all" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="unread">Unread</TabsTrigger>
-                <TabsTrigger value="read">Read</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="all" className="max-h-[300px] overflow-y-auto">
-                <div className="divide-y">
-                  {notifications.getAll().map((notification) => (
-                    <div key={notification.id} className="py-2">
-                      <div className="flex justify-between">
-                        <div>
-                          <p className="font-medium">{notification.title}</p>
-                          <p className="text-sm text-muted-foreground">{notification.message}</p>
-                        </div>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => notifications.remove(notification.id)}
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="unread" className="max-h-[300px] overflow-y-auto">
-                <div className="divide-y">
-                  {notifications.getAll()
-                    .filter(n => !n.read)
-                    .map((notification) => (
-                      <div key={notification.id} className="py-2">
-                        <div className="flex justify-between">
-                          <div>
-                            <p className="font-medium">{notification.title}</p>
-                            <p className="text-sm text-muted-foreground">{notification.message}</p>
-                          </div>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => notifications.markRead(notification.id)}
-                          >
-                            Mark Read
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="read" className="max-h-[300px] overflow-y-auto">
-                <div className="divide-y">
-                  {notifications.getAll()
-                    .filter(n => n.read)
-                    .map((notification) => (
-                      <div key={notification.id} className="py-2">
-                        <div className="flex justify-between">
-                          <div>
-                            <p className="font-medium">{notification.title}</p>
-                            <p className="text-sm text-muted-foreground">{notification.message}</p>
-                          </div>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => notifications.remove(notification.id)}
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </TabsContent>
-            </Tabs>
-          )}
-        </CardContent>
-      </Card>
-      
-      {/* Toast container */}
-      <ToastNotifications position="bottom-right" />
     </div>
   )
 }
