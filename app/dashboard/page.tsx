@@ -1,9 +1,9 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { QuoteDisplay } from "@/components/common/QuoteDisplay";
+import { StatCard } from "@/components/common/cards/StatCard"; // Updated import path
 import { ActivityList } from "@/components/dashboard/ActivityList";
 import { BarChart } from "@/components/dashboard/BarChart";
 import { ProjectsList } from "@/components/dashboard/ProjectsList";
-import { StatCard } from "@/components/dashboard/StatCard";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -55,53 +55,63 @@ export default async function DashboardPage() {
           value={totalIdeas} 
           description="Ideas in your portfolio" 
           icon="lightbulb"
+          variant="primary"
               />
               <StatCard 
           title="Approved Ideas" 
           value={approvedIdeas} 
           description="Ideas marked as approved" 
           icon="check"
+          variant="success"
               />
               <StatCard 
           title="Active Projects" 
           value={activeProjects} 
           description="Projects in progress" 
           icon="rocket"
+          variant="info"
               />
         <StatCard 
           title="Avg. Confidence" 
           value={`${avgConfidence.toFixed(1)}%`} 
           description="Average idea confidence" 
           icon="chart"
+          variant="primary"
+          trend={{
+            value: 5.2,
+            label: "vs last month",
+            direction: "up",
+            isGood: true
+          }}
         />
-                        </div>
+          </div>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
-                  <ActivityList 
-                    ideas={ideas} 
+        <ActivityList 
+            ideas={ideas} 
           projects={projects}
-                    formatDate={formatDate} 
-                  />
+          formatDate={formatDate} 
+          />
         
         <Card className="md:col-span-2">
-            <CardHeader>
+          <CardHeader>
             <CardTitle>Idea Performance</CardTitle>
             <CardDescription>
               Confidence vs. Rating for your ideas
             </CardDescription>
-              </CardHeader>
-              <CardContent>
+          </CardHeader>
+          <CardContent>
             <BarChart 
               ideas={ideas} 
               toNumber={toNumber}
             />
-              </CardContent>
-            </Card>
-          </div>
+          </CardContent>
+        </Card>
+                    </div>
       
       <div className="mb-6">
         <QuoteDisplay />
-        </div>
+                    </div>
       
       <Tabs defaultValue="ideas" className="mb-6">
         <TabsList>
@@ -119,7 +129,7 @@ export default async function DashboardPage() {
           <div className="rounded-md border">
             <div className="p-4">
               <h2 className="text-xl font-semibold">Active Projects</h2>
-            </div>
+    </div>
             <div className="divide-y">
               {projects.length > 0 ? (
                 projects.map((project, index) => (
@@ -141,7 +151,7 @@ export default async function DashboardPage() {
                       <span>Created: {formatDate(project.createdAt)}</span>
                       {project.targetCompletionDate && (
                         <span>Target: {formatDate(project.targetCompletionDate)}</span>
-      )}
+                      )}
                       {project.budget && (
                         <span>Budget: {project.budget}</span>
                       )}

@@ -1,0 +1,231 @@
+// StatCard.less - Styles for the StatCard component
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  // Base styles
+  .card-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.5rem;
+  }
+
+  .card-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .card-content {
+    padding-top: 0.5rem;
+  }
+
+  .card-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+  }
+
+  .card-description {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    margin-top: 0.25rem;
+  }
+
+  .card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Trend indicator styles
+  .trend-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+
+    .trend-value {
+      font-weight: 500;
+    }
+
+    .trend-icon {
+      display: flex;
+      align-items: center;
+    }
+
+    .trend-label {
+      color: var(--muted-foreground);
+    }
+
+    // Trend directions
+    &.up {
+      &.good {
+        color: var(--success);
+      }
+      &.bad {
+        color: var(--danger);
+      }
+    }
+
+    &.down {
+      &.good {
+        color: var(--success);
+      }
+      &.bad {
+        color: var(--danger);
+      }
+    }
+
+    &.neutral {
+      color: var(--muted-foreground);
+    }
+  }
+
+  // Color variants
+  &.default {
+    // Default styling (uses theme defaults)
+  }
+
+  &.primary {
+    .card-icon {
+      color: var(--primary);
+    }
+  }
+
+  &.success {
+    .card-icon {
+      color: var(--success);
+    }
+    border-left: 3px solid var(--success);
+  }
+
+  &.warning {
+    .card-icon {
+      color: var(--warning);
+    }
+    border-left: 3px solid var(--warning);
+  }
+
+  &.danger {
+    .card-icon {
+      color: var(--danger);
+    }
+    border-left: 3px solid var(--danger);
+  }
+
+  &.info {
+    .card-icon {
+      color: var(--info);
+    }
+    border-left: 3px solid var(--info);
+  }
+
+  // Loading state
+  &.loading {
+    .card-value, .card-description {
+      position: relative;
+      overflow: hidden;
+      
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        animation: shimmer 1.5s infinite;
+      }
+    }
+  }
+
+  // Interactive state
+  &[role="button"] {
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    &:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+  }
+
+  // Compact variant
+  &.compact {
+    .card-header {
+      padding-bottom: 0.25rem;
+    }
+    
+    .card-content {
+      padding-top: 0.25rem;
+    }
+    
+    .card-value {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// Animation for loading state
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  .stat-card {
+    .card-value {
+      font-size: 1.25rem;
+    }
+    
+    .card-title {
+      font-size: 0.75rem;
+  }
+    
+    .card-description {
+      font-size: 0.7rem;
+}
+    
+    .trend-indicator {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+// Medium screens
+@media (min-width: 641px) and (max-width: 1024px) {
+  .stat-card {
+    .card-value {
+      font-size: 1.35rem;
+    }
+  }
+}
+
+// For dense layouts (regardless of screen size)
+@media (max-width: 768px) {
+  .stat-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+}
