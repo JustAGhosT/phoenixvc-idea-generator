@@ -1,6 +1,7 @@
 "use client";
 
 import { Progress } from "@/components/ui/progress";
+import type { Idea } from "@/lib/types";
 
 export interface ChartDataItem {
   name: string;
@@ -9,31 +10,59 @@ export interface ChartDataItem {
 }
 
 export interface BarChartProps {
-  data: ChartDataItem[];
-  index: string;
-  categories: string[];
-  colors: string[];
-  valueFormatter: (value: number) => string;
-  yAxisWidth: number;
+  ideas: Idea[];
+  toNumber: (value: string | number) => number;
 }
 
-export const BarChart = ({ data, index, categories, colors, valueFormatter, yAxisWidth }: BarChartProps) => (
-  <div className="h-full flex items-center justify-center">
+export function BarChart({ ideas, toNumber }: BarChartProps) {
+  // Transform ideas data for visualization
+  const chartData = ideas
+    .filter(idea => idea.title && (idea.confidence || idea.rating))
+    .map(idea => ({
+      name: idea.title,
+      confidence: toNumber(idea.confidence),
+      rating: toNumber(idea.rating)
+    }))
+    .sort((a, b) => b.confidence - a.confidence)
+    .slice(0, 5); // Show top 5 by confidence
+
+  return (
+    <div className="h-full flex flex-col justify-center">
     <div className="space-y-4 w-full">
-      {data.map((item, i) => (
-        <div key={i} className="space-y-1">
+        {chartData.map((item, i) => (
+          <div key={i} className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="truncate max-w-[180px]">{item[index]}</span>
-            <span>{valueFormatter(item[categories[0]])}</span>
+              <span className="truncate max-w-[180px]">{item.name}</span>
+              <span>{item.confidence.toFixed(1)}%</span>
           </div>
           <Progress 
-            value={item[categories[0]]} 
-            max={categories[0] === "value" && valueFormatter(100) === "100%" ? 100 : 10} 
-            className={colors[0] === "blue" ? "bg-blue-100" : "bg-green-100"} 
-            indicatorClassName={colors[0] === "blue" ? "bg-blue-600" : "bg-green-600"} 
+              value={item.confidence} 
+              max={100} 
+              className="bg-blue-100" 
+              indicatorClassName="bg-blue-600" 
           />
+            
+            <div className="flex justify-between text-sm mt-2">
+              <span>Rating</span>
+              <span>{item.rating.toFixed(1)}/10</span>
         </div>
-      ))}
+            <Progress 
+              value={item.rating} 
+              max={10} 
+              className="bg-green-100" 
+              indicatorClassName="bg-green-600" 
+            />
+            
+            {i < chartData.length - 1 && <div className="border-b my-2"></div>}
     </div>
+        ))}
+        
+        {chartData.length === 0 && (
+          <div className="text-center py-8 text-muted-foreground">
+            No data available
   </div>
+        )}
+      </div>
+    </div>
 );
+}

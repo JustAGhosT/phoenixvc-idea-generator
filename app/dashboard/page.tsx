@@ -1,250 +1,162 @@
-"use client";
-
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { QuoteDisplay } from "@/components/common/QuoteDisplay";
 import { ActivityList } from "@/components/dashboard/ActivityList";
 import { BarChart } from "@/components/dashboard/BarChart";
-import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { ProjectsList } from "@/components/dashboard/ProjectsList";
 import { StatCard } from "@/components/dashboard/StatCard";
-import { QuoteDisplay } from "@/components/layout/quote-display";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getIdeas } from "@/lib/db";
-import type { Idea } from "@/lib/types";
-import { formatDate, toNumber } from "@/lib/utils/formatters";
-import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { getProjects } from "@/lib/project-db";
+import { formatDate } from "@/lib/utils/formatters";
+import { getServerSession } from "next-auth/next";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function Dashboard() {
-  const [ideas, setIdeas] = useState<Idea[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<"visual" | "text">("visual");
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [userName, setUserName] = useState<string>("User");
-
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const fetchedIdeas = await getIdeas();
-      setIdeas(fetchedIdeas || []);
-      setLastUpdated(new Date());
-      setUserName("Demo User");
-    } catch (err) {
-      console.error("Failed to load ideas:", err);
-      setError("Failed to load projects. Please try again later.");
-      setIdeas([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-    const intervalId = setInterval(loadData, 5 * 60 * 1000);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const toggleViewMode = () => setViewMode(viewMode === "visual" ? "text" : "visual");
-
-  // Calculate statistics
-  const averageRating = ideas.length > 0
-    ? ideas.reduce((sum, idea) => sum + toNumber(idea.rating), 0) / ideas.length
-    : 0;
+export default async function DashboardPage() {
+  const session = await getServerSession(authOptions);
   
-  const averageConfidence = ideas.length > 0
+  if (!session) {
+    redirect("/signin");
+  }
+  
+  // Fetch ideas and projects
+  const ideas = await getIdeas();
+  const projects = await getProjects();
+  
+  // Calculate statistics
+  const totalIdeas = ideas.length;
+  const approvedIdeas = ideas.filter(idea => idea.status === 'approved').length;
+  const rejectedIdeas = ideas.filter(idea => idea.status === 'rejected').length;
+  const activeProjects = projects.filter(project => project.status === 'active').length;
+  
+  // Helper function to convert string to number
+  const toNumber = (value: string | number): number => {
+    if (typeof value === 'number') return value;
+    return parseFloat(value) || 0;
+  };
+  
+  // Calculate average confidence and rating
+  const avgConfidence = ideas.length > 0
     ? ideas.reduce((sum, idea) => sum + toNumber(idea.confidence), 0) / ideas.length
     : 0;
 
-  // Prepare chart data
-  const confidenceChartData = ideas.map(idea => ({
-    name: idea.title,
-    value: toNumber(idea.confidence)
-  }));
-
-  const ratingChartData = ideas.map(idea => ({
-    name: idea.title,
-    value: toNumber(idea.rating)
-  }));
-
-  if (loading && ideas.length === 0) {
+  const avgRating = ideas.length > 0
+    ? ideas.reduce((sum, idea) => sum + toNumber(idea.rating), 0) / ideas.length
+    : 0;
     return (
-      <div className="flex flex-col justify-center items-center min-h-screen gap-8 px-4">
-        <div className="flex items-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-2">Loading dashboard...</span>
-      </div>
-        
-        {/* QuoteDisplay in loading state */}
-        <div className="w-full max-w-md">
-          <QuoteDisplay refreshInterval={10000} />
-          </div>
-      </div>
-  );
-}
-
-  return (
-    <DashboardLayout
-      title="DeFi Project Analyzer Dashboard"
-      userName={userName}
-      lastUpdated={lastUpdated}
-      isLoading={loading}
-      onRefresh={loadData}
-      viewMode={viewMode}
-      onToggleViewMode={toggleViewMode}
-    >
-      {error ? (
-        <div className="text-center py-12 border rounded-lg bg-red-50 text-red-800">
-          <p>{error}</p>
-          <Button
-            onClick={loadData}
-            variant="outline"
-            className="mt-4"
-          >
-            Retry
-          </Button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="container py-8">
+      <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
               <StatCard 
                 title="Total Ideas" 
-                value={ideas.length} 
-                description="Number of project ideas analyzed" 
+          value={totalIdeas} 
+          description="Ideas in your portfolio" 
+          icon="lightbulb"
               />
               <StatCard 
-                title="Average Confidence" 
-                value={`${averageConfidence.toFixed(1)}%`} 
-                description="Across all project ideas" 
+          title="Approved Ideas" 
+          value={approvedIdeas} 
+          description="Ideas marked as approved" 
+          icon="check"
               />
               <StatCard 
-                title="Average Rating" 
-                value={`${averageRating.toFixed(1)}/10`} 
-                description="Across all project ideas" 
+          title="Active Projects" 
+          value={activeProjects} 
+          description="Projects in progress" 
+          icon="rocket"
               />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {viewMode === "visual" ? (
-                <>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Confidence by Project</CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        Confidence level for each project idea
-                      </p>
-                    </CardHeader>
-                    <CardContent className="h-80">
-                      {ideas.length > 0 ? (
-                        <BarChart 
-                          data={confidenceChartData} 
-                          index="name"
-                          categories={["value"]}
-                          colors={["blue"]}
-                          valueFormatter={(value) => `${value}%`}
-                          yAxisWidth={40}
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full text-muted-foreground">
-                          No data available
+        <StatCard 
+          title="Avg. Confidence" 
+          value={`${avgConfidence.toFixed(1)}%`} 
+          description="Average idea confidence" 
+          icon="chart"
+        />
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Rating by Project</CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        Rating score for each project idea
-                      </p>
-                    </CardHeader>
-                    <CardContent className="h-80">
-                      {ideas.length > 0 ? (
-                        <BarChart 
-                          data={ratingChartData} 
-                          index="name"
-                          categories={["value"]}
-                          colors={["green"]}
-                          valueFormatter={(value) => `${value}/10`}
-                          yAxisWidth={40}
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full text-muted-foreground">
-                          No data available
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                </>
-              ) : (
-                <>
-                  <ProjectsList 
-                    ideas={ideas} 
-                    toNumber={toNumber} 
-                    formatDate={formatDate} 
-                  />
+      
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-6">
                   <ActivityList 
                     ideas={ideas} 
+          projects={projects}
                     formatDate={formatDate} 
                   />
-                </>
+        
+        <Card className="md:col-span-2">
+            <CardHeader>
+            <CardTitle>Idea Performance</CardTitle>
+            <CardDescription>
+              Confidence vs. Rating for your ideas
+            </CardDescription>
+              </CardHeader>
+              <CardContent>
+            <BarChart 
+              ideas={ideas} 
+              toNumber={toNumber}
+            />
+              </CardContent>
+            </Card>
+          </div>
+      
+      <div className="mb-6">
+        <QuoteDisplay />
+        </div>
+      
+      <Tabs defaultValue="ideas" className="mb-6">
+        <TabsList>
+          <TabsTrigger value="ideas">Ideas</TabsTrigger>
+          <TabsTrigger value="projects">Projects</TabsTrigger>
+        </TabsList>
+        <TabsContent value="ideas">
+          <ProjectsList 
+            ideas={ideas} 
+            toNumber={toNumber} 
+            formatDate={formatDate}
+          />
+        </TabsContent>
+        <TabsContent value="projects">
+          <div className="rounded-md border">
+            <div className="p-4">
+              <h2 className="text-xl font-semibold">Active Projects</h2>
+            </div>
+            <div className="divide-y">
+              {projects.length > 0 ? (
+                projects.map((project, index) => (
+                  <div key={index} className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <Link href={`/projects/${project.id}`}>
+                        <h3 className="font-medium hover:underline">{project.name}</h3>
+                      </Link>
+                      <Badge variant={
+                        project.status === 'active' ? 'success' :
+                        project.status === 'planning' ? 'default' :
+                        project.status === 'on-hold' ? 'warning' :
+                        project.status === 'completed' ? 'secondary' : 'destructive'
+                      }>
+                        {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Created: {formatDate(project.createdAt)}</span>
+                      {project.targetCompletionDate && (
+                        <span>Target: {formatDate(project.targetCompletionDate)}</span>
+      )}
+                      {project.budget && (
+                        <span>Budget: {project.budget}</span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-4 text-center text-muted-foreground">
+                  No projects available
+                </div>
               )}
             </div>
           </div>
-          
-          {/* Right sidebar with QuoteDisplay */}
-          <div className="space-y-6">
-            <QuoteDisplay className="shadow-sm" />
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {ideas.length > 0 ? (
-                    ideas.slice(0, 5).map((idea, index) => (
-                      <li key={index} className="text-sm">
-                        {idea.title} was {idea.status || 'updated'} on {formatDate(idea.createdAt)}
-                      </li>
-                    ))
-                  ) : (
-                    <li className="text-sm text-muted-foreground">No recent activity</li>
-                  )}
-                </ul>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Risk Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">High Risk Projects</span>
-                    <span className="font-medium">
-                      {ideas.filter(idea => toNumber(idea.rating) < 4).length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Medium Risk Projects</span>
-                    <span className="font-medium">
-                      {ideas.filter(idea => toNumber(idea.rating) >= 4 && toNumber(idea.rating) < 7).length}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">Low Risk Projects</span>
-                    <span className="font-medium">
-                      {ideas.filter(idea => toNumber(idea.rating) >= 7).length}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      )}
-    </DashboardLayout>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

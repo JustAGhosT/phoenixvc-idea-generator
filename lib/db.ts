@@ -51,7 +51,7 @@ export async function getIdea(id: number | string) {
   return snakeToCamel(data) as Idea
 }
 
-export async function createIdea(idea: Omit<Idea, "id" | "createdAt" | "updatedAt">, userId: string) {
+export async function createIdea(idea: Omit<Idea, "id" | "createdAt" | "updatedAt" | "status">, userId: string) {
   const client = getClient()
   const timestamp = createTimestamp()
   const snakeIdea = camelToSnake(idea)
@@ -60,6 +60,7 @@ export async function createIdea(idea: Omit<Idea, "id" | "createdAt" | "updatedA
     .from("ideas")
     .insert({
       ...snakeIdea,
+      status: "created", // Set default status for new ideas
       created_at: timestamp,
       updated_at: timestamp,
       created_by: userId,
@@ -68,6 +69,15 @@ export async function createIdea(idea: Omit<Idea, "id" | "createdAt" | "updatedA
     .select()
 
   if (error) throw error
+  
+  // Record the creation change
+  await recordChange({
+    ideaId: data[0].id,
+    userId,
+    changeType: "create",
+    description: `Created new idea: ${idea.title}`,
+  })
+  
   return snakeToCamel(data[0]) as Idea
 }
 
@@ -75,6 +85,11 @@ export async function updateIdea(id: number | string, idea: Partial<Idea>, userI
   const client = getClient()
   const timestamp = createTimestamp()
   const snakeIdea = camelToSnake(idea)
+  
+  // If status is not explicitly set and this is an update operation, default to "updated"
+  if (!snakeIdea.status) {
+    snakeIdea.status = "updated"
+  }
 
   const { data, error } = await client
     .from("ideas")
@@ -98,6 +113,40 @@ export async function updateIdea(id: number | string, idea: Partial<Idea>, userI
       fields: changes,
     })
   }
+
+  return snakeToCamel(data[0]) as Idea
+}
+
+// Add a new function specifically for updating status
+export async function updateIdeaStatus(id: number | string, status: IdeaStatus, userId: string) {
+  const client = getClient()
+  const timestamp = createTimestamp()
+  
+  const { data, error } = await client
+    .from("ideas")
+    .update({
+      status,
+      updated_at: timestamp,
+      updated_by: userId,
+    })
+    .eq("id", id)
+    .select()
+
+  if (error) throw error
+  
+  // Record the status change
+  await recordChange({
+    ideaId: id,
+    userId,
+    changeType: "update",
+    description: `Status changed to: ${status}`,
+    fields: [{
+      field: "status",
+      oldValue: null, // We don't have the old value here, but that's OK
+      newValue: status,
+      isSignificant: true
+    }]
+  })
 
   return snakeToCamel(data[0]) as Idea
 }
