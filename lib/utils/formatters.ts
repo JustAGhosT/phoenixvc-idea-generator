@@ -15,11 +15,11 @@ export const toNumber = (value: any): number => {
 /**
  * Formats a date string to a readable format
  */
-export const formatDate = (dateString?: string) => {
-  if (!dateString) return "Never";
+export const formatDate = (date: string | Date | undefined): string => {
+  if (!date) return "Never";
   try {
-    const date = new Date(dateString);
-    return format(date, "MMM d, yyyy");
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return format(dateObj, "MMM d, yyyy");
   } catch (e) {
     return "Invalid date";
   }

@@ -1,4 +1,3 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { QuoteDisplay } from "@/components/common/QuoteDisplay";
 import { StatCard } from "@/components/common/cards/StatCard"; // Updated import path
 import { ActivityList } from "@/components/dashboard/ActivityList";
@@ -7,6 +6,7 @@ import { ProjectsList } from "@/components/dashboard/ProjectsList";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { authOptions } from "@/lib/auth";
 import { getIdeas } from "@/lib/db";
 import { getProjects } from "@/lib/project-db";
 import { formatDate } from "@/lib/utils/formatters";
