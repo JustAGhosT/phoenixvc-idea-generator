@@ -1,31 +1,27 @@
-import { getServerAuthSession } from "@/auth"
-import { Inter } from "next/font/google"
-import type { Metadata } from "next/types"
-import RootClientLayout from "../components/root-client-layout"
-import "./globals.css"
-const inter = Inter({ subsets: ["latin"] })
+import ClientProviders from "@/components/features/client-providers";
+import { ThemeProvider } from "@/components/features/theme/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import { cn } from "@/lib/utils";
+import { Inter } from "next/font/google";
+import { ReactNode } from "react";
+import "./globals.css";
+const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "DeFi Risk Intelligence",
-  description: "AI-powered risk analysis for DeFi projects",
-  generator: 'v0.dev'
+interface RootLayoutProps {
+  children: ReactNode;
 }
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
-  // Get the session using the getServerAuthSession function
-  const session = await getServerAuthSession();
-  
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <RootClientLayout session={session}>
-          {children}
-        </RootClientLayout>
+      <body className={cn("min-h-screen antialiased", inter.className)}>
+        <ClientProviders>
+          <ThemeProvider defaultTheme="dark" storageKey="app-theme">
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </ClientProviders>
       </body>
     </html>
-  )
+  );
 }

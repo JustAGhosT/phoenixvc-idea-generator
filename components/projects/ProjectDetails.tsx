@@ -6,6 +6,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { ArrowLeft } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Project {
@@ -18,43 +19,66 @@ interface Project {
 }
 
 export function ProjectDetails({ id }: { id: string }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
-    async function fetchProject() {
-      try {
-        setLoading(true);
-        const response = await fetch(`/api/projects/${id}`);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch project: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        setProject(data);
-      } catch (err) {
-        console.error("Error fetching project:", err);
-        setError(err instanceof Error ? err.message : "Failed to load project");
-      } finally {
-        setLoading(false);
-      }
+    // If not authenticated, redirect to login
+    if (status === "unauthenticated") {
+      router.push(`/auth/signin?callbackUrl=${encodeURIComponent(`/projects/${id}`)}`);
+      return;
     }
 
-    if (session) {
+    // Only fetch if authenticated
+    if (status === "authenticated") {
       fetchProject();
     }
-  }, [id, session]);
+  }, [id, status, router]);
 
-  if (loading) {
+  async function fetchProject() {
+    try {
+        setLoading(true);
+      const response = await fetch(`/api/projects/${id}`, {
+        // Include credentials to send cookies with the request
+        credentials: "include",
+        // Add headers for better error handling
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      
+      if (response.status === 401) {
+        // Handle unauthorized - session might have expired
+        router.push(`/auth/signin?callbackUrl=${encodeURIComponent(`/projects/${id}`)}`);
+        return;
+      }
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to fetch project: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      setProject(data);
+    } catch (err) {
+      console.error("Error fetching project:", err);
+      setError(err instanceof Error ? err.message : "Failed to load project");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Show loading state while checking authentication
+  if (status === "loading" || (status === "authenticated" && loading)) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner size="lg" />
       </div>
-    );
-  }
+  );
+}
 
   if (error) {
     return (

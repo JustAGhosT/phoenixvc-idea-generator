@@ -116,10 +116,30 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // If the URL is already absolute and on the same site, allow it
+      // Log the URL for debugging
+      console.log("Redirect URL:", url);
+      
+      // Handle URLs that might be encoded multiple times
+      let decodedUrl = url;
+      try {
+        // Try to decode until we no longer can (handles multiple encodings)
+        let prevUrl = "";
+        while (prevUrl !== decodedUrl) {
+          prevUrl = decodedUrl;
+          decodedUrl = decodeURIComponent(decodedUrl);
+        }
+        
+        // If the decoded URL is for our site, use it
+        if (decodedUrl.startsWith(baseUrl) || decodedUrl.startsWith('/')) {
+          return decodedUrl.startsWith('/') ? `${baseUrl}${decodedUrl}` : decodedUrl;
+        }
+      } catch (e) {
+        console.error("Error decoding URL:", e);
+      }
+      
+      // Original logic as fallback
       if (url.startsWith(baseUrl)) return url;
       
-      // If the URL is relative, make it absolute
       if (url.startsWith("/")) {
         // Don't redirect to the sign-in page after sign-in
         if (url === "/auth/signin") return `${baseUrl}/dashboard`;
@@ -127,7 +147,11 @@ export const authOptions: NextAuthOptions = {
       }
       
       // If the URL is for a different site but allowed, permit it
-      if (new URL(url).origin === baseUrl) return url;
+      try {
+        if (new URL(url).origin === baseUrl) return url;
+      } catch (e) {
+        console.error("Error parsing URL:", e);
+      }
       
       // Default to dashboard
       return `${baseUrl}/dashboard`;
@@ -156,6 +180,11 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
+/**
+ * Gets the session on the server side.
+ * 
+ * @returns The session object or null if not authenticated
+ */
 export async function getServerAuthSession(): Promise<Session | null> {
   try {
     const session = await getServerSession(authOptions);

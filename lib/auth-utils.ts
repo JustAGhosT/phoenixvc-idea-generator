@@ -1,5 +1,5 @@
-import { getServerAuthSession } from "@/auth"
 import { ExtendedUser, UserRole } from "@/contexts/core/auth-context"
+import { getServerAuthSession } from "@/lib/auth"
 import { jwtDecode } from "jwt-decode"
 import { redirect } from "next/navigation"
 
@@ -66,16 +66,22 @@ export function getUserFromToken(token: string): ExtendedUser | null {
  * Utility function to check authentication on server components
  * Returns the session if authenticated, otherwise redirects to login
  */
-export async function requireAuth() {
+export async function requireAuth(pathname?: string) {
   const session = await getServerAuthSession();
   
   if (!session) {
+    // Use the provided pathname or get the current path from headers
+    const returnUrl = pathname || "/dashboard";
+    
+    // Ensure the URL is properly encoded
+    const encodedReturnUrl = encodeURIComponent(returnUrl);
+    
     // Redirect to login page with return URL
-    redirect("/auth/signin?callbackUrl=" + encodeURIComponent(window.location.pathname));
-  }
-  
+    redirect(`/auth/signin?callbackUrl=${encodedReturnUrl}`);
+    }
+    
   return session;
-}
+  }
 
 /**
  * Utility function to check authentication without redirecting
@@ -87,7 +93,7 @@ export async function getAuthSession() {
   } catch (error) {
     console.error("Error getting auth session:", error);
     return null;
-  }
+}
 }
 
 

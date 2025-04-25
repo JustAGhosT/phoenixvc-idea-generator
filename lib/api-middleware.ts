@@ -1,4 +1,4 @@
-import { getServerAuthSession } from "@/auth"
+import { getServerAuthSession } from "@/lib/auth"
 import { type NextRequest, NextResponse } from "next/server"
 
 // Middleware to check authentication

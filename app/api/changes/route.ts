@@ -1,6 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { getServerAuthSession } from "@/lib/auth"
 import { getChanges, recordChange } from "@/lib/db"
-import { getServerAuthSession } from "@/auth"
+import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
   try {

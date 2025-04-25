@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server"
-import { getServerAuthSession } from "@/auth"
 import { saveProjectSummary } from "@/lib/analysis-db"
-import { generateText } from "ai"
+import { getServerAuthSession } from "@/lib/auth"
 import { deepinfra } from "@ai-sdk/deepinfra"
+import { generateText } from "ai"
+import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   try {

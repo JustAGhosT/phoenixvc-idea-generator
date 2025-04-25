@@ -1,4 +1,4 @@
-import { authOptions } from "@/auth"
+import { authOptions } from "@/lib/auth"
 import NextAuth from "next-auth"
 
 // Create the handler with NextAuth

@@ -9,6 +9,9 @@
     "lint": "next lint",
     "cleanup-hooks": "ts-node scripts/cleanup-hooks.ts"
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "@ai-sdk/deepinfra": "latest",
     "@auth/core": "latest",

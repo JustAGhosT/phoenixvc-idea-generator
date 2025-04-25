@@ -9,6 +9,7 @@ export type Idea = {
     positive: string[]
     negative: string[]
   }
+  status?: IdeaStatus
   jtbd: {
     core: string
     functional: string
@@ -63,7 +64,8 @@ export type Idea = {
   updatedBy?: string
 }
 
-// Change tracking types
+export type IdeaStatus = 'created' | 'updated' | 'reviewed' | 'approved' | 'rejected';
+
 export type ChangeType = "create" | "update" | "delete" | "import" | "export"
 
 export type FieldChange = {

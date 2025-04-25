@@ -1,7 +1,7 @@
 // Server-side authentication utilities
-import { authOptions } from "@/auth"
-import { getServerSession } from "next-auth/next"
 import { ExtendedSession } from "@/contexts/core/auth-context"
+import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth/next"
 
 /**
  * Gets the authentication session on the server side

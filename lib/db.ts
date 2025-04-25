@@ -1,37 +1,62 @@
 import { createClient } from "@supabase/supabase-js"
-import type { Idea, ChangeRecord, User, Template, FieldChange, ChangeType } from "./types"
 import { CHANGE_THRESHOLDS } from "./config"
-import { snakeToCamel, camelToSnake, createTimestamp } from "./db-utils"
+import { camelToSnake, createTimestamp, snakeToCamel } from "./db-utils"
+import type { ChangeRecord, ChangeType, FieldChange, Idea, Template, User } from "./types"
 
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ""
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// Initialize Supabase client with better error handling
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+// Check if required environment variables are set
+if (!supabaseUrl || !supabaseKey) {
+  console.error("Missing Supabase environment variables. Please check your .env file.")
+}
+
+// Create client only if both URL and key are available
+export const supabase = supabaseUrl && supabaseKey 
+  ? createClient(supabaseUrl, supabaseKey)
+  : null
 
 // Initialize admin client for operations that require more privileges
-const supabaseAdminKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ""
-export const adminClient = createClient(supabaseUrl, supabaseAdminKey)
+const supabaseAdminKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+export const adminClient = supabaseUrl && supabaseAdminKey 
+  ? createClient(supabaseUrl, supabaseAdminKey)
+  : null
+
+// Helper function to get the appropriate client with error handling
+function getClient(admin = false) {
+  const client = admin ? adminClient : supabase
+  
+  if (!client) {
+    throw new Error("Supabase client not initialized. Check your environment variables.")
+  }
+  
+  return client
+}
 
 // Ideas API
 export async function getIdeas() {
-  const { data, error } = await supabase.from("ideas").select("*").order("updated_at", { ascending: false })
+  const client = getClient()
+  const { data, error } = await client.from("ideas").select("*").order("updated_at", { ascending: false })
 
   if (error) throw error
   return data.map(snakeToCamel) as Idea[]
 }
 
 export async function getIdea(id: number | string) {
-  const { data, error } = await supabase.from("ideas").select("*").eq("id", id).single()
+  const client = getClient()
+  const { data, error } = await client.from("ideas").select("*").eq("id", id).single()
 
   if (error) throw error
   return snakeToCamel(data) as Idea
 }
 
 export async function createIdea(idea: Omit<Idea, "id" | "createdAt" | "updatedAt">, userId: string) {
+  const client = getClient()
   const timestamp = createTimestamp()
   const snakeIdea = camelToSnake(idea)
 
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from("ideas")
     .insert({
       ...snakeIdea,
@@ -47,10 +72,11 @@ export async function createIdea(idea: Omit<Idea, "id" | "createdAt" | "updatedA
 }
 
 export async function updateIdea(id: number | string, idea: Partial<Idea>, userId: string, changes?: FieldChange[]) {
+  const client = getClient()
   const timestamp = createTimestamp()
   const snakeIdea = camelToSnake(idea)
 
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from("ideas")
     .update({
       ...snakeIdea,
@@ -77,10 +103,11 @@ export async function updateIdea(id: number | string, idea: Partial<Idea>, userI
 }
 
 export async function deleteIdea(id: number | string, userId: string) {
+  const client = getClient()
   // Get the idea first for the change record
   const idea = await getIdea(id)
 
-  const { error } = await supabase.from("ideas").delete().eq("id", id)
+  const { error } = await client.from("ideas").delete().eq("id", id)
 
   if (error) throw error
 
@@ -97,7 +124,8 @@ export async function deleteIdea(id: number | string, userId: string) {
 
 // Change tracking API
 export async function getChanges(ideaId?: number | string) {
-  let query = supabase
+  const client = getClient()
+  let query = client
     .from("changes")
     .select(`
       *,
@@ -138,9 +166,10 @@ export async function recordChange({
   fields?: FieldChange[]
   audioLogUrl?: string
 }) {
+  const client = getClient()
   const timestamp = createTimestamp()
 
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from("changes")
     .insert({
       idea_id: ideaId,
@@ -159,7 +188,8 @@ export async function recordChange({
 
 // User API
 export async function getUser(id: string) {
-  const { data, error } = await supabase.from("users").select("*").eq("id", id).single()
+  const client = getClient()
+  const { data, error } = await client.from("users").select("*").eq("id", id).single()
 
   if (error) throw error
   return snakeToCamel(data) as User
@@ -167,7 +197,8 @@ export async function getUser(id: string) {
 
 // Get user role
 export async function getUserRole(id: string): Promise<string | null> {
-  const { data, error } = await adminClient.from("users").select("role").eq("id", id).single()
+  const client = getClient(true) // Use admin client
+  const { data, error } = await client.from("users").select("role").eq("id", id).single()
 
   if (error || !data) {
     console.error("Error fetching user role:", error)
@@ -179,24 +210,27 @@ export async function getUserRole(id: string): Promise<string | null> {
 
 // Templates API
 export async function getTemplates() {
-  const { data, error } = await supabase.from("templates").select("*").order("title")
+  const client = getClient()
+  const { data, error } = await client.from("templates").select("*").order("title")
 
   if (error) throw error
   return data.map(snakeToCamel) as Template[]
 }
 
 export async function getTemplate(id: number | string) {
-  const { data, error } = await supabase.from("templates").select("*").eq("id", id).single()
+  const client = getClient()
+  const { data, error } = await client.from("templates").select("*").eq("id", id).single()
 
   if (error) throw error
   return snakeToCamel(data) as Template
 }
 
 export async function createTemplate(template: Omit<Template, "id" | "createdAt">, userId: string) {
+  const client = getClient()
   const timestamp = createTimestamp()
   const snakeTemplate = camelToSnake(template)
 
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from("templates")
     .insert({
       ...snakeTemplate,

@@ -45,15 +45,18 @@ export function useRequireAuth(requiredRole?: UserRole | UserRole[]) {
   useEffect(() => {
     // If not authenticated, redirect to sign in
     if (!isAuthenticated) {
-      signIn()
-      return
+      // Get the current URL to use as the callback URL
+      const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+      
+      // Call signIn with the current URL as the callback URL
+      signIn(undefined, { callbackUrl: currentUrl });
+      return;
     }
     
     // If role is required, check if user has the role
     if (requiredRole && !hasRole(requiredRole)) {
       // Handle unauthorized access
-      // You could redirect to an unauthorized page or show a message
-      console.error("Unauthorized: Required role not found")
+      console.error("Unauthorized: Required role not found");
     }
   }, [isAuthenticated, hasRole, signIn, requiredRole])
   

@@ -1,5 +1,7 @@
 "use client"
 
+import { GlobalErrorHandler } from "@/components/error/global-error-handler"
+import { ErrorBoundary } from "@/components/features/error-boundary"
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/contexts/core/auth-context"
 import { ThemeProvider } from "@/contexts/core/theme-context"
@@ -12,11 +14,9 @@ import { Suspense } from "react"
 import { AppSidebar } from "./app-sidebar"
 import { AuthRedirect } from "./auth-redirect"
 import { Breadcrumb } from "./breadcrumb"
-import { ErrorBoundary } from "./error-boundary"
+import { FloatingNavbar } from "./floating-navbar"
 import { Footer } from "./footer"
-import { GlobalErrorHandler } from "./global-error-handler"
-import { Header } from "./header"
-import { QuoteDisplay } from "./quote-display"
+import { QuoteDisplay } from "@/components/layout/quote-display";
 
 export default function RootClientLayout({
   children,
@@ -33,10 +33,12 @@ export default function RootClientLayout({
             <BreadcrumbProvider>
               <SidebarProvider>
                 <div className="flex min-h-screen flex-col">
-                  <div className="flex flex-1">
+                  {/* Floating Navbar */}
+                  <FloatingNavbar showSidebarToggle={true} />
+                  
+                  <div className="flex flex-1 pt-16"> {/* Added pt-16 to account for fixed navbar height */}
                     <AppSidebar />
                     <div className="flex flex-1 flex-col">
-                      <Header />
                       <main className="flex-1 overflow-auto p-4 md:p-6">
                         <Suspense fallback={<div>Loading breadcrumbs...</div>}>
                           <Breadcrumb />
@@ -52,7 +54,7 @@ export default function RootClientLayout({
                   </div>
                 </div>
                 <Toaster />
-                <QuoteDisplay />
+                {/* Remove the QuoteDisplay component */}
                 <GlobalErrorHandler />
               </SidebarProvider>
             </BreadcrumbProvider>

@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server"
-import { getServerAuthSession } from "@/auth"
 import { getDocumentAnalyses } from "@/lib/analysis-db"
+import { getServerAuthSession } from "@/lib/auth"
+import { NextResponse } from "next/server"
 
 export async function GET(req: Request) {
   try {

@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server"
-import { getServerAuthSession } from "@/auth"
 import { saveProjectVisualization } from "@/lib/analysis-db"
+import { getServerAuthSession } from "@/lib/auth"
 import * as fal from "@fal-ai/serverless-client"
+import { NextResponse } from "next/server"
 
 // Configure Fal AI client
 fal.config({

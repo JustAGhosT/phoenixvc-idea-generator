@@ -1,288 +1,176 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart } from "@/components/ui/chart"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, BarChart3, FileText, PenSquare } from "lucide-react"
-import { getIdeas } from "@/lib/db"
-import { calculateTechnicalFeasibility, calculatePotentialImpact } from "@/lib/ai"
-import { getServerAuthSession } from "@/auth"
-import { setTag } from "@/lib/sentry"
-
-export default async function Home() {
-  // Add Sentry tag for this page
-  if (typeof window !== "undefined") {
-    setTag("page", "home")
-  }
-
-  // Fetch ideas from the database
-  const ideas = await getIdeas()
-
-  // Calculate average confidence and rating
-  const avgConfidence = ideas.reduce((acc, idea) => acc + idea.confidence, 0) / ideas.length
-  const avgRating = ideas.reduce((acc, idea) => acc + idea.rating, 0) / ideas.length
-
-  // Prepare data for charts
-  const confidenceData = {
-    labels: ideas.map((idea) => idea.title.split(" ").slice(0, 2).join(" ")),
-    datasets: [
-      {
-        label: "Confidence",
-        data: ideas.map((idea) => idea.confidence),
-        backgroundColor: "rgba(59, 130, 246, 0.5)",
-        borderColor: "rgb(59, 130, 246)",
-        borderWidth: 1,
-      },
-    ],
-  }
-
-  const ratingData = {
-    labels: ideas.map((idea) => idea.title.split(" ").slice(0, 2).join(" ")),
-    datasets: [
-      {
-        label: "Rating",
-        data: ideas.map((idea) => idea.rating),
-        backgroundColor: "rgba(16, 185, 129, 0.5)",
-        borderColor: "rgb(16, 185, 129)",
-        borderWidth: 1,
-      },
-    ],
-  }
-
-  // Top ideas by rating
-  const topIdeas = [...ideas].sort((a, b) => b.rating - a.rating).slice(0, 3)
-
-  const session = await getServerAuthSession()
-
+import { Footer } from "@/components/footer";
+import { TopNav } from "@/components/top-nav";
+import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  BarChart2,
+  Check,
+  LineChart,
+  Shield,
+  Zap
+} from "lucide-react";
+import Link from "next/link";
+export default function LandingPage() {
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">DeFi Project Analyzer Dashboard</h1>
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link href="/compare">
-                <BarChart3 className="mr-2 h-4 w-4" />
-                Compare Ideas
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link href="/editor/new">
-                <PenSquare className="mr-2 h-4 w-4" />
-                New Idea
+    <div className="flex flex-col min-h-screen">
+      {/* Top Navigation */}
+      <TopNav />
+      
+      {/* Hero section */}
+      <section className="py-20 px-6 bg-gradient-to-b from-background to-muted">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="flex-1 space-y-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                DeFi Risk Intelligence
+              </h1>
+              <p className="text-xl text-muted-foreground">
+                Analyze, optimize, and validate your DeFi project ideas with our comprehensive toolset.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Button size="lg" asChild>
+                  <Link href="/dashboard">
+                    Get Started
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="#features">
+                    Learn More
+                  </Link>
+                </Button>
+              </div>
+            </div>
+            <div className="flex-1 relative">
+              <div className="w-full h-[400px] rounded-lg bg-card border shadow-xl overflow-hidden">
+                <div className="p-4 border-b bg-muted/50">
+                  <h3 className="font-semibold">DeFi Project Analyzer Dashboard</h3>
+                </div>
+                <div className="p-6 space-y-6">
+                  {/* Mock dashboard UI */}
+                  <div className="grid grid-cols-3 gap-4">
+                    {[
+                      { title: "Total Ideas", value: "5" },
+                      { title: "Avg. Confidence", value: "75%" },
+                      { title: "Avg. Rating", value: "8.2/10" }
+                    ].map((item, i) => (
+                      <div key={i} className="border rounded-md p-3 bg-background">
+                        <p className="text-xs text-muted-foreground">{item.title}</p>
+                        <p className="text-xl font-bold">{item.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="border rounded-md p-4 bg-background">
+                    <h4 className="font-medium mb-3">Project Confidence</h4>
+                    <div className="space-y-2">
+                      {[
+                        { name: "DeFi Risk Platform", value: 85 },
+                        { name: "Cross-Chain Analytics", value: 72 },
+                        { name: "Yield Optimizer", value: 68 }
+                      ].map((item, i) => (
+                        <div key={i} className="space-y-1">
+                          <div className="flex justify-between text-sm">
+                            <span>{item.name}</span>
+                            <span>{item.value}%</span>
+                          </div>
+                          <div className="h-2 bg-blue-100 rounded-full dark:bg-blue-900/30">
+                            <div 
+                              className="h-2 bg-blue-600 rounded-full" 
+                              style={{ width: `${item.value}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Decorative elements */}
+              <div className="absolute -z-10 -top-6 -right-6 w-40 h-40 bg-primary/10 rounded-full blur-2xl"></div>
+              <div className="absolute -z-10 -bottom-8 -left-8 w-60 h-60 bg-blue-500/10 rounded-full blur-3xl"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features section */}
+      <section id="features" className="py-20 px-6 bg-background">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight mb-4">
+              Powerful Features for DeFi Innovation
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Our platform provides everything you need to analyze, validate, and optimize your DeFi project ideas.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <BarChart2 className="h-10 w-10 text-primary" />,
+                title: "Comprehensive Analytics",
+                description: "Visualize key metrics and track the progress of your DeFi project ideas."
+              },
+              {
+                icon: <Shield className="h-10 w-10 text-primary" />,
+                title: "Risk Assessment",
+                description: "Identify potential vulnerabilities and security concerns in your DeFi concepts."
+              },
+              {
+                icon: <Zap className="h-10 w-10 text-primary" />,
+                title: "Idea Validation",
+                description: "Test and validate your DeFi concepts against market data and user needs."
+              },
+              {
+                icon: <LineChart className="h-10 w-10 text-primary" />,
+                title: "Market Analysis",
+                description: "Understand market trends and potential opportunities for your DeFi projects."
+              },
+              {
+                icon: <Check className="h-10 w-10 text-primary" />,
+                title: "Project Comparison",
+                description: "Compare multiple project ideas to identify the most promising opportunities."
+              },
+              {
+                icon: <Shield className="h-10 w-10 text-primary" />,
+                title: "Technical Feasibility",
+                description: "Assess the technical complexity and implementation challenges of your ideas."
+              }
+            ].map((feature, i) => (
+              <div key={i} className="border rounded-lg p-6 bg-card hover:shadow-md transition-shadow">
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* CTA section */}
+      <section className="py-20 px-6 bg-muted">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight mb-4">
+            Ready to Build the Future of DeFi?
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+            Join our platform today and start turning your innovative DeFi ideas into reality.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button size="lg" asChild>
+              <Link href="/dashboard">
+                Get Started Now
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>Total Ideas</CardTitle>
-              <CardDescription>Number of project ideas analyzed</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold">{ideas.length}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>Average Confidence</CardTitle>
-              <CardDescription>Across all project ideas</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold">{avgConfidence.toFixed(1)}%</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle>Average Rating</CardTitle>
-              <CardDescription>Across all project ideas</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bold">{avgRating.toFixed(1)}/10</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Confidence by Project</CardTitle>
-              <CardDescription>Confidence level for each project idea</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <BarChart
-                  data={confidenceData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                      y: {
-                        beginAtZero: true,
-                        max: 100,
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Rating by Project</CardTitle>
-              <CardDescription>Rating score for each project idea</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <BarChart
-                  data={ratingData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                      y: {
-                        beginAtZero: true,
-                        max: 10,
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Technical Feasibility</CardTitle>
-              <CardDescription>Average feasibility score across projects</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <BarChart
-                  data={{
-                    labels: ideas.map((idea) => idea.title.split(" ").slice(0, 2).join(" ")),
-                    datasets: [
-                      {
-                        label: "Technical Feasibility",
-                        data: ideas.map((idea) => calculateTechnicalFeasibility(idea).score),
-                        backgroundColor: "rgba(16, 185, 129, 0.5)",
-                        borderColor: "rgb(16, 185, 129)",
-                        borderWidth: 1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                      y: {
-                        beginAtZero: true,
-                        max: 100,
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Potential Impact</CardTitle>
-              <CardDescription>Impact assessment across projects</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <BarChart
-                  data={{
-                    labels: ideas.map((idea) => idea.title.split(" ").slice(0, 2).join(" ")),
-                    datasets: [
-                      {
-                        label: "Potential Impact",
-                        data: ideas.map((idea) => calculatePotentialImpact(idea).score),
-                        backgroundColor: "rgba(124, 58, 237, 0.5)",
-                        borderColor: "rgb(124, 58, 237)",
-                        borderWidth: 1,
-                      },
-                    ],
-                  }}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                      y: {
-                        beginAtZero: true,
-                        max: 100,
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Rated Project Ideas</CardTitle>
-            <CardDescription>Highest rated project ideas based on analysis</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {topIdeas.map((idea) => (
-                <Card key={idea.id} className="overflow-hidden">
-                  <CardHeader className="bg-primary/5 pb-2">
-                    <CardTitle className="text-lg">{idea.title}</CardTitle>
-                    <CardDescription>
-                      Rating: {idea.rating}/10 • Confidence: {idea.confidence}%
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-4">
-                    <p className="text-sm mb-3">{idea.keyDifferentiator}</p>
-                    <Button asChild variant="outline" size="sm" className="w-full">
-                      <Link href={`/editor/${idea.id}`}>
-                        View Details
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common tasks and shortcuts</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button asChild variant="outline" className="h-24 flex flex-col items-center justify-center">
-                <Link href="/compare">
-                  <BarChart3 className="h-8 w-8 mb-2" />
-                  <span>Compare All Ideas</span>
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="h-24 flex flex-col items-center justify-center">
-                <Link href="/editor/new">
-                  <PenSquare className="h-8 w-8 mb-2" />
-                  <span>Create New Idea</span>
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="h-24 flex flex-col items-center justify-center">
-                <Link href="/templates">
-                  <FileText className="h-8 w-8 mb-2" />
-                  <span>Browse Templates</span>
-                </Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      </section>
+      
+      {/* Footer */}
+      <Footer />
     </div>
-  )
+  );
 }

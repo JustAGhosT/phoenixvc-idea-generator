@@ -1,7 +1,7 @@
+import { getServerAuthSession } from "@/lib/auth"
 import { NextResponse } from "next/server"
-import { createLogger } from "./logger"
 import { AppError, AuthError, createErrorResponse } from "./error-handler"
-import { getServerAuthSession } from "@/auth"
+import { createLogger } from "./logger"
 
 const logger = createLogger("api-utils")
 

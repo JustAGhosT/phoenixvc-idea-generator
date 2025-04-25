@@ -1,36 +1,43 @@
 "use client"
 
+import { Button } from "@/components/ui/button"
+import { AlertCircle, RefreshCw } from "lucide-react"
 import { useEffect } from "react"
-import { ErrorPage } from "@/components/error-page"
-import { captureClientError } from "@/lib/client-error-handler"
-
-export default function GlobalError({
+export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string } | null
+  error: Error & { digest?: string }
   reset: () => void
 }) {
   useEffect(() => {
-    if (error) {
-      // Log the error
-      captureClientError(error, {
-        type: "global-error",
-        digest: error.digest,
-      })
-    }
+    // Log the error to the console
+    console.error("Application error:", error)
   }, [error])
 
   return (
-    <html>
-      <body>
-        <ErrorPage
-          title="Application Error"
-          description="The application encountered an unexpected error."
-          error={error || new Error("Unknown error")}
-          reset={reset}
-        />
-      </body>
-    </html>
+    <div className="flex min-h-[400px] flex-col items-center justify-center text-center p-4">
+      <div className="rounded-full bg-destructive/10 p-4 text-destructive">
+        <AlertCircle className="h-8 w-8" />
+      </div>
+      <h2 className="mt-4 text-2xl font-bold">Something went wrong</h2>
+      <p className="mt-2 text-muted-foreground max-w-md">
+        An error occurred while processing your request. We've been notified and are working to fix the issue.
+      </p>
+      {error.digest && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          Error ID: {error.digest}
+        </p>
+      )}
+      <div className="mt-6 flex gap-2">
+        <Button onClick={reset}>
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Try again
+        </Button>
+        <Button variant="outline" onClick={() => window.location.href = "/"}>
+          Go to homepage
+        </Button>
+      </div>
+    </div>
   )
 }
