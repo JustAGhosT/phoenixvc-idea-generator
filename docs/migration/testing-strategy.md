@@ -1,6 +1,14 @@
 # Component Testing Strategy
 
-This document outlines the testing approach for migrated components to ensure quality and prevent regressions.
+This document outlines the comprehensive testing approach for migrated components to ensure quality, performance, and accessibility compliance.
+
+## Testing Philosophy
+
+Our testing approach follows these core principles:
+- **Comprehensive Coverage**: Test functionality, appearance, interactions, and accessibility
+- **Shift Left**: Start testing early in the development process
+- **Automation First**: Automate tests wherever possible
+- **User-Centric**: Focus on testing from the user's perspective
 
 ## Testing Levels
 
@@ -16,6 +24,7 @@ Each migrated component should undergo the following levels of testing:
   - Event handling
   - State management
   - Conditional rendering
+  - Hook logic
 
 ### 2. Visual Testing
 
@@ -26,14 +35,38 @@ Each migrated component should undergo the following levels of testing:
   - Responsive behavior
   - Theme variations
   - Animation states
+  - Edge cases (long text, empty states, error states)
 
 ### 3. Integration Testing
 
 - **Tool**: Cypress (or similar)
-  - **Coverage**: Key user flows that use the component
-  - **Focus Areas**:
-    - Component interaction with other components
-    - Real-world usage scenarios
+- **Coverage**: Key user flows that use the component
+- **Focus Areas**:
+  - Component interaction with other components
+  - Real-world usage scenarios
+  - Form submissions and validations
+  - State management across components
+
+### 4. Accessibility Testing
+
+- **Tool**: axe-core, jest-axe, Lighthouse
+- **Coverage**: All interactive components
+- **Focus Areas**:
+  - ARIA compliance
+  - Keyboard navigation
+  - Screen reader compatibility
+  - Color contrast
+  - Focus management
+
+### 5. Performance Testing
+
+- **Tool**: React Profiler, Lighthouse
+- **Coverage**: Complex components and frequently used components
+- **Focus Areas**:
+  - Render performance
+  - Re-render optimization
+  - Memory usage
+  - Bundle size impact
 
 ## Test File Structure
 
@@ -47,36 +80,128 @@ components/
         ├── [ComponentName].less       # Component styles
         ├── [ComponentName].test.tsx   # Unit tests
         ├── [ComponentName].stories.tsx # Storybook stories
-        └── [ComponentName].cy.tsx     # Cypress component tests (optional)
+        ├── [ComponentName].cy.tsx     # Cypress component tests (optional)
+        └── [ComponentName].a11y.test.tsx # Accessibility tests
 ```
 
 ## Unit Test Template
 
 ```tsx
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ComponentName } from './ComponentName';
 
 describe('ComponentName', () => {
+  // Basic rendering
   it('renders correctly with default props', () => {
     render(<ComponentName />);
     // Assertions...
   });
 
+  // Prop variations
   it('handles prop changes correctly', () => {
     const { rerender } = render(<ComponentName prop="value1" />);
-    // Assertions...
+    // Assertions for first render
     
     rerender(<ComponentName prop="value2" />);
-    // Assertions...
+    // Assertions for rerender
   });
 
-  it('handles user interactions correctly', () => {
-    render(<ComponentName onAction={jest.fn()} />);
-    fireEvent.click(screen.getByRole('button'));
-    // Assertions...
+  // User interactions
+  it('handles user interactions correctly', async () => {
+    const onAction = jest.fn();
+    render(<ComponentName onAction={onAction} />);
+    
+    // Using userEvent for more realistic interactions
+    await userEvent.click(screen.getByRole('button'));
+    
+    expect(onAction).toHaveBeenCalledTimes(1);
+    expect(onAction).toHaveBeenCalledWith(expect.any(Object));
   });
 
-  // Additional tests...
+  // State management
+  it('manages internal state correctly', async () => {
+    render(<ComponentName />);
+    
+    // Initial state assertions
+    expect(screen.getByText('Initial State')).toBeInTheDocument();
+    
+    // Trigger state change
+    await userEvent.click(screen.getByRole('button', { name: 'Update' }));
+    
+    // Updated state assertions
+    await waitFor(() => {
+      expect(screen.getByText('Updated State')).toBeInTheDocument();
+    });
+  });
+
+  // Error handling
+  it('handles error states gracefully', () => {
+    render(<ComponentName hasError />);
+    expect(screen.getByText('Error message')).toBeInTheDocument();
+  });
+
+  // Edge cases
+  it('handles edge cases correctly', () => {
+    render(<ComponentName data={[]} />);
+    expect(screen.getByText('No data available')).toBeInTheDocument();
+  });
+});
+```
+
+## Hook Testing
+
+For custom hooks used in components:
+
+```tsx
+import { renderHook, act } from '@testing-library/react-hooks';
+import { useCustomHook } from './useCustomHook';
+
+describe('useCustomHook', () => {
+  it('returns the correct initial state', () => {
+    const { result } = renderHook(() => useCustomHook());
+    expect(result.current.value).toBe(initialValue);
+  });
+
+  it('updates state correctly', () => {
+    const { result } = renderHook(() => useCustomHook());
+    
+    act(() => {
+      result.current.updateValue('new value');
+    });
+    
+    expect(result.current.value).toBe('new value');
+  });
+  
+  // Test side effects, cleanup, etc.
+});
+```
+
+## Accessibility Testing
+
+```tsx
+import { render } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { ComponentName } from './ComponentName';
+
+expect.extend(toHaveNoViolations);
+
+describe('ComponentName accessibility', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<ComponentName />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+  
+  it('has proper keyboard navigation', () => {
+    render(<ComponentName />);
+    // Test keyboard navigation
+  });
+  
+  it('has proper ARIA attributes', () => {
+    render(<ComponentName />);
+    // Test ARIA attributes
+  });
 });
 ```
 
@@ -91,29 +216,144 @@ const meta: Meta<typeof ComponentName> = {
   title: 'Category/ComponentName',
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component: 'Description of the component and its usage',
+      },
+    },
+    a11y: {
+      config: {
+        rules: [
+          // Specific a11y rules
+        ],
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
     // Configure controls for props
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary', 'tertiary'],
+      description: 'The visual style variant of the component',
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'md', 'lg'],
+      description: 'The size of the component',
+    },
+    // Additional props
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof ComponentName>;
 
+// Default state
 export const Default: Story = {
   args: {
     // Default props
   },
 };
 
-export const Variant: Story = {
+// Variants
+export const Primary: Story = {
   args: {
-    // Variant props
+    variant: 'primary',
   },
 };
 
-// Additional stories...
+export const Secondary: Story = {
+  args: {
+    variant: 'secondary',
+  },
+};
+
+// Sizes
+export const Small: Story = {
+  args: {
+    size: 'sm',
+  },
+};
+
+export const Large: Story = {
+  args: {
+    size: 'lg',
+  },
+};
+
+// States
+export const Loading: Story = {
+  args: {
+    isLoading: true,
+  },
+};
+
+export const Error: Story = {
+  args: {
+    hasError: true,
+    errorMessage: 'Something went wrong',
+  },
+};
+
+// Interactive example
+export const Interactive: Story = {
+  render: (args) => {
+    return (
+      <div>
+        <ComponentName {...args} />
+        {/* Additional interactive elements */}
+      </div>
+    );
+  },
+};
+```
+
+## Testing Compound Components
+
+For compound components, test both the individual parts and the complete component:
+
+```tsx
+describe('Tabs compound component', () => {
+  it('renders the complete tabs component correctly', () => {
+    render(
+      <Tabs defaultValue="tab1">
+        <Tabs.List>
+          <Tabs.Tab value="tab1">Tab 1</Tabs.Tab>
+          <Tabs.Tab value="tab2">Tab 2</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Content value="tab1">Content 1</Tabs.Content>
+        <Tabs.Content value="tab2">Content 2</Tabs.Content>
+      </Tabs>
+    );
+    
+    // Assertions
+  });
+  
+  it('shows the correct content when tabs are clicked', async () => {
+    render(
+      <Tabs defaultValue="tab1">
+        <Tabs.List>
+          <Tabs.Tab value="tab1">Tab 1</Tabs.Tab>
+          <Tabs.Tab value="tab2">Tab 2</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Content value="tab1">Content 1</Tabs.Content>
+        <Tabs.Content value="tab2">Content 2</Tabs.Content>
+      </Tabs>
+    );
+    
+    // Initial state
+    expect(screen.getByText('Content 1')).toBeInTheDocument();
+    expect(screen.queryByText('Content 2')).not.toBeInTheDocument();
+    
+    // Click second tab
+    await userEvent.click(screen.getByRole('tab', { name: 'Tab 2' }));
+    
+    // Updated state
+    expect(screen.queryByText('Content 1')).not.toBeInTheDocument();
+    expect(screen.getByText('Content 2')).toBeInTheDocument();
+  });
+});
 ```
 
 ## Testing Checklist
@@ -127,25 +367,10 @@ For each component, complete this testing checklist:
 - [ ] Integration tests verify component works in context
 - [ ] Tests run successfully in CI pipeline
 - [ ] Test coverage meets targets
-
-## Accessibility Testing
-
-Each component should be tested for accessibility:
-
-- [ ] Proper ARIA attributes
-- [ ] Keyboard navigation
-- [ ] Screen reader compatibility
-- [ ] Color contrast compliance
-- [ ] Focus management
-
-## Regression Testing
-
-Before finalizing a component migration:
-
-1. Run the full test suite to ensure no regressions
-2. Manually test the component in key application pages
-3. Verify the component works across all supported browsers
-4. Check performance metrics (if applicable)
+- [ ] Performance tests verify render efficiency
+- [ ] Tests for compound components verify all sub-components
+- [ ] Tests verify proper error handling
+- [ ] Tests verify proper loading states
 
 ## Continuous Integration
 
@@ -155,3 +380,16 @@ All tests should be integrated into the CI pipeline:
 - Visual tests run on every PR with approval workflow
 - Integration tests run on main branch merges
 - Test coverage reports generated automatically
+- Accessibility tests run on every PR
+- Performance benchmarks tracked over time
+
+## Best Practices
+
+1. **Test behavior, not implementation** - Focus on what the component does, not how it does it
+2. **Use realistic user interactions** - Use `userEvent` instead of `fireEvent` when possible
+3. **Test edge cases** - Empty states, error states, loading states
+4. **Mock external dependencies** - Use Jest mocks for API calls, complex dependencies
+5. **Keep tests simple** - One assertion per test when possible
+6. **Use test-data attributes** - Add `data-testid` for elements that are hard to select
+7. **Test accessibility** - Include accessibility tests for all components
+8. **Test responsiveness** - Verify components work at different viewport sizes

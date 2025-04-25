@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react';
 import { StatCard } from './StatCard';
 import { Rocket, Zap, AlertCircle } from 'lucide-react';
 
@@ -69,7 +69,7 @@ export const WithPositiveTrend: Story = {
     icon: 'trending',
     variant: 'success',
     trend: {
-          value: 12.5,
+      value: 12.5,
       label: 'vs last month',
       direction: 'up',
       isGood: true,
@@ -142,7 +142,7 @@ export const WithTooltip: Story = {
 // All variants
 export const Variants: Story = {
   render: () => (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', maxWidth: '800px' }}></div>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', maxWidth: '800px' }}>
       <StatCard title="Default Variant" value={42} variant="default" />
       <StatCard title="Primary Variant" value={42} variant="primary" />
       <StatCard title="Success Variant" value={42} variant="success" />
@@ -156,7 +156,7 @@ export const Variants: Story = {
 // Responsive grid
 export const ResponsiveGrid: Story = {
   render: () => (
-    <div className="stat-card-grid" style={{ maxWidth: '100%', width: '100%' }}></div>
+    <div className="stat-card-grid" style={{ maxWidth: '100%', width: '100%' }}>
       <StatCard title="Total Users" value={1234} icon="users" variant="primary" />
       <StatCard title="Active Projects" value={18} icon="rocket" variant="success" />
       <StatCard title="Revenue" value="$12,345" icon="trending" variant="info" />

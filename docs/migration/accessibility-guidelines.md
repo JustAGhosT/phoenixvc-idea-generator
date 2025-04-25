@@ -1,6 +1,6 @@
 # Accessibility Guidelines
 
-This document outlines accessibility guidelines for component migration to ensure all components are usable by people with disabilities and comply with WCAG 2.1 AA standards.
+This document outlines comprehensive accessibility guidelines for component migration to ensure all components are usable by people with disabilities and comply with WCAG 2.1 AA standards, aligned with our new component architecture principles.
 
 ## Core Accessibility Principles
 
@@ -11,229 +11,384 @@ All migrated components should follow these core principles:
 3. **Understandable** - Information and operation must be understandable
 4. **Robust** - Content must be robust enough to be interpreted by a variety of user agents
 
-## Component Accessibility Requirements
+## Component Accessibility Requirements by Component Type
 
-### 1. Semantic HTML
+### Core Components (Atoms)
 
-- Use appropriate HTML elements for their intended purpose
-- Use heading tags (`<h1>` through `<h6>`) in logical order
-- Use lists (`<ul>`, `<ol>`, `<dl>`) for list content
-- Use `<button>` for clickable actions, `<a>` for navigation
-- Use `<table>` for tabular data with proper headers
+Basic building blocks must have rock-solid accessibility foundations:
 
-```tsx
-// Good example
-<button onClick={handleClick}>Submit</button>
-
-// Bad example
-<div onClick={handleClick}>Submit</div>
-```
-
-### 2. ARIA Attributes
-
-- Add ARIA attributes when HTML semantics are not sufficient
-- Use `aria-label` for elements without visible text
-- Use `aria-expanded`, `aria-haspopup` for expandable components
-- Use `aria-controls` to associate controls with their targets
-- Use `aria-live` regions for dynamic content updates
+- Use native HTML elements whenever possible (`<button>`, `<input>`, etc.)
+- Implement proper ARIA roles and attributes when extending native elements
+- Ensure keyboard navigation works without mouse interaction
+- Maintain focus states that are clearly visible
+- Provide programmatically associated labels for all form controls
 
 ```tsx
-// Example of ARIA usage
-<button 
-  aria-expanded={isOpen} 
-  aria-controls="dropdown-menu"
-  onClick={toggleMenu}
->
-  Menu
-</button>
-<div 
-  id="dropdown-menu" 
-  role="menu" 
-  hidden={!isOpen}
->
-  {/* Menu items */}
-</div>
-```
-
-### 3. Keyboard Navigation
-
-- Ensure all interactive elements are keyboard accessible
-- Use logical tab order (tab index of 0 or not specified)
-- Implement keyboard shortcuts for complex interactions
-- Ensure focus states are visible
-- Trap focus in modals and dialogs
-
-```tsx
-// Example of keyboard navigation in a dialog
-const Dialog = ({ isOpen, onClose, children }) => {
-  const dialogRef = useRef(null);
-  
-  useEffect(() => {
-    if (isOpen) {
-      // Save previous focus
-      const previousFocus = document.activeElement;
-      
-      // Focus the dialog
-      dialogRef.current.focus();
-      
-      // Restore focus when dialog closes
-      return () => {
-        previousFocus.focus();
-      };
-    }
-  }, [isOpen]);
-  
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      onClose();
-    }
-  };
-  
-  if (!isOpen) return null;
-  
+// Example of accessible atom component
+export function Button({ 
+  variant = 'primary',
+  size = 'md',
+  children,
+  disabled,
+  ariaLabel,
+  ...props
+}: ButtonProps) {
   return (
-    <div 
-      ref={dialogRef}
-      role="dialog"
-      aria-modal="true"
-      tabIndex={-1}
-      onKeyDown={handleKeyDown}
+    <button
+      className={cn(`button button--${variant} button--${size}`, {
+        'button--disabled': disabled
+      })}
+      disabled={disabled}
+      aria-label={ariaLabel || typeof children === 'string' ? undefined : ariaLabel}
+      {...props}
     >
       {children}
-      <button onClick={onClose}>Close</button>
+    </button>
+  );
+}
+```
+
+### Composite Components (Molecules)
+
+Components composed of multiple atoms must maintain accessibility context:
+
+- Ensure proper keyboard navigation between child components
+- Use appropriate ARIA relationships (`aria-controls`, `aria-owns`, etc.)
+- Implement proper focus management, especially for interactive components
+- Ensure state changes are announced to screen readers
+
+```tsx
+// Example of accessible molecule component
+export function Accordion({ items, defaultExpanded = [] }: AccordionProps) {
+  const [expandedItems, setExpandedItems] = useState<string[]>(defaultExpanded);
+  
+  return (
+    <div className="accordion">
+      {items.map((item) => {
+        const isExpanded = expandedItems.includes(item.id);
+        const headerId = `accordion-header-${item.id}`;
+        const panelId = `accordion-panel-${item.id}`;
+        
+        return (
+          <div key={item.id} className="accordion-item">
+            <h3>
+              <button
+                id={headerId}
+                className="accordion-header"
+                onClick={() => toggleItem(item.id)}
+                aria-expanded={isExpanded}
+                aria-controls={panelId}
+              >
+                {item.title}
+                <span className="accordion-icon" aria-hidden="true">
+                  {isExpanded ? '−' : '+'}
+                </span>
+              </button>
+            </h3>
+            <div
+              id={panelId}
+              role="region"
+              aria-labelledby={headerId}
+              className="accordion-panel"
+              hidden={!isExpanded}
+            >
+              {item.content}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
-};
-```
-
-### 4. Color and Contrast
-
-- Ensure sufficient color contrast (4.5:1 for normal text, 3:1 for large text)
-- Don't rely on color alone to convey information
-- Provide additional indicators (icons, text, patterns)
-- Support high contrast mode
-
-```less
-// Example of accessible color usage
-.button {
-  // Base button with sufficient contrast
-  background-color: @primary-color;
-  color: @white;
-  
-  // Additional indicator beyond color
-  &.active {
-    background-color: @primary-color-dark;
-    border: 2px solid @black;
-    font-weight: bold;
-  }
-  
-  // High contrast mode support
-  @media (forced-colors: active) {
-    border: 1px solid ButtonText;
-  }
 }
 ```
 
-### 5. Text and Typography
+### Feature Components (Organisms)
 
-- Use relative units (em, rem) instead of fixed units (px)
-- Ensure text can be resized up to 200% without loss of content
-- Maintain line height of at least 1.5 for paragraph text
-- Ensure sufficient spacing between paragraphs (at least 1.5 times line height)
+Complex components that implement specific features must handle advanced accessibility concerns:
 
-```less
-// Example of accessible typography
-.text {
-  font-size: 1rem;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
+- Implement proper keyboard shortcuts with appropriate documentation
+- Manage focus trapping for modal dialogs and similar components
+- Use `aria-live` regions for dynamic content updates
+- Implement proper error handling and status messaging
+- Consider touch target sizes for mobile accessibility
+
+```tsx
+// Example of accessible organism component
+export function DataTable({ columns, data, sortable = true }: DataTableProps) {
+  const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
+  const [page, setPage] = useState(1);
   
-  // Allow text to wrap
-  overflow-wrap: break-word;
-  word-wrap: break-word;
+  // Announce sort changes to screen readers
+  const [announcement, setAnnouncement] = useState('');
+  
+  const handleSort = (columnId: string) => {
+    // Sort logic
+    setAnnouncement(`Table sorted by ${columnName} in ${direction} order`);
+  };
+  
+  return (
+    <div className="data-table-container">
+      {/* Screen reader announcement */}
+      <div className="sr-only" aria-live="polite">{announcement}</div>
+      
+      <table className="data-table">
+        <caption className="data-table-caption">
+          {caption}
+          {description && <div className="data-table-description">{description}</div>}
+        </caption>
+        <thead>
+          <tr>
+            {columns.map((column) => (
+              <th 
+                key={column.id}
+                scope="col"
+                aria-sort={getSortDirection(column.id)}
+              >
+                {sortable && column.sortable !== false ? (
+                  <button 
+                    className="sort-button"
+                    onClick={() => handleSort(column.id)}
+                    aria-label={`Sort by ${column.name}`}
+                  >
+                    {column.name}
+                    <span className="sort-icon" aria-hidden="true">
+                      {getSortIcon(column.id)}
+                    </span>
+                  </button>
+                ) : column.name}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {/* Table rows */}
+        </tbody>
+      </table>
+      
+      {/* Pagination with keyboard navigation */}
+      <div className="pagination" role="navigation" aria-label="Pagination">
+        {/* Pagination controls */}
+      </div>
+    </div>
+  );
 }
 ```
 
-### 6. Forms and Inputs
+### Layout Components
 
-- Associate labels with form controls using `for` attribute
-- Group related form elements with `fieldset` and `legend`
-- Provide clear error messages and validation
-- Support autocomplete where appropriate
+Components that control page structure must ensure proper document structure:
+
+- Use appropriate landmark roles (`main`, `nav`, `aside`, etc.)
+- Implement proper heading hierarchy
+- Provide skip links for keyboard navigation
+- Ensure responsive layouts maintain content order for screen readers
 
 ```tsx
-// Example of accessible form
-<form>
-  <div>
-    <label htmlFor="name">Name</label>
-    <input 
-      id="name" 
-      name="name" 
-      type="text"
-      aria-required="true"
-      aria-invalid={errors.name ? "true" : "false"}
-    />
-    {errors.name && (
-      <div role="alert">{errors.name}</div>
-    )}
-  </div>
+// Example of accessible layout component
+export function PageLayout({ header, sidebar, main, footer }: PageLayoutProps) {
+  return (
+    <div className="page-layout">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      
+      <header role="banner" className="header">
+        {header}
+      </header>
+      
+      <div className="layout-container">
+        <nav role="navigation" aria-label="Main Navigation" className="sidebar">
+          {sidebar}
+        </nav>
+        
+        <main id="main-content" role="main" className="main-content">
+          {main}
+        </main>
+      </div>
+      
+      <footer role="contentinfo" className="footer">
+        {footer}
+      </footer>
+    </div>
+  );
+}
+```
+
+## Accessibility Implementation by Design Pattern
+
+### Compound Component Pattern
+
+When implementing compound components, ensure accessibility relationships are maintained:
+
+```tsx
+// Accessible compound component example
+export function Tabs({ children, defaultValue, ...props }) {
+  const [activeTab, setActiveTab] = useState(defaultValue);
+  const tabsId = useId();
   
-  <fieldset>
-    <legend>Contact Preferences</legend>
-    <div>
-      <input type="checkbox" id="email-pref" name="contact" value="email" />
-      <label htmlFor="email-pref">Email</label>
-    </div>
-    <div>
-      <input type="checkbox" id="phone-pref" name="contact" value="phone" />
-      <label htmlFor="phone-pref">Phone</label>
-    </div>
-  </fieldset>
-</form>
-```
+  return (
+    <TabsContext.Provider value={{ activeTab, setActiveTab, tabsId }}>
+      <div className="tabs-container" {...props}>
+        {children}
+      </div>
+    </TabsContext.Provider>
+  );
+}
 
-### 7. Images and Media
-
-- Provide alternative text for images using `alt` attribute
-- Make decorative images presentational with empty alt text
-- Provide captions and transcripts for audio/video content
-- Ensure media is not auto-playing with sound
-
-```tsx
-// Example of accessible image usage
-<img 
-  src="/path/to/chart.png" 
-  alt="Bar chart showing revenue growth by quarter" 
-/>
-
-// Decorative image
-<img 
-  src="/path/to/decorative.png" 
-  alt="" 
-  role="presentation" 
-/>
-```
-
-### 8. Dynamic Content
-
-- Announce important content changes with ARIA live regions
-- Provide sufficient time for users to read content
-- Allow users to pause, stop, or hide moving content
-- Avoid content that flashes more than three times per second
-
-```tsx
-// Example of ARIA live region
-const Notification = ({ message }) => {
+Tabs.List = function TabsList({ children, label = "Tabs" }) {
+  const { tabsId } = useTabsContext();
+  
   return (
     <div 
-      role="status" 
-      aria-live="polite"
-      className="notification"
+      role="tablist" 
+      aria-label={label}
+      className="tabs-list"
     >
-      {message}
+      {children}
     </div>
   );
 };
+
+Tabs.Tab = function Tab({ value, children }) {
+  const { activeTab, setActiveTab, tabsId } = useTabsContext();
+  const isActive = activeTab === value;
+  const id = `${tabsId}-tab-${value}`;
+  const panelId = `${tabsId}-panel-${value}`;
+  
+  return (
+    <button
+      id={id}
+      role="tab"
+      aria-selected={isActive}
+      aria-controls={panelId}
+      tabIndex={isActive ? 0 : -1}
+      className={`tab ${isActive ? 'active' : ''}`}
+      onClick={() => setActiveTab(value)}
+      onKeyDown={(e) => {
+        // Handle arrow key navigation between tabs
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          // Navigation logic
+        }
+      }}
+    >
+      {children}
+    </button>
+  );
+};
+
+Tabs.Content = function TabContent({ value, children }) {
+  const { activeTab, tabsId } = useTabsContext();
+  const isActive = activeTab === value;
+  const id = `${tabsId}-panel-${value}`;
+  const tabId = `${tabsId}-tab-${value}`;
+  
+  return (
+    <div 
+      id={id}
+      role="tabpanel"
+      aria-labelledby={tabId}
+      tabIndex={0}
+      hidden={!isActive}
+      className="tab-content"
+    >
+      {children}
+    </div>
+  );
+};
+```
+
+### Custom Hook Pattern
+
+When extracting logic to custom hooks, include accessibility concerns:
+
+```tsx
+// Accessible custom hook example
+function useFormField(initialValue = '', validationFn = () => '') {
+  const [value, setValue] = useState(initialValue);
+  const [touched, setTouched] = useState(false);
+  const [error, setError] = useState('');
+  const id = useId();
+  
+  const validate = useCallback(() => {
+    const errorMessage = validationFn(value);
+    setError(errorMessage);
+    return !errorMessage;
+  }, [value, validationFn]);
+  
+  const handleChange = useCallback((e) => {
+    setValue(e.target.value);
+    if (touched) validate();
+  }, [touched, validate]);
+  
+  const handleBlur = useCallback(() => {
+    setTouched(true);
+    validate();
+  }, [validate]);
+  
+  return {
+    value,
+    setValue,
+    touched,
+    error,
+    handleChange,
+    handleBlur,
+    validate,
+    // Accessibility-enhanced props
+    inputProps: {
+      id,
+      value,
+      onChange: handleChange,
+      onBlur: handleBlur,
+      'aria-invalid': error ? 'true' : 'false',
+      'aria-describedby': error ? `${id}-error` : undefined,
+    },
+    labelProps: {
+      htmlFor: id,
+    },
+    errorProps: {
+      id: `${id}-error`,
+      role: 'alert',
+    }
+  };
+}
+```
+
+## Responsive Accessibility Considerations
+
+Ensure components remain accessible across different screen sizes:
+
+- Maintain logical reading order in responsive layouts
+- Ensure touch targets are at least 44×44 pixels on mobile
+- Provide alternatives to hover interactions for touch devices
+- Test focus management in both desktop and mobile views
+- Ensure text remains readable when zoomed to 200%
+
+```tsx
+// Example of responsive accessibility
+.card {
+  // Base styles
+  padding: 1rem;
+  
+  // Ensure touch targets are large enough on mobile
+  @media (max-width: 768px) {
+    .card__button {
+      min-height: 44px;
+      min-width: 44px;
+      padding: 0.75rem 1rem;
+    }
+    
+    // Increase spacing between interactive elements
+    .card__actions > * + * {
+      margin-left: 0.75rem;
+    }
+  }
+  
+  // Ensure text remains readable when zoomed
+  .card__content {
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+}
 ```
 
 ## Accessibility Testing
@@ -264,21 +419,36 @@ test('Button has no accessibility violations', async () => {
 - Test with high contrast mode
 - Test with text zoom (up to 200%)
 - Test with reduced motion settings
+- Test with different viewport sizes
 
-## Accessibility Checklist
+## Component-Specific Accessibility Checklists
 
-For each migrated component, complete this accessibility checklist:
+### Form Components
 
-- [ ] Component uses semantic HTML
-- [ ] Interactive elements are keyboard accessible
-- [ ] ARIA attributes are used appropriately
-- [ ] Color contrast meets WCAG AA standards (4.5:1)
-- [ ] Component doesn't rely on color alone to convey information
-- [ ] Text is resizable up to 200% without loss of content
-- [ ] Component works with screen readers
-- [ ] Component supports high contrast mode
-- [ ] Component respects reduced motion preferences
-- [ ] Automated accessibility tests pass
+- [ ] Labels are programmatically associated with inputs
+- [ ] Required fields are indicated both visually and programmatically
+- [ ] Error messages are linked to inputs using `aria-describedby`
+- [ ] Error states use `aria-invalid="true"`
+- [ ] Form groups use `fieldset` and `legend` where appropriate
+- [ ] Custom form controls have proper ARIA roles and states
+
+### Interactive Components
+
+- [ ] All interactive elements are keyboard accessible
+- [ ] Focus states are clearly visible
+- [ ] Custom keyboard shortcuts are documented and don't conflict with browser/screen reader shortcuts
+- [ ] Drag and drop interfaces have keyboard alternatives
+- [ ] Tooltips and popovers are accessible via keyboard
+- [ ] Modal dialogs trap focus and can be dismissed with ESC key
+
+### Data Visualization Components
+
+- [ ] Charts have appropriate text alternatives
+- [ ] Data tables use proper table structure with headers
+- [ ] Interactive visualizations can be navigated with keyboard
+- [ ] Color is not the only means of conveying information
+- [ ] Patterns or textures supplement color differences
+- [ ] Critical information is available in text format
 
 ## Resources
 
@@ -286,3 +456,5 @@ For each migrated component, complete this accessibility checklist:
 - [WAI-ARIA Authoring Practices](https://www.w3.org/TR/wai-aria-practices-1.1/)
 - [MDN Accessibility Guide](https://developer.mozilla.org/en-US/docs/Web/Accessibility)
 - [A11y Project Checklist](https://www.a11yproject.com/checklist/)
+- [Inclusive Components](https://inclusive-components.design/)
+- [Deque University](https://dequeuniversity.com/)
