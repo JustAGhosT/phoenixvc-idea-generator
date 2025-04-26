@@ -1,0 +1,163 @@
+/* Card animations */
+
+/* Base transitions for all cards */
+.cardTransition {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* Entrance animations */
+.cardEnter {
+  animation: cardEnter 0.3s ease forwards;
+}
+
+@keyframes cardEnter {
+  from { 
+    opacity: 0; 
+    transform: translateY(8px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+
+/* Interactive card hover animations */
+.cardHover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.cardHover:hover {
+  transform: translateY(-2px);
+  @apply shadow-md;
+}
+
+.cardHover:active {
+  transform: translateY(0);
+}
+
+/* Elevation animations */
+.cardElevate {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.cardElevate:hover {
+  @apply shadow-md;
+}
+
+/* Pulse animation for attention */
+.cardPulse {
+  animation: cardPulse 2s infinite;
+}
+
+@keyframes cardPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+/* Gradient shift animation */
+.cardGradientShift {
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Border glow animation */
+.cardBorderGlow {
+  animation: borderGlow 2s ease-in-out infinite;
+}
+
+@keyframes borderGlow {
+  0% { border-color: rgba(66, 153, 225, 0.6); }
+  50% { border-color: rgba(66, 153, 225, 0.9); }
+  100% { border-color: rgba(66, 153, 225, 0.6); }
+}
+
+/* Card content animations */
+.cardContentFade {
+  animation: contentFade 0.3s ease forwards;
+}
+
+@keyframes contentFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Card header animations */
+.cardHeaderSlide {
+  animation: headerSlide 0.3s ease forwards;
+}
+
+@keyframes headerSlide {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Card footer animations */
+.cardFooterSlide {
+  animation: footerSlide 0.3s ease forwards;
+}
+
+@keyframes footerSlide {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Staggered animations for card parts */
+.cardStaggered .card__header {
+  animation: headerSlide 0.3s ease forwards;
+}
+
+.cardStaggered .card__content {
+  animation: contentFade 0.3s 0.1s ease forwards;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.cardStaggered .card__footer {
+  animation: footerSlide 0.3s 0.2s ease forwards;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+/* Flip animation */
+.cardFlip {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+}
+
+.cardFlip:hover {
+  transform: rotateY(180deg);
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .cardTransition,
+  .cardEnter,
+  .cardHover,
+  .cardHover:hover,
+  .cardHover:active,
+  .cardElevate,
+  .cardElevate:hover,
+  .cardPulse,
+  .cardGradientShift,
+  .cardBorderGlow,
+  .cardContentFade,
+  .cardHeaderSlide,
+  .cardFooterSlide,
+  .cardStaggered .card__header,
+  .cardStaggered .card__content,
+  .cardStaggered .card__footer,
+  .cardFlip,
+  .cardFlip:hover {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
