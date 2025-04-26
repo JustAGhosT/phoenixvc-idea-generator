@@ -1,0 +1,112 @@
+.toggleContainer {
+  @apply flex flex-col mb-2;
+}
+
+.toggleWrapper {
+  @apply flex items-center;
+}
+
+.toggleWrapper--labelLeft {
+  @apply flex-row-reverse justify-end;
+}
+
+.toggleWrapper--labelLeft .toggleLabel {
+  @apply mr-2 ml-0;
+}
+
+.toggleSwitchWrapper {
+  @apply relative inline-block;
+}
+
+.toggleInput {
+  @apply absolute opacity-0 w-0 h-0;
+}
+
+.toggleInput:focus + .toggleSwitch {
+  @apply ring-2 ring-primary-300;
+}
+
+.toggleInput:checked + .toggleSwitch .toggleKnob {
+  transform: translateX(100%);
+}
+
+.toggleInput:checked + .toggleSwitch--primary {
+  @apply bg-primary-500;
+}
+
+.toggleInput:checked + .toggleSwitch--secondary {
+  @apply bg-secondary-500;
+}
+
+.toggleInput:checked + .toggleSwitch--success {
+  @apply bg-success-500;
+}
+
+.toggleInput:checked + .toggleSwitch--danger {
+  @apply bg-danger-500;
+}
+
+.toggleSwitch {
+  @apply flex items-center relative cursor-pointer bg-gray-300 rounded-full transition-all duration-200;
+}
+
+/* Sizes */
+.toggleSwitch--sm {
+  @apply w-8 h-4;
+}
+
+.toggleSwitch--sm .toggleKnob {
+  @apply w-3 h-3;
+  transform: translateX(2px);
+}
+
+.toggleSwitch--md {
+  @apply w-11 h-[22px];
+}
+
+.toggleSwitch--md .toggleKnob {
+  @apply w-[18px] h-[18px];
+  transform: translateX(2px);
+}
+
+.toggleSwitch--lg {
+  @apply w-14 h-7;
+}
+
+.toggleSwitch--lg .toggleKnob {
+  @apply w-6 h-6;
+  transform: translateX(2px);
+}
+
+/* States */
+.toggleSwitch--disabled {
+  @apply opacity-60 cursor-not-allowed bg-gray-200;
+}
+
+.toggleSwitch--error {
+  @apply bg-danger-100;
+}
+
+.toggleSwitch--error:not(:checked) {
+  @apply border border-danger-500;
+}
+
+.toggleKnob {
+  @apply absolute bg-white rounded-full transition-transform duration-200 shadow-sm;
+}
+
+.toggleLabel {
+  @apply ml-2 text-base text-gray-900 cursor-pointer select-none;
+}
+
+.toggleLabel--disabled {
+  @apply text-gray-400 cursor-not-allowed;
+}
+
+.toggleHelperText {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+.toggleHelperText--error {
+  @apply text-danger-500;
+}

@@ -1,8 +1,8 @@
-import React, { forwardRef } from 'react';
 import { cn } from '@/utils/classnames';
-import styles from './Toggle.less';
+import React, { forwardRef, useEffect, useState } from 'react';
+import styles from './Toggle.module.css';
 
-export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   /**
    * The label for the toggle
    */
@@ -35,6 +35,10 @@ export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
    * @default false
    */
   labelLeft?: boolean;
+/**
+   * Default checked state (uncontrolled)
+ */
+  defaultChecked?: boolean;
 }
 
 /**
@@ -42,8 +46,10 @@ export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
  * 
  * @example
  * ```tsx
- * <Toggle label="Dark mode" />
+ * // Uncontrolled
+ * <Toggle label="Dark mode" defaultChecked={true} onChange={(e) => console.log(e.target.checked)} />
  * 
+ * // Controlled
  * <Toggle 
  *   label="Notifications"
  *   checked={notificationsEnabled}
@@ -55,6 +61,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
   ({
     label,
     checked,
+    defaultChecked = false,
     size = 'md',
     variant = 'primary',
     className,
@@ -63,8 +70,31 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
     disabled,
     id,
     labelLeft = false,
+    onChange,
     ...props
   }, ref) => {
+    // Internal state for uncontrolled usage
+    const [internalChecked, setInternalChecked] = useState(defaultChecked);
+    
+    // Determine if component is controlled or uncontrolled
+    const isControlled = checked !== undefined;
+    const isChecked = isControlled ? checked : internalChecked;
+    
+    // Sync internal state with controlled state if it changes
+    useEffect(() => {
+      if (isControlled) {
+        setInternalChecked(checked);
+      }
+    }, [isControlled, checked]);
+    
+    // Handle changes, updating internal state and calling external handler
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!isControlled) {
+        setInternalChecked(e.target.checked);
+      }
+      onChange?.(e);
+    };
+    
     const toggleId = id || `toggle-${Math.random().toString(36).substring(2, 9)}`;
     
     return (
@@ -90,9 +120,10 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
               type="checkbox"
               id={toggleId}
               ref={ref}
-              checked={checked}
+              checked={isChecked}
               disabled={disabled}
               className={styles.toggleInput}
+              onChange={handleChange}
               {...props}
             />
             <div 
