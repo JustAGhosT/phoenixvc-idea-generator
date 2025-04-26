@@ -1,5 +1,5 @@
 import { QuoteDisplay } from "@/components/common/QuoteDisplay";
-import { StatCard } from "@/components/common/cards/StatCard"; // Updated import path
+import { StatCard } from "@/components/data-display/stat-card"; // Updated to new path
 import { ActivityList } from "@/components/dashboard/ActivityList";
 import { BarChart } from "@/components/dashboard/BarChart";
 import { ProjectsList } from "@/components/dashboard/ProjectsList";

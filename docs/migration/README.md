@@ -6,7 +6,7 @@ This directory contains migration plans and tracking documents for components th
 
 We're migrating components to a standardized structure with:
 - Consistent directory organization
-- Component-specific LESS modules
+- CSS Modules with Tailwind integration
 - Standardized TypeScript interfaces
 - Comprehensive documentation
 - Proper accessibility implementation
@@ -17,7 +17,7 @@ We're migrating components to a standardized structure with:
 Each component has its own markdown file with:
 - Current implementation details
 - Migration plan with standardized interface
-- Directory structure and LESS module design
+- Directory structure and CSS Module design
 - Implementation strategy and usage examples
 - Accessibility and performance considerations
 - Unit testing strategy
@@ -30,9 +30,9 @@ Each component has its own markdown file with:
 
 | Component | Status | Priority | Complexity | Assigned To |
 |-----------|--------|----------|------------|-------------|
-| [StatCard](./components/statcard.md) | In Progress | Medium | Low | Alex |
-| [QuoteDisplay](./components/quote-display.md) | In Progress | Medium | Low | Taylor |
-| [BarChart](./components/barchart.md) | In Progress | High | Medium | Jordan |
+| [StatCard](./components/statcard.md) | In Progress | Medium | Low | Jurie |
+| [QuoteDisplay](./components/quote-display.md) | In Progress | Medium | Low | Jurie |
+| [BarChart](./components/barchart.md) | In Progress | High | Medium | Jurie |
 | [Sidebar](./components/sidebar.md) | Not Started | High | High | - |
 | [Layout](./components/layout.md) | Not Started | High | High | - |
 | [Navigation](./components/navigation.md) | Not Started | High | Medium | - |
@@ -103,11 +103,11 @@ We favor composition over inheritance for component reuse:
 function StatCard({ title, value, icon, trend, ...props }: StatCardProps) {
   return (
     <Card {...props}>
-      <div className="stat-card-header">
+      <div className={styles.statCardHeader}>
         <h3>{title}</h3>
-        {icon && <span className="icon">{icon}</span>}
+        {icon && <span className={styles.icon}>{icon}</span>}
       </div>
-      <div className="stat-card-value">{value}</div>
+      <div className={styles.statCardValue}>{value}</div>
       {trend && <TrendIndicator value={trend} />}
     </Card>
   )
@@ -119,7 +119,7 @@ function StatCard({ title, value, icon, trend, ...props }: StatCardProps) {
 Our migration follows these standardized guidelines:
 
 - [Migration Checklist](./migration-checklist.md) - Step-by-step process for component migration
-- [LESS Integration](./less-integration.md) - Adding component-specific LESS modules
+- [CSS Modules with Tailwind Integration](./css-modules-tailwind-integration.md) - Migrating from LESS to CSS Modules with Tailwind
 - [Testing Strategy](./testing-strategy.md) - Approach for testing migrated components
 - [Performance Considerations](./performance-considerations.md) - Ensuring optimal component performance
 - [Accessibility Guidelines](./accessibility-guidelines.md) - Making components accessible to all users
@@ -144,7 +144,7 @@ For each component, follow these general steps:
 
 1. **Identify** - Find all instances and usages of the component
 2. **Design** - Create a standardized interface and plan the implementation
-3. **Implement** - Create the new unified component with its LESS module
+3. **Implement** - Create the new unified component with CSS Modules and Tailwind
 4. **Test** - Follow the testing strategy to ensure quality
 5. **Migrate** - Update imports and usages throughout the codebase
 6. **Document** - Add proper documentation and examples
@@ -158,9 +158,13 @@ The new component directory structure will be:
 ```
 components/
 ├── ui/               # Core UI components (atoms)
-│   ├── button.tsx
-│   ├── input.tsx
-│   ├── card.tsx
+│   ├── button/
+│   │   ├── Button.tsx
+│   │   ├── Button.module.css
+│   │   ├── __tests__/
+│   │   └── index.ts
+│   ├── input/
+│   ├── card/
 │   └── ...
 ├── common/           # Composite reusable components (molecules)
 │   ├── cards/        # Card components including StatCard
@@ -280,7 +284,7 @@ All migrated components must meet these quality standards:
 
 ## Styling Approach
 
-We use a combination of Tailwind CSS and CSS LESS Modules for styling:
+We use CSS Modules with Tailwind CSS for styling:
 
 1. **Tailwind CSS** - For rapid UI development and consistent design tokens
 2. **CSS Modules** - For component-specific styles that go beyond Tailwind
@@ -302,7 +306,7 @@ We prioritize accessibility in our component design:
 |-----------|---------------------|
 | Breaking changes | Use feature flags for gradual rollout |
 | Performance regressions | Implement performance testing and monitoring |
-| Inconsistent styling | Enforce LESS module patterns and design system |
+| Inconsistent styling | Enforce CSS Module patterns and design system |
 | Testing coverage | Establish minimum test coverage requirements |
 | Documentation gaps | Create documentation templates and standards |
 | Component complexity | Apply compound component pattern for complex UIs |

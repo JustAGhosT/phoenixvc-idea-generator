@@ -1,22 +1,38 @@
-import React from 'react';
 import { cn } from '@/utils/classnames';
-import styles from './Card.less';
+import React from 'react';
+import styles from './Card.module.css';
+
+export type CardVariant = 
+  | 'default' 
+  | 'outline' 
+  | 'elevated' 
+  | 'filled' 
+  | 'gradient' 
+  | 'ghost';
+
+export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Card variant
-   * @default "default"
+   * @default 'default'
    */
-  variant?: 'default' | 'outline' | 'elevated';
+  variant?: CardVariant;
   
   /**
-   * Card padding size
-   * @default "md"
+   * Card padding
+   * @default 'md'
    */
-  padding?: 'none' | 'sm' | 'md' | 'lg';
+  padding?: CardPadding;
   
   /**
-   * Whether the card should take full width
+   * Makes the card interactive with hover effects
+   * @default false
+   */
+  interactive?: boolean;
+  
+  /**
+   * Makes the card take up full width of its container
    * @default false
    */
   fullWidth?: boolean;
@@ -28,35 +44,25 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 /**
- * Card component for containing content in a defined box with various styling options.
- * 
- * @example
- * ```tsx
- * <Card>
- *   <h3>Card Title</h3>
- *   <p>Card content goes here</p>
- * </Card>
- * 
- * <Card variant="outline" padding="lg">
- *   <h3>Outlined Card</h3>
- *   <p>With larger padding</p>
- * </Card>
- * ```
+ * Card component for containing content and actions
  */
-export function Card({
+export const Card = React.forwardRef<HTMLDivElement, CardProps>(({
   variant = 'default',
   padding = 'md',
+  interactive = false,
   fullWidth = false,
   className,
   children,
   ...props
-}: CardProps) {
+}, ref) => {
   return (
     <div
+      ref={ref}
       className={cn(
         styles.card,
         styles[`card--${variant}`],
         styles[`card--padding-${padding}`],
+        interactive && styles['card--interactive'],
         fullWidth && styles['card--full-width'],
         className
       )}
@@ -65,60 +71,8 @@ export function Card({
       {children}
     </div>
   );
-}
+});
 
-/**
- * Card header component
- */
-Card.Header = function CardHeader({
-  className,
-  children,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn(styles['card__header'], className)}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
-
-/**
- * Card content component
- */
-Card.Content = function CardContent({
-  className,
-  children,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn(styles['card__content'], className)}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
-
-/**
- * Card footer component
- */
-Card.Footer = function CardFooter({
-  className,
-  children,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn(styles['card__footer'], className)}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
+Card.displayName = "Card";
 
 export default Card;

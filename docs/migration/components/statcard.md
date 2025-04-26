@@ -22,7 +22,7 @@ Previously, the StatCard component had an inconsistent implementation:
 
 ### Target Location
 - New unified component: `components/common/cards/StatCard.tsx`
-- LESS module: `components/common/cards/StatCard.less`
+- CSS Module: `components/common/cards/StatCard.module.css`
 
 ### Directory Structure
 
@@ -32,8 +32,9 @@ components/
     └── cards/
         ├── index.ts
         ├── StatCard.tsx
-        ├── StatCard.less
-        ├── StatCard.test.tsx
+        ├── StatCard.module.css
+        ├── __tests__/
+        │   └── StatCard.test.tsx
         └── StatCard.stories.tsx
 ```
 
@@ -69,9 +70,9 @@ export interface StatCardProps {
 }
 ```
 
-### LESS Module Design
+### CSS Module with Tailwind Design
 
-The LESS module includes styles for:
+The CSS Module includes styles for:
 - Card container with proper padding, borders, and shadows
 - Typography for title, value, and description
 - Icon placement and sizing
@@ -82,9 +83,96 @@ The LESS module includes styles for:
 - Compact variant for space-constrained layouts
 - Responsive behavior for different screen sizes
 
+```css
+/* StatCard.module.css */
+.statCard {
+  @apply rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm transition-all;
+}
+
+.statCardInteractive {
+  @apply cursor-pointer hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500;
+}
+
+.title {
+  @apply text-sm font-medium text-gray-500 dark:text-gray-400;
+}
+
+.value {
+  @apply text-2xl font-bold mt-1;
+}
+
+.description {
+  @apply text-xs text-gray-500 dark:text-gray-400 mt-1;
+}
+
+.iconContainer {
+  @apply flex items-center justify-center h-8 w-8 rounded-full;
+}
+
+/* Variants */
+.primary {
+  @apply border-l-4 border-primary-500;
+}
+
+.success {
+  @apply border-l-4 border-green-500;
+}
+
+.warning {
+  @apply border-l-4 border-yellow-500;
+}
+
+.danger {
+  @apply border-l-4 border-red-500;
+}
+
+.info {
+  @apply border-l-4 border-blue-500;
+}
+
+/* Trend */
+.trend {
+  @apply flex items-center mt-2 text-xs;
+}
+
+.trendUp {
+  @apply text-green-500;
+}
+
+.trendDown {
+  @apply text-red-500;
+}
+
+.trendNeutral {
+  @apply text-gray-500;
+}
+
+/* Loading state */
+.loading .value, .loading .description {
+  @apply animate-pulse bg-gray-200 dark:bg-gray-700 rounded;
+}
+
+.loading .value {
+  @apply h-7 w-24;
+}
+
+.loading .description {
+  @apply h-4 w-32 mt-2;
+}
+
+/* Compact variant */
+.compact {
+  @apply p-3;
+}
+
+.compact .value {
+  @apply text-xl;
+}
+```
+
 ### Implementation Strategy
 
-1. ✅ Create the LESS module with styling for all variants
+1. ✅ Create the CSS Module with Tailwind styling for all variants
 2. ✅ Implement the new StatCard component with all features
 3. ✅ Create unit tests and Storybook stories
 4. ✅ Update imports in dashboard and analytics pages
@@ -231,11 +319,11 @@ The StatCard component has comprehensive tests covering:
 - [x] **Design Phase**
   - [x] Design a standardized interface
   - [x] Identify the appropriate directory
-  - [x] Create LESS module structure
+  - [x] Create CSS Module structure with Tailwind
   - [x] Plan necessary refactoring
 
 - [x] **Implementation Phase**
-  - [x] Create the LESS module
+  - [x] Create the CSS Module with Tailwind utilities
   - [x] Create the unified component
   - [x] Implement icon support
   - [x] Implement trend support
@@ -274,6 +362,124 @@ The StatCard component has comprehensive tests covering:
   - [x] Final testing in all contexts
 
 ## Implementation Details
+
+### Component Implementation
+
+```tsx
+// StatCard.tsx
+import React from 'react';
+import { Card } from '@/components/ui/card';
+import { cn } from '@/utils/classnames';
+import styles from './StatCard.module.css';
+
+export type StatCardVariant = "default" | "primary" | "success" | "warning" | "danger" | "info";
+
+export interface StatCardTrend {
+  value: number;
+  label: string;
+  direction: "up" | "down" | "neutral";
+  isGood?: boolean;
+}
+
+export interface StatCardProps {
+  title: string;
+  value: string | number;
+  description?: string;
+  icon?: string | React.ReactNode;
+  trend?: StatCardTrend;
+  variant?: StatCardVariant;
+  loading?: boolean;
+  className?: string;
+  valuePrefix?: string;
+  valueSuffix?: string;
+  onClick?: () => void;
+  compact?: boolean;
+  tooltipContent?: React.ReactNode;
+  ariaLabel?: string;
+}
+
+export function StatCard({
+  title,
+  value,
+  description,
+  icon,
+  trend,
+  variant = "default",
+  loading = false,
+  className,
+  valuePrefix,
+  valueSuffix,
+  onClick,
+  compact = false,
+  tooltipContent,
+  ariaLabel,
+}: StatCardProps) {
+  // Render icon based on string or ReactNode
+  const renderIcon = () => {
+    if (!icon) return null;
+    
+    // Implementation details...
+  };
+  
+  // Render trend indicator
+  const renderTrend = () => {
+    if (!trend) return null;
+    
+    return (
+      <div className={cn(
+        styles.trend,
+        trend.direction === "up" ? styles.trendUp : 
+        trend.direction === "down" ? styles.trendDown : 
+        styles.trendNeutral
+      )}>
+        {trend.direction === "up" ? "↑" : trend.direction === "down" ? "↓" : "→"}
+        <span className="ml-1">{trend.value}% {trend.label}</span>
+      </div>
+    );
+  };
+  
+  return (
+    <Card
+      className={cn(
+        styles.statCard,
+        styles[variant],
+        onClick && styles.statCardInteractive,
+        compact && styles.compact,
+        loading && styles.loading,
+        className
+      )}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={ariaLabel || title}
+    >
+      <div className="flex justify-between items-start">
+        <div>
+          <h3 className={styles.title}>{title}</h3>
+          
+          {loading ? (
+            <div className={styles.value} aria-hidden="true" />
+          ) : (
+            <div className={styles.value}>
+              {valuePrefix}{value}{valueSuffix}
+            </div>
+          )}
+          
+          {loading ? (
+            <div className={styles.description} aria-hidden="true" />
+          ) : description && (
+            <p className={styles.description}>{description}</p>
+          )}
+          
+          {renderTrend()}
+        </div>
+        
+        {renderIcon()}
+      </div>
+    </Card>
+  );
+}
+```
 
 ### Dashboard Migration
 
@@ -367,6 +573,7 @@ import { StatCard } from "@/components/common/cards/StatCard";
 6. **Performance Optimizations**: Efficient rendering and animations
 7. **Comprehensive Testing**: Unit tests for all features and edge cases
 8. **Complete Documentation**: JSDoc comments, Storybook stories, and usage examples
+9. **CSS Modules with Tailwind**: Leveraging the power of Tailwind utilities with the scoping of CSS Modules
 
 ## Conclusion
 
@@ -379,6 +586,7 @@ The migration has improved the codebase by:
 - Improving accessibility
 - Optimizing performance
 - Providing comprehensive documentation
-- Ensuring consistent styling
+- Ensuring consistent styling with CSS Modules and Tailwind
+- Enabling better theme support through Tailwind's dark mode utilities
 
 This migration serves as a model for future component standardization efforts.

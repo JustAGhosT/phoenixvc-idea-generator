@@ -97,40 +97,97 @@ This checklist covers the identification and design phases for migrating the Sta
   }
   ```
 - [ ] Identify appropriate directory
-  - [ ] `components/data-display/stat-card/`
-- [ ] Plan LESS module structure
-  ```less
-  // Proposed LESS structure
-  .stat-card {
-    // Base styles
-    
-    // Variants
-    &--default { }
-    &--primary { }
-    &--success { }
-    &--warning { }
-    &--danger { }
-    &--info { }
-    
-    // States
-    &--loading { }
-    &--compact { }
-    &--interactive { }
-    
-    // Elements
-    &__header { }
-    &__title { }
-    &__icon { }
-    &__content { }
-    &__value { }
-    &__description { }
-    &__trend {
-      &--up { }
-      &--down { }
-      &--neutral { }
-      &--good { }
-      &--bad { }
-    }
+  - [ ] `components/common/cards/stat-card/`
+- [ ] Plan CSS Module structure with Tailwind
+  ```css
+  /* Proposed CSS Module structure */
+  .statCard {
+    @apply rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm transition-all;
+  }
+  
+  .statCardInteractive {
+    @apply cursor-pointer hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500;
+  }
+  
+  /* Variants */
+  .default {
+    @apply border-l-4 border-gray-300 dark:border-gray-600;
+  }
+  
+  .primary {
+    @apply border-l-4 border-primary-500;
+  }
+  
+  .success {
+    @apply border-l-4 border-green-500;
+  }
+  
+  .warning {
+    @apply border-l-4 border-yellow-500;
+  }
+  
+  .danger {
+    @apply border-l-4 border-red-500;
+  }
+  
+  .info {
+    @apply border-l-4 border-blue-500;
+  }
+  
+  /* Elements */
+  .title {
+    @apply text-sm font-medium text-gray-500 dark:text-gray-400;
+  }
+  
+  .value {
+    @apply text-2xl font-bold mt-1;
+  }
+  
+  .description {
+    @apply text-xs text-gray-500 dark:text-gray-400 mt-1;
+  }
+  
+  .iconContainer {
+    @apply flex items-center justify-center h-8 w-8 rounded-full;
+  }
+  
+  /* Trend */
+  .trend {
+    @apply flex items-center mt-2 text-xs;
+  }
+  
+  .trendUp {
+    @apply text-green-500;
+  }
+  
+  .trendDown {
+    @apply text-red-500;
+  }
+  
+  .trendNeutral {
+    @apply text-gray-500;
+  }
+  
+  /* States */
+  .loading .value, .loading .description {
+    @apply animate-pulse bg-gray-200 dark:bg-gray-700 rounded;
+  }
+  
+  .loading .value {
+    @apply h-7 w-24;
+  }
+  
+  .loading .description {
+    @apply h-4 w-32 mt-2;
+  }
+  
+  /* Compact variant */
+  .compact {
+    @apply p-3;
+  }
+  
+  .compact .value {
+    @apply text-xl;
   }
   ```
 - [ ] Consider accessibility requirements
@@ -144,6 +201,7 @@ This checklist covers the identification and design phases for migrating the Sta
 - [ ] Define responsive behavior
   - Maintain current responsive design
   - Add specific breakpoints for compact view
+  - Leverage Tailwind's responsive utilities
 
 ### 3. Migration Strategy
 
@@ -152,7 +210,7 @@ This checklist covers the identification and design phases for migrating the Sta
   - Create adapter for backward compatibility
 - [ ] Identify potential breaking changes
   - Directory structure change
-  - Styling approach change (from CSS classes to LESS modules)
+  - Styling approach change (from CSS classes to CSS Modules with Tailwind)
 - [ ] Plan backward compatibility
   - Create adapter component that maps old props to new props
   - Maintain current behavior during transition
@@ -163,7 +221,7 @@ This checklist covers the identification and design phases for migrating the Sta
 
 ## Notes and Observations
 
-The current StatCard component is already well-designed with good accessibility features and a comprehensive API. The migration will focus on standardizing the styling approach with LESS modules and ensuring consistency with other components in the new system.
+The current StatCard component is already well-designed with good accessibility features and a comprehensive API. The migration will focus on standardizing the styling approach with CSS Modules and Tailwind utilities, ensuring consistency with other components in the new system. The use of Tailwind will help maintain a consistent design language while CSS Modules will provide scoped styling to prevent conflicts.
 
 ## Phase A Approval
 
