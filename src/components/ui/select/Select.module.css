@@ -1,0 +1,90 @@
+.selectContainer {
+  @apply flex flex-col mb-3 w-auto;
+}
+
+.selectContainer--fullWidth {
+  @apply w-full;
+}
+
+.selectLabel {
+  @apply mb-1 text-sm font-medium text-gray-900;
+}
+
+.selectLabel--disabled {
+  @apply text-gray-400;
+}
+
+.selectWrapper {
+  @apply relative inline-block w-full;
+}
+
+.select {
+  @apply appearance-none bg-white border border-gray-300 rounded-md text-gray-900 font-inherit w-full cursor-pointer pr-10 transition-all duration-200;
+}
+
+.select:focus {
+  @apply outline-none border-primary-500 ring-2 ring-primary-200;
+}
+
+/* Sizes */
+.select--sm {
+  @apply h-8 px-3 text-sm;
+}
+
+.select--md {
+  @apply h-10 px-3 text-base;
+}
+
+.select--lg {
+  @apply h-12 px-4 text-lg;
+}
+
+/* Variants */
+.select--default {
+  @apply bg-white border border-gray-300;
+}
+
+.select--outline {
+  @apply bg-transparent border border-gray-300;
+}
+
+.select--outline:focus {
+  @apply bg-white;
+}
+
+.select--filled {
+  @apply bg-gray-100 border border-gray-100;
+}
+
+.select--filled:focus {
+  @apply bg-white border-primary-500;
+}
+
+/* States */
+.select--disabled {
+  @apply bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed opacity-70;
+}
+
+.select--error {
+  @apply border-danger-500;
+}
+
+.select--error:focus {
+  @apply border-danger-500 ring-2 ring-danger-100;
+}
+
+.selectArrow {
+  @apply absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500;
+}
+
+.select--disabled + .selectArrow {
+  @apply text-gray-400;
+}
+
+.selectHelperText {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+.selectHelperText--error {
+  @apply text-danger-500;
+}

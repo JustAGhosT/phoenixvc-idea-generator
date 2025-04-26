@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Select } from './Select';
+import { Select } from '../Select';
 
 const mockOptions = [
   { value: 'apple', label: 'Apple' },
@@ -8,7 +8,7 @@ const mockOptions = [
   { value: 'cherry', label: 'Cherry', disabled: true }
 ];
 
-describe('Select', () => {
+describe('Select Component', () => {
   it('renders correctly with options', () => {
     render(<Select options={mockOptions} />);
     
@@ -125,10 +125,10 @@ describe('Select', () => {
   });
   
   it('applies fullWidth class when fullWidth prop is true', () => {
-    render(<Select options={mockOptions} fullWidth data-testid="select-container" />);
+    const { container } = render(<Select options={mockOptions} fullWidth />);
     
-    const container = screen.getByTestId('select-container');
-    expect(container).toHaveClass('selectContainer--fullWidth');
+    const selectContainer = container.firstChild;
+    expect(selectContainer).toHaveClass('selectContainer--fullWidth');
   });
   
   it('generates a random id when not provided', () => {

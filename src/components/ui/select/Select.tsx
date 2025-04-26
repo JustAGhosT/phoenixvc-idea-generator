@@ -1,6 +1,6 @@
-import React, { forwardRef, useState, useRef, useEffect } from 'react';
+import React, { forwardRef } from 'react';
 import { cn } from '@/utils/classnames';
-import styles from './Select.less';
+import styles from './Select.module.css';
 
 export interface SelectOption {
   /**
