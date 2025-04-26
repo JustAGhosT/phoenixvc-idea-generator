@@ -1,0 +1,159 @@
+// Radio component styles
+
+.radioContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-2);
+}
+
+.radioWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  
+  &:focus + .radioControl {
+    box-shadow: 0 0 0 2px var(--focus-ring);
+  }
+  
+  &:checked + .radioControl {
+    border-color: var(--primary);
+    
+    .radioIndicator {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  // Sizes
+  &--sm + .radioControl {
+    width: 16px;
+    height: 16px;
+    
+    .radioIndicator {
+      width: 8px;
+      height: 8px;
+    }
+  }
+  
+  &--md + .radioControl {
+    width: 20px;
+    height: 20px;
+    
+    .radioIndicator {
+      width: 10px;
+      height: 10px;
+    }
+  }
+  
+  &--lg + .radioControl {
+    width: 24px;
+    height: 24px;
+    
+    .radioIndicator {
+      width: 12px;
+      height: 12px;
+    }
+  }
+  
+  // Variants
+  &--primary:checked + .radioControl {
+    border-color: var(--primary);
+    
+    .radioIndicator {
+      background-color: var(--primary);
+    }
+  }
+  
+  &--secondary:checked + .radioControl {
+    border-color: var(--secondary);
+    
+    .radioIndicator {
+      background-color: var(--secondary);
+    }
+  }
+  
+  &--default:checked + .radioControl {
+    border-color: var(--primary);
+    
+    .radioIndicator {
+      background-color: var(--primary);
+    }
+  }
+  
+  // Disabled state
+  &--disabled + .radioControl {
+    background-color: var(--input-disabled-bg);
+    border-color: var(--input-disabled-border);
+    cursor: not-allowed;
+  }
+  
+  &--disabled:checked + .radioControl {
+    .radioIndicator {
+      background-color: var(--text-disabled);
+    }
+  }
+  
+  // Error state
+  &--error + .radioControl {
+    border-color: var(--error);
+  }
+  
+  &--error:checked + .radioControl {
+    .radioIndicator {
+      background-color: var(--error);
+    }
+  }
+}
+
+.radioControl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background-color: var(--input-bg);
+  border: 2px solid var(--input-border);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.radioIndicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  transform: scale(0);
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.radioLabel {
+  margin-left: var(--space-2);
+  font-size: var(--text-md);
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  
+  &--disabled {
+    color: var(--text-disabled);
+    cursor: not-allowed;
+  }
+}
+
+.radioHelperText {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  
+  &--error {
+    color: var(--error);
+  }
+}

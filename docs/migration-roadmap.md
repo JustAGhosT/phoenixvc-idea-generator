@@ -1,6 +1,6 @@
 # Component Migration Roadmap
 
-## Current Progress (April 25, 2025)
+## Current Progress (April 26, 2025)
 
 ✅ **Completed**
 - Updated component architecture documentation
@@ -21,8 +21,15 @@
   - ✅ useMediaQuery
   - ✅ useClickOutside
   - ✅ useLocalStorage
-- Started migrating core UI components:
+- Migrated core UI components:
   - ✅ Button component
+  - ✅ Input component
+  - ✅ Card component
+  - ✅ Checkbox component
+  - ✅ Radio component
+  - ✅ Select component
+  - ✅ Toggle component
+  - ✅ Badge component
 - Configured path aliases for improved imports:
   - ✅ Updated tsconfig.json with path mappings
   - ✅ Standardized import patterns using @/ prefix
@@ -59,17 +66,36 @@
   - ✅ Create LESS module
   - ✅ Write tests
   - ✅ Add documentation
-- [ ] Migrate Card component:
-  - [ ] Create component file
-  - [ ] Create LESS module
-  - [ ] Write tests
-  - [ ] Add documentation
-- [ ] Migrate other core UI components:
-  - [ ] Checkbox
-  - [ ] Radio
-  - [ ] Select
-  - [ ] Toggle
-  - [ ] Badge
+- ✅ Migrate Card component:
+  - ✅ Create component file
+  - ✅ Create LESS module
+  - ✅ Write tests
+  - ✅ Add documentation
+- ✅ Migrate Checkbox component:
+  - ✅ Create component file
+  - ✅ Create LESS module
+  - ✅ Write tests
+  - ✅ Add documentation
+- ✅ Migrate Radio component:
+  - ✅ Create component file
+  - ✅ Create LESS module
+  - ✅ Write tests
+  - ✅ Add documentation
+- ✅ Migrate Select component:
+  - ✅ Create component file
+  - ✅ Create LESS module
+  - ✅ Write tests
+  - ✅ Add documentation
+- ✅ Migrate Toggle component:
+  - ✅ Create component file
+  - ✅ Create LESS module
+  - ✅ Write tests
+  - ✅ Add documentation
+- ✅ Migrate Badge component:
+  - ✅ Create component file
+  - ✅ Create LESS module
+  - ✅ Write tests
+  - ✅ Add documentation
 
 ## Week 3: Composite Components (Molecules)
 
@@ -136,8 +162,14 @@
 2. ✅ Create utility functions
 3. ✅ Implement custom hooks
 4. ✅ Implement Button component
-5. Continue with other core UI components:
-   - Input component
-   - Card component
-   - Checkbox, Radio, Select components
-6. Prioritize StatCard component (currently used in analytics dashboard)
+5. ✅ Implement Input component
+6. ✅ Implement Card component
+7. ✅ Implement Checkbox component
+8. ✅ Implement Radio component
+9. ✅ Implement Select component
+10. ✅ Implement Toggle component
+11. ✅ Implement Badge component
+12. Begin work on composite components (Week 3):
+    - Start with StatCard component (high priority for analytics dashboard)
+    - Then QuoteDisplay component
+    - Then Metrics components
