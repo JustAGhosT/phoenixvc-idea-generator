@@ -74,6 +74,28 @@ Each component directory contains:
 - Tests
 - Documentation (README.md or Storybook stories)
 
+## Import Conventions
+
+We use path aliases to maintain clean and consistent imports across the project:
+
+```tsx
+// Preferred: Use path aliases for imports
+import { Button } from '@/components/ui/button';
+import { useMediaQuery } from '@/hooks/use-media-query';
+import { cn } from '@/utils/classnames';
+
+// Avoid: Don't use relative paths with multiple levels
+// import { Button } from '../../../../components/ui/button';
+// import { useMediaQuery } from '../../../hooks/use-media-query';
+// import { cn } from '../../../utils/classnames';
+```
+
+Path aliases are configured in the tsconfig.json file and provide several benefits:
+- Improved readability
+- Easier refactoring
+- No need to update imports when moving files
+- Consistent import style across the codebase
+
 ## Component Design Patterns
 
 ### 1. Compound Components

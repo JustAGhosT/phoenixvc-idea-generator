@@ -1,0 +1,34 @@
+const path = require('path');
+
+module.exports = ({ config }) => {
+  // Add TypeScript support with babel-loader for JSX
+  config.module.rules.push({
+    test: /\.(ts|tsx)$/,
+    exclude: /node_modules/,
+    use: [
+      {
+        loader: require.resolve('babel-loader'),
+        options: {
+          configFile: path.resolve(__dirname, 'babel.config.js'),
+          presets: [
+            ['@babel/preset-env', { targets: { node: 'current' } }],
+            '@babel/preset-typescript',
+            ['@babel/preset-react', { runtime: 'automatic' }]
+          ],
+        },
+      },
+    ],
+  });
+  
+  // Add path aliases
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    '@': path.resolve(__dirname, '..'),
+    'react': path.resolve(__dirname, '../node_modules/react'),
+    'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
+  };
+  
+  config.resolve.extensions.push('.ts', '.tsx');
+  
+  return config;
+};

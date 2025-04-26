@@ -1,0 +1,12 @@
+ ERROR  Cannot read properties of undefined (reading 'manifest')
+
+pnpm: Cannot read properties of undefined (reading 'manifest')
+    at C:\snapshot\dist\pnpm.cjs
+    at async Promise.all (index 0)
+    at async recursive (C:\snapshot\dist\pnpm.cjs)
+    at async recursiveInstallThenUpdateWorkspaceState (C:\snapshot\dist\pnpm.cjs)
+    at async installDeps (C:\snapshot\dist\pnpm.cjs)
+    at async C:\snapshot\dist\pnpm.cjs
+    at async main (C:\snapshot\dist\pnpm.cjs)
+    at async runPnpm (C:\snapshot\dist\pnpm.cjs)
+    at async C:\snapshot\dist\pnpm.cjs

@@ -3,3 +3,6 @@ onlyBuiltDependencies:
   - '@prisma/engines'
   - '@sentry/cli'
   - prisma
+
+ignoredBuiltDependencies:
+  - core-js
