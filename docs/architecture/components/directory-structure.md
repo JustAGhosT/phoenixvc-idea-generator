@@ -62,17 +62,55 @@ Each component directory contains:
 4. **Stories** - `__tests__/ComponentName.stories.tsx` (for Storybook)
 5. **Documentation** - `README.md`
 
-Example for a Button component:
+### Basic Component Structure
+
+For basic components, we use the following structure:
 
 ```
 src/components/ui/button/
 ├── Button.tsx                 # Main component file
 ├── Button.module.css          # CSS Module styles
+├── ButtonAnimations.module.css # Animation styles
 ├── index.ts                   # Re-export for clean imports
 ├── README.md                  # Documentation
 └── __tests__/
     ├── Button.test.tsx        # Unit tests
     └── Button.stories.tsx     # Storybook stories
+```
+
+### Compound Component Structure
+
+For compound components, we use a more detailed structure with a `parts/` subfolder:
+
+```
+src/components/navigation/tabs/
+├── Tabs.tsx                   # Main component file
+├── parts/                     # Subfolder for component parts
+│   ├── TabsList.tsx           # Component part
+│   ├── TabsTrigger.tsx        # Component part
+│   └── TabsContent.tsx        # Component part
+├── Tabs.module.css            # CSS Module styles
+├── TabsAnimations.module.css  # Animation styles
+├── index.ts                   # Re-export for clean imports
+└── __tests__/
+    ├── Tabs.test.tsx          # Unit tests
+    └── Tabs.stories.tsx       # Storybook stories
+```
+
+### File Structure Best Practices
+
+1. **Group related files** - Keep component files together in directories
+2. **Use consistent naming** - Use consistent naming conventions for all files
+3. **Export from index** - Use index files to simplify imports
+4. **Separate animations** - Keep animations in separate files
+5. **Co-locate tests** - Keep tests close to the components they test
+
+### Example Index File
+
+```tsx
+// components/ui/button/index.ts
+export { Button } from './Button';
+export type { ButtonProps } from './Button';
 ```
 
 ## Import Conventions

@@ -13,6 +13,7 @@ components/
       parts/           # Reusable parts
       Button.tsx       # Implementation
       Button.module.css # Styles
+      ButtonAnimations.module.css
       index.ts         # Re-export
 ```
 
