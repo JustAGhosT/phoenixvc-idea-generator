@@ -1,0 +1,9 @@
+/* Tooltip.module.css */
+.tooltipContent {
+  @apply z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md;
+}
+
+/* Dark mode specific overrides */
+:global(:root[data-theme="dark"]) .tooltipContent {
+  @apply border-gray-700 bg-gray-800 text-gray-100 shadow-lg;
+}

@@ -1,31 +1,40 @@
 "use client"
 
-import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 import * as React from "react"
+import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
-import { cn } from "@/utils/classnames"
+/**
+ * Tooltip component - Root component for tooltip functionality
+ * 
+ * @example
+ * ```tsx
+ * <Tooltip>
+ *   <Tooltip.Trigger>Hover me</Tooltip.Trigger>
+ *   <Tooltip.Content>Tooltip content</Tooltip.Content>
+ * </Tooltip>
+ * ```
+ */
+const TooltipRoot = TooltipPrimitive.Root
 
-const TooltipProvider = TooltipPrimitive.Provider
+// Import subcomponents
+import { TooltipProvider } from './parts/TooltipProvider'
+import { TooltipTrigger } from './parts/TooltipTrigger'
+import { TooltipContent } from './parts/TooltipContent'
 
-const Tooltip = TooltipPrimitive.Root
+/**
+ * Tooltip component - Compound component for tooltips
+ */
+const Tooltip = Object.assign(TooltipRoot, {
+  Provider: TooltipProvider,
+  Trigger: TooltipTrigger,
+  Content: TooltipContent,
+})
 
-const TooltipTrigger = TooltipPrimitive.Trigger
-
-const TooltipContent = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
-    className={cn(
-      "z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-      className
-    )}
-    {...props}
-  />
-))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
-
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+export {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipRoot,
+}
 export default Tooltip
