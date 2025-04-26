@@ -1,11 +1,12 @@
-/* Card animations */
+/* Card animations - Performance optimized */
 
-/* Base transitions for all cards */
+/* Base transitions for all cards - using hardware-accelerated properties */
 .cardTransition {
-  @apply transition-all duration-200 ease-in-out;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+  will-change: auto; /* Only activate will-change when needed */
 }
 
-/* Entrance animations */
+/* Entrance animations - using hardware-accelerated properties */
 .cardEnter {
   animation: cardEnter 0.3s ease forwards;
 }
@@ -21,9 +22,9 @@
   }
 }
 
-/* Interactive card hover animations */
+/* Interactive card hover animations - only animate necessary properties */
 .cardHover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .cardHover:hover {
@@ -35,7 +36,7 @@
   transform: translateY(0);
 }
 
-/* Elevation animations */
+/* Elevation animations - only animate necessary properties */
 .cardElevate {
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
@@ -44,7 +45,7 @@
   @apply shadow-md;
 }
 
-/* Pulse animation for attention */
+/* Pulse animation - using transform instead of scale for better performance */
 .cardPulse {
   animation: cardPulse 2s infinite;
 }
@@ -55,7 +56,7 @@
   100% { transform: scale(1); }
 }
 
-/* Gradient shift animation */
+/* Gradient shift animation - limit animation to specific cards */
 .cardGradientShift {
   background-size: 200% 200%;
   animation: gradientShift 3s ease infinite;
@@ -67,18 +68,31 @@
   100% { background-position: 0% 50%; }
 }
 
-/* Border glow animation */
+/* Border glow animation - use opacity instead of color changes */
 .cardBorderGlow {
+  position: relative;
+}
+
+.cardBorderGlow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid rgba(66, 153, 225, 0.8);
+  border-radius: inherit;
   animation: borderGlow 2s ease-in-out infinite;
+  pointer-events: none;
 }
 
 @keyframes borderGlow {
-  0% { border-color: rgba(66, 153, 225, 0.6); }
-  50% { border-color: rgba(66, 153, 225, 0.9); }
-  100% { border-color: rgba(66, 153, 225, 0.6); }
+  0% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.6; }
 }
 
-/* Card content animations */
+/* Card content animations - simple opacity transition */
 .cardContentFade {
   animation: contentFade 0.3s ease forwards;
 }
@@ -88,7 +102,7 @@
   to { opacity: 1; }
 }
 
-/* Card header animations */
+/* Card header animations - transform + opacity */
 .cardHeaderSlide {
   animation: headerSlide 0.3s ease forwards;
 }
@@ -98,7 +112,7 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Card footer animations */
+/* Card footer animations - transform + opacity */
 .cardFooterSlide {
   animation: footerSlide 0.3s ease forwards;
 }
@@ -108,24 +122,24 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
-/* Staggered animations for card parts */
+/* Staggered animations for card parts - optimized with shorter durations */
 .cardStaggered .card__header {
-  animation: headerSlide 0.3s ease forwards;
+  animation: headerSlide 0.25s ease forwards;
 }
 
 .cardStaggered .card__content {
-  animation: contentFade 0.3s 0.1s ease forwards;
+  animation: contentFade 0.25s 0.1s ease forwards;
   opacity: 0;
   animation-fill-mode: forwards;
 }
 
 .cardStaggered .card__footer {
-  animation: footerSlide 0.3s 0.2s ease forwards;
+  animation: footerSlide 0.25s 0.2s ease forwards;
   opacity: 0;
   animation-fill-mode: forwards;
 }
 
-/* Flip animation */
+/* Flip animation - only use for specific interactive elements */
 .cardFlip {
   perspective: 1000px;
   transform-style: preserve-3d;
@@ -156,8 +170,12 @@
   .cardStaggered .card__footer,
   .cardFlip,
   .cardFlip:hover {
-    animation: none;
-    transition: none;
-    transform: none;
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+  
+  .cardBorderGlow::after {
+    display: none !important;
   }
 }

@@ -1,0 +1,158 @@
+/* Input animations */
+
+/* Focus animations */
+.inputFocusAnimation {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputFocusRing {
+  animation: focusRingAppear 0.2s ease forwards;
+}
+
+@keyframes focusRingAppear {
+  from { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+  to { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+}
+
+/* Label float animation */
+.labelFloatContainer {
+  position: relative;
+}
+
+.labelFloat {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  transform-origin: left top;
+  transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+  pointer-events: none;
+}
+
+.labelFloatActive {
+  transform: translateY(-130%) scale(0.85);
+  color: var(--color-primary, #3b82f6);
+}
+
+/* Error shake animation */
+.inputErrorShake {
+  animation: inputShake 0.4s ease;
+}
+
+@keyframes inputShake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Success animation */
+.inputSuccess {
+  animation: successPulse 0.4s ease;
+}
+
+@keyframes successPulse {
+  0% { border-color: var(--color-success, #10b981); }
+  50% { border-color: var(--color-success-dark, #059669); }
+  100% { border-color: var(--color-success, #10b981); }
+}
+
+/* Icon animations */
+.iconFadeIn {
+  animation: iconFadeIn 0.3s ease forwards;
+}
+
+@keyframes iconFadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.iconRotate {
+  animation: iconRotate 0.3s ease forwards;
+}
+
+@keyframes iconRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Clear button animation */
+.clearButtonFade {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.clearButtonVisible {
+  opacity: 1;
+}
+
+/* Character count animation */
+.characterCountWarning {
+  animation: pulseWarning 1s ease infinite;
+}
+
+@keyframes pulseWarning {
+  0% { color: var(--color-warning, #f59e0b); }
+  50% { color: var(--color-warning-dark, #d97706); }
+  100% { color: var(--color-warning, #f59e0b); }
+}
+
+/* Autocomplete dropdown animation */
+.autocompleteDropdown {
+  animation: dropdownFadeIn 0.2s ease forwards;
+  transform-origin: top center;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: scaleY(0.9); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+/* Loading animation for async validation */
+.inputLoading::after {
+  content: "";
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  border-top-color: rgba(59, 130, 246, 0.8);
+  border-radius: 50%;
+  animation: inputLoadingRotate 0.8s linear infinite;
+}
+
+@keyframes inputLoadingRotate {
+  from { transform: translateY(-50%) rotate(0deg); }
+  to { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .inputFocusAnimation,
+  .inputFocusRing,
+  .labelFloat,
+  .labelFloatActive,
+  .inputErrorShake,
+  .inputSuccess,
+  .iconFadeIn,
+  .iconRotate,
+  .clearButtonFade,
+  .clearButtonVisible,
+  .characterCountWarning,
+  .autocompleteDropdown,
+  .inputLoading::after {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .labelFloatActive {
+    transform: translateY(-130%) scale(0.85);
+  }
+  
+  .clearButtonVisible {
+    opacity: 1;
+  }
+}

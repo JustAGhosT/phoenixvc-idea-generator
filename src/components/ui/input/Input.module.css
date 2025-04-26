@@ -1,0 +1,234 @@
+/* Input.module.css */
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputContainer {
+  position: relative;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  background-color: var(--input-bg, white);
+  color: var(--input-text, #111827);
+  border: 1px solid var(--input-border, #e5e7eb);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--input-focus-border, #3b82f6);
+  box-shadow: 0 0 0 2px var(--input-focus-ring, rgba(59, 130, 246, 0.3));
+}
+
+.input:disabled {
+  background-color: var(--input-disabled-bg, #f9fafb);
+  color: var(--input-disabled-text, #6b7280);
+  cursor: not-allowed;
+}
+
+.input--error {
+  border-color: var(--input-error-border, #ef4444);
+}
+
+.input--error:focus {
+  box-shadow: 0 0 0 2px var(--input-error-ring, rgba(239, 68, 68, 0.3));
+}
+
+.input--success {
+  border-color: var(--input-success-border, #10b981);
+}
+
+.input--success:focus {
+  box-shadow: 0 0 0 2px var(--input-success-ring, rgba(16, 185, 129, 0.3));
+}
+
+/* Size variants */
+.input--xs {
+  height: 1.5rem;
+  font-size: 0.75rem;
+  padding: 0 0.5rem;
+}
+
+.input--sm {
+  height: 2rem;
+  font-size: 0.875rem;
+  padding: 0 0.75rem;
+}
+
+.input--md {
+  height: 2.5rem;
+  font-size: 1rem;
+  padding: 0 1rem;
+}
+
+.input--lg {
+  height: 3rem;
+  font-size: 1.125rem;
+  padding: 0 1.25rem;
+}
+
+.input--xl {
+  height: 3.5rem;
+  font-size: 1.25rem;
+  padding: 0 1.5rem;
+}
+
+/* Shape variants */
+.input--rounded {
+  border-radius: 0.375rem;
+}
+
+.input--pill {
+  border-radius: 9999px;
+}
+
+/* Icon positioning */
+.input--withLeftIcon {
+  padding-left: 2.5rem;
+}
+
+.input--withRightIcon {
+  padding-right: 2.5rem;
+}
+
+.iconLeft {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  color: var(--input-icon, #6b7280);
+  pointer-events: none;
+}
+
+.iconRight {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  color: var(--input-icon, #6b7280);
+}
+
+/* Label styles */
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--input-label, #374151);
+  margin-bottom: 0.25rem;
+}
+
+.label--disabled {
+  color: var(--input-disabled-text, #6b7280);
+}
+
+.label--error {
+  color: var(--input-error-text, #ef4444);
+}
+
+.label--required::after {
+  content: "*";
+  color: var(--input-required, #ef4444);
+  margin-left: 0.25rem;
+}
+
+/* Helper text styles */
+.helperText {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  color: var(--input-helper-text, #6b7280);
+}
+
+.errorText {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  color: var(--input-error-text, #ef4444);
+}
+
+/* Clear and password toggle buttons */
+.actionButton {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--input-action-color, #6b7280);
+}
+
+.actionButton:hover {
+  color: var(--input-action-hover, #374151);
+}
+
+.actionButton:focus {
+  outline: none;
+}
+
+/* Loading spinner */
+.spinner {
+  color: var(--input-spinner, #6b7280);
+}
+
+/* Character count */
+.characterCount {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  text-align: right;
+  color: var(--input-helper-text, #6b7280);
+}
+
+.characterCount--warning {
+  color: var(--input-warning-text, #f59e0b);
+}
+
+.characterCount--error {
+  color: var(--input-error-text, #ef4444);
+}
+
+/* Floating label */
+.floatingLabel {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  background-color: transparent;
+  padding: 0 0.25rem;
+  pointer-events: none;
+  color: var(--input-placeholder, #6b7280);
+  transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+}
+
+.input:focus + .floatingLabel,
+.input:not(:placeholder-shown) + .floatingLabel {
+  transform: translateY(-130%) scale(0.85);
+  color: var(--input-focus-border, #3b82f6);
+  background-color: var(--input-bg, white);
+}
+
+/* Dark theme support */
+:global(:root[data-theme="dark"]) .input {
+  background-color: var(--input-bg-dark, #1f2937);
+  color: var(--input-text-dark, #f9fafb);
+  border-color: var(--input-border-dark, #4b5563);
+}
+
+:global(:root[data-theme="dark"]) .input:disabled {
+  background-color: var(--input-disabled-bg-dark, #374151);
+  color: var(--input-disabled-text-dark, #9ca3af);
+}
+
+:global(:root[data-theme="dark"]) .label {
+  color: var(--input-label-dark, #e5e7eb);
+}
+
+:global(:root[data-theme="dark"]) .helperText {
+  color: var(--input-helper-text-dark, #9ca3af);
+}
+
+:global(:root[data-theme="dark"]) .input:focus + .floatingLabel,
+:global(:root[data-theme="dark"]) .input:not(:placeholder-shown) + .floatingLabel {
+  background-color: var(--input-bg-dark, #1f2937);
+}
