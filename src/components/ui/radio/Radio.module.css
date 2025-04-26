@@ -1,0 +1,112 @@
+.radioContainer {
+  @apply flex flex-col mb-2;
+}
+
+.radioWrapper {
+  @apply flex items-center relative;
+}
+
+.radio {
+  @apply absolute opacity-0 w-0 h-0;
+}
+
+.radio:focus + .radioControl {
+  @apply ring-2 ring-primary-300;
+}
+
+.radio:checked + .radioControl .radioIndicator {
+  transform: scale(1);
+  @apply opacity-100;
+}
+
+/* Sizes */
+.radio--sm + .radioControl {
+  @apply w-4 h-4;
+}
+
+.radio--sm + .radioControl .radioIndicator {
+  @apply w-2 h-2;
+}
+
+.radio--md + .radioControl {
+  @apply w-5 h-5;
+}
+
+.radio--md + .radioControl .radioIndicator {
+  @apply w-2.5 h-2.5;
+}
+
+.radio--lg + .radioControl {
+  @apply w-6 h-6;
+}
+
+.radio--lg + .radioControl .radioIndicator {
+  @apply w-3 h-3;
+}
+
+/* Variants */
+.radio--primary:checked + .radioControl {
+  @apply border-primary-500;
+}
+
+.radio--primary:checked + .radioControl .radioIndicator {
+  @apply bg-primary-500;
+}
+
+.radio--secondary:checked + .radioControl {
+  @apply border-secondary-500;
+}
+
+.radio--secondary:checked + .radioControl .radioIndicator {
+  @apply bg-secondary-500;
+}
+
+.radio--default:checked + .radioControl {
+  @apply border-primary-500;
+}
+
+.radio--default:checked + .radioControl .radioIndicator {
+  @apply bg-primary-500;
+}
+
+/* Disabled state */
+.radio--disabled + .radioControl {
+  @apply bg-gray-100 border-gray-200 cursor-not-allowed;
+}
+
+.radio--disabled:checked + .radioControl .radioIndicator {
+  @apply bg-gray-400;
+}
+
+/* Error state */
+.radio--error + .radioControl {
+  @apply border-danger-500;
+}
+
+.radio--error:checked + .radioControl .radioIndicator {
+  @apply bg-danger-500;
+}
+
+.radioControl {
+  @apply flex items-center justify-center w-5 h-5 bg-white border-2 border-gray-300 rounded-full transition-all duration-200 cursor-pointer;
+}
+
+.radioIndicator {
+  @apply w-2.5 h-2.5 rounded-full bg-primary-500 scale-0 opacity-0 transition-all duration-200;
+}
+
+.radioLabel {
+  @apply ml-2 text-base text-gray-900 cursor-pointer select-none;
+}
+
+.radioLabel--disabled {
+  @apply text-gray-400 cursor-not-allowed;
+}
+
+.radioHelperText {
+  @apply mt-1 text-sm text-gray-600;
+}
+
+.radioHelperText--error {
+  @apply text-danger-500;
+}

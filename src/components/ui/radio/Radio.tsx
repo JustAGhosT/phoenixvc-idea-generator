@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
 import { cn } from '@/utils/classnames';
-import styles from './Radio.less';
+import styles from './Radio.module.css';
 
-export interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   /**
    * The label for the radio button
    */

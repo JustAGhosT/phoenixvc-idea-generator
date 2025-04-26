@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { Radio } from './Radio';
+import { Radio } from '../Radio';
 
-describe('Radio', () => {
+describe('Radio Component', () => {
   it('renders correctly with label', () => {
     render(<Radio name="test" label="Option 1" />);
     
@@ -72,9 +72,9 @@ describe('Radio', () => {
   });
   
   it('handles disabled state correctly', () => {
-    render(<Radio name="test" label="Disabled radio" disabled />);
+    render(<Radio name="test" label="Disabled radio" disabled data-testid="radio" />);
     
-    const radio = screen.getByRole('radio');
+    const radio = screen.getByTestId('radio');
     expect(radio).toBeDisabled();
     expect(radio).toHaveClass('radio--disabled');
   });
