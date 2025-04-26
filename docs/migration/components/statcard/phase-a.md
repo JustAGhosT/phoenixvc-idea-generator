@@ -7,97 +7,166 @@ This checklist covers the identification and design phases for migrating the Sta
 ### 1. Identification Phase
 
 - [x] Identify all instances of the component in the codebase
-  - Found in `components/dashboard/StatCard.tsx`
-  - Found in `components/metrics/StatDisplay.tsx`
-- [x] List all files where the component is used
-  - `app/dashboard/page.tsx`
-  - `app/metrics/page.tsx`
-  - `app/projects/[id]/overview.tsx`
-- [x] Document the current props interface and behavior
+  - Found in `components/common/cards/StatCard.tsx`
+- [x] Current props interface
   ```typescript
-  // Current interfaces
-  interface StatCardProps {
+  // Current interface (based on actual implementation)
+  export interface StatCardProps {
+    /** Title displayed at the top of the card */
     title: string;
+    /** Main value to display (can be a string or number) */
     value: string | number;
-    icon?: React.ReactNode;
-    change?: number;
-    trend?: 'up' | 'down' | 'neutral';
+    /** Optional description text displayed below the value */
+    description?: string;
+    /** Icon to display (can be a string identifier or a React node) */
+    icon?: string | React.ReactNode;
+    /** Optional trend information to display */
+    trend?: StatCardTrend;
+    /** Color variant for the card */
+    variant?: StatCardVariant;
+    /** Whether the card is in a loading state */
+    loading?: boolean;
+    /** Additional CSS class names */
+    className?: string;
+    /** Prefix to display before the value (e.g., "$") */
+    valuePrefix?: string;
+    /** Suffix to display after the value (e.g., "%") */
+    valueSuffix?: string;
+    /** Optional click handler for interactive cards */
+    onClick?: () => void;
+    /** Whether to use the compact layout */
+    compact?: boolean;
+    /** Optional tooltip content */
+    tooltipContent?: React.ReactNode;
+    /** Accessible label for screen readers (defaults to title) */
+    ariaLabel?: string;
   }
-  
-  interface StatDisplayProps {
+
+  export interface StatCardTrend {
+    /** The numeric value of the trend (e.g., 5.2 for 5.2% increase) */
+    value: number;
+    /** Label explaining the trend context (e.g., "vs last month") */
     label: string;
-    stat: number;
-    format?: string;
-    comparison?: {
-      value: number;
-      label: string;
-    };
+    /** Direction of the trend */
+    direction: "up" | "down" | "neutral";
+    /** Whether this trend is positive (up can be bad for some metrics) */
+    isGood?: boolean;
   }
   ```
-- [x] Identify variations in usage
-  - Dashboard uses icons and trend indicators
-  - Metrics page uses formatted values and comparisons
-- [x] Analyze current styling approach
-  - Mix of inline styles and CSS modules
-- [x] Identify current state management
-  - Simple presentational component, minimal state
+- [x] Variations in usage
+  - Used with different icons (string identifiers or React nodes)
+  - Used with various trend indicators
+  - Different variants (default, primary, success, warning, danger, info)
+  - Interactive (with onClick) and non-interactive versions
+  - With and without tooltips
+- [x] Current styling approach
+  - Uses shadcn/ui Card components
+  - CSS classes for styling variants and states
+- [x] Current state management
+  - Uses React hooks (useId) for accessibility
+  - No complex state management
 
 ### 2. Design Phase
 
-- [x] Determine component classification
-  - [x] Core Component (Atom)
-- [x] Design standardized interface
+- [ ] Determine component classification
+  - [ ] Core Component (Atom)
+- [ ] Design standardized interface
   ```typescript
+  // Proposed interface for migration (preserving current functionality)
   export interface StatCardProps {
     title: string;
     value: string | number;
-    icon?: React.ReactNode;
+    description?: string;
+    icon?: string | React.ReactNode;
     trend?: {
       value: number;
-      direction?: 'up' | 'down' | 'neutral';
-      label?: string;
+      label: string;
+      direction: "up" | "down" | "neutral";
+      isGood?: boolean;
     };
-    formatter?: (value: number | string) => string;
+    variant?: "default" | "primary" | "success" | "warning" | "danger" | "info";
+    loading?: boolean;
     className?: string;
-    size?: 'sm' | 'md' | 'lg';
-    variant?: 'default' | 'outline' | 'filled';
+    valuePrefix?: string;
+    valueSuffix?: string;
+    onClick?: () => void;
+    compact?: boolean;
+    tooltipContent?: React.ReactNode;
+    ariaLabel?: string;
+    formatter?: (value: number | string) => string;
   }
   ```
-- [x] Identify appropriate directory
-  - `src/components/data-display/stat-card/`
-- [x] Determine design pattern
-  - [x] Composition pattern
-- [x] Plan LESS module structure
-- [x] Consider accessibility requirements
-  - Ensure proper heading structure
-  - Add appropriate ARIA attributes
-- [x] Define responsive behavior
-  - Adjust padding and font size based on viewport
-- [x] Plan state management approach
-  - Pure component, no internal state needed
+- [ ] Identify appropriate directory
+  - [ ] `components/data-display/stat-card/`
+- [ ] Plan LESS module structure
+  ```less
+  // Proposed LESS structure
+  .stat-card {
+    // Base styles
+    
+    // Variants
+    &--default { }
+    &--primary { }
+    &--success { }
+    &--warning { }
+    &--danger { }
+    &--info { }
+    
+    // States
+    &--loading { }
+    &--compact { }
+    &--interactive { }
+    
+    // Elements
+    &__header { }
+    &__title { }
+    &__icon { }
+    &__content { }
+    &__value { }
+    &__description { }
+    &__trend {
+      &--up { }
+      &--down { }
+      &--neutral { }
+      &--good { }
+      &--bad { }
+    }
+  }
+  ```
+- [ ] Consider accessibility requirements
+  - Preserve current accessibility features:
+    - Unique IDs for title and description
+    - Appropriate ARIA attributes
+    - Keyboard navigation for interactive cards
+  - Add improvements:
+    - Better screen reader announcements for trends
+    - Enhanced color contrast for all variants
+- [ ] Define responsive behavior
+  - Maintain current responsive design
+  - Add specific breakpoints for compact view
 
 ### 3. Migration Strategy
 
-- [x] Determine migration approach
-  - Direct replacement with adapter functions
-- [x] Identify potential breaking changes
-  - Different prop names
-  - Different trend structure
-- [x] Plan backward compatibility
-  - Create adapter functions
-- [x] Estimate migration effort
-  - Development: 1 day
-  - Testing: 0.5 day
-- [x] Plan testing strategy
-  - Unit tests for rendering
-  - Visual tests for appearance
+- [ ] Determine migration approach
+  - Incremental migration with feature flags
+  - Create adapter for backward compatibility
+- [ ] Identify potential breaking changes
+  - Directory structure change
+  - Styling approach change (from CSS classes to LESS modules)
+- [ ] Plan backward compatibility
+  - Create adapter component that maps old props to new props
+  - Maintain current behavior during transition
+- [ ] Estimate migration effort
+  - Development: 3 days
+  - Testing: 1 day
+  - Documentation: 1 day
 
 ## Notes and Observations
 
-The StatCard component is a relatively simple display component that should be easy to migrate. The main challenge will be unifying the two different interfaces currently in use.
+The current StatCard component is already well-designed with good accessibility features and a comprehensive API. The migration will focus on standardizing the styling approach with LESS modules and ensuring consistency with other components in the new system.
 
 ## Phase A Approval
 
-- [x] Design approved by: Sarah Chen (Date: 2025-04-23)
-- [x] Technical approach approved by: Miguel Rodriguez (Date: 2025-04-23)
-- [x] Ready to proceed to Phase B
+- [ ] Design approved by: _______________ (Date: ____________)
+- [ ] Technical approach approved by: _______________ (Date: ____________)
+- [ ] Ready to proceed to Phase B

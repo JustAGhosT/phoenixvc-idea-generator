@@ -1,207 +1,304 @@
 # StatCard Component Migration - Phase B
 
-This checklist covers the implementation, migration, documentation, cleanup, and review phases for the StatCard component.
+This checklist will cover the implementation, migration, documentation, cleanup, and review phases for the StatCard component.
 
 ## Component Name: StatCard
 
-### 1. Implementation Phase
+### 1. Implementation Phase (Planned)
 
-- [x] Create the LESS module with component-specific styles
+- [ ] Create LESS module
   ```less
+  // Planned structure for StatCard.less
   .stat-card {
-    padding: 1rem;
-    border-radius: 0.5rem;
+    // Base styles
+    display: flex;
+    flex-direction: column;
     
-    &--outline { border: 1px solid @border-color; }
-    &--filled { background-color: @background-secondary; }
+    // Variants
+    &--default { 
+      background-color: @background-card;
+      color: @text-primary;
+    }
+    &--primary { 
+      background-color: @primary-light;
+      color: @primary-dark;
+    }
+    &--success { 
+      background-color: @success-light;
+      color: @success-dark;
+    }
+    &--warning { 
+      background-color: @warning-light;
+      color: @warning-dark;
+    }
+    &--danger { 
+      background-color: @danger-light;
+      color: @danger-dark;
+    }
+    &--info { 
+      background-color: @info-light;
+      color: @info-dark;
+    }
     
-    &__title { font-size: 0.875rem; color: @text-secondary; }
-    &__value { font-size: 1.5rem; font-weight: bold; margin: 0.5rem 0; }
+    // States
+    &--loading {
+      .stat-card__value {
+        opacity: 0.5;
+      }
+    }
+    &--compact { 
+      padding: @spacing-sm;
+      .stat-card__title {
+        font-size: @font-size-sm;
+      }
+      .stat-card__value {
+        font-size: @font-size-lg;
+      }
+    }
+    &--interactive { 
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+    }
     
+    // Elements
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: @spacing-sm;
+    }
+    &__title {
+      font-size: @font-size-base;
+      font-weight: 500;
+      margin: 0;
+    }
+    &__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    &__content {
+      flex: 1;
+    }
+    &__value {
+      font-size: @font-size-xl;
+      font-weight: 700;
+      margin: @spacing-xs 0;
+    }
+    &__description {
+      font-size: @font-size-sm;
+      color: @text-secondary;
+      margin: 0;
+    }
     &__trend {
       display: flex;
       align-items: center;
-      font-size: 0.75rem;
+      font-size: @font-size-sm;
+      margin-top: @spacing-xs;
       
-      &--up { color: @success-color; }
-      &--down { color: @error-color; }
+      &-icon {
+        margin-right: @spacing-xs;
+      }
+      
+      &-value {
+        font-weight: 500;
+        margin-right: @spacing-xs;
+      }
+      
+      &-label {
+        color: @text-secondary;
+      }
+      
+      &--up.good { color: @success; }
+      &--down.good { color: @danger; }
+      &--up.bad { color: @danger; }
+      &--down.bad { color: @success; }
       &--neutral { color: @text-secondary; }
     }
-    
-    // Size variants
-    &--sm { padding: 0.75rem; .stat-card__value { font-size: 1.25rem; } }
-    &--lg { padding: 1.5rem; .stat-card__value { font-size: 2rem; } }
   }
   ```
 
-- [x] Create the unified component
+- [ ] Implement component with LESS module
   ```tsx
-  export function StatCard({
+  // Planned implementation - not yet implemented
+  import React, { useId } from 'react';
+  import { 
+    Activity, AlertCircle, BarChart, CheckCircle, 
+    ChevronDown, ChevronUp, Lightbulb, Minus, 
+    PieChart, Rocket, TrendingUp, Users 
+  } from "lucide-react";
+  import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+  import './StatCard.less';
+  
+  // Types remain the same as current implementation
+  export type StatCardVariant = "default" | "primary" | "success" | "warning" | "danger" | "info";
+  
+  export interface StatCardTrend {
+    value: number;
+    label: string;
+    direction: "up" | "down" | "neutral";
+    isGood?: boolean;
+  }
+  
+  export interface StatCardProps {
+    title: string;
+    value: string | number;
+    description?: string;
+    icon?: string | React.ReactNode;
+    trend?: StatCardTrend;
+    variant?: StatCardVariant;
+    loading?: boolean;
+    className?: string;
+    valuePrefix?: string;
+    valueSuffix?: string;
+    onClick?: () => void;
+    compact?: boolean;
+    tooltipContent?: React.ReactNode;
+    ariaLabel?: string;
+    formatter?: (value: number | string) => string;
+  }
+  
+  export const StatCard: React.FC<StatCardProps> = ({
     title,
     value,
+    description,
     icon,
     trend,
-    formatter = (val) => String(val),
-    className,
-    size = 'md',
-    variant = 'default',
-  }: StatCardProps) {
-    const formattedValue = typeof value === 'number' ? formatter(value) : value;
+    variant = "default",
+    loading = false,
+    className = "",
+    valuePrefix = "",
+    valueSuffix = "",
+    onClick,
+    compact = false,
+    tooltipContent,
+    ariaLabel,
+    formatter,
+  }) => {
+    // Implementation similar to current component but using LESS classes
+    // and incorporating the formatter functionality
     
-    return (
-      <div 
-        className={cn('stat-card', `stat-card--${size}`, `stat-card--${variant}`, className)}
-        aria-labelledby={`stat-title-${title.replace(/\s+/g, '-')}`}
-      >
-        <h3 
-          id={`stat-title-${title.replace(/\s+/g, '-')}`}
-          className="stat-card__title"
-        >
-          {title}
-        </h3>
-        
-        <div className="stat-card__value">
-          {icon && <span className="stat-card__icon">{icon}</span>}
-          {formattedValue}
-        </div>
-        
-        {trend && (
-          <div className={`stat-card__trend stat-card__trend--${trend.direction || 'neutral'}`}>
-            {trend.direction === 'up' && <ArrowUpIcon />}
-            {trend.direction === 'down' && <ArrowDownIcon />}
-            <span>{trend.value > 0 ? '+' : ''}{trend.value}%</span>
-            {trend.label && <span className="stat-card__trend-label">{trend.label}</span>}
-          </div>
-        )}
-      </div>
-    );
-  }
+    // Generate unique IDs for accessibility
+    const titleId = useId();
+    const descriptionId = useId();
+    
+    // Format the value if formatter is provided
+    const formattedValue = formatter && typeof value === 'number' 
+      ? formatter(value) 
+      : `${valuePrefix}${value}${valueSuffix}`;
+    
+    // Determine if the card is interactive
+    const isInteractive = !!onClick;
+    
+    // Build the CSS class names using LESS module classes
+    const cardClasses = [
+      'stat-card',
+      `stat-card--${variant}`,
+      loading ? 'stat-card--loading' : '',
+      compact ? 'stat-card--compact' : '',
+      isInteractive ? 'stat-card--interactive' : '',
+      className
+    ].filter(Boolean).join(' ');
+    
+    // Rest of implementation similar to current component...
+  };
   ```
 
-- [x] Create adapter functions
+- [ ] Write unit tests
   ```tsx
-  // Convert old StatDisplay props to new StatCard props
-  export function adaptStatDisplayProps(props: StatDisplayProps): StatCardProps {
-    return {
-      title: props.label,
-      value: props.stat,
-      formatter: props.format ? (val) => format(val, props.format) : undefined,
-      trend: props.comparison ? {
-        value: calculatePercentage(props.stat, props.comparison.value),
-        direction: getDirection(props.stat, props.comparison.value),
-        label: props.comparison.label
-      } : undefined
-    };
-  }
-  ```
-
-- [x] Write unit tests
-  ```tsx
+  // Planned tests - not yet implemented
   describe('StatCard', () => {
-    it('renders correctly with basic props', () => {
-      render(<StatCard title="Revenue" value={1500} />);
-      expect(screen.getByText('Revenue')).toBeInTheDocument();
-      expect(screen.getByText('1500')).toBeInTheDocument();
+    it('renders with basic props', () => {
+      render(<StatCard title="Users" value={1234} />);
+      expect(screen.getByText('Users')).toBeInTheDocument();
+      expect(screen.getByText('1234')).toBeInTheDocument();
     });
     
-    it('formats numbers correctly', () => {
-      const formatter = (val: number) => `$${val.toLocaleString()}`;
-      render(<StatCard title="Revenue" value={1500} formatter={formatter} />);
-      expect(screen.getByText('$1,500')).toBeInTheDocument();
+    it('applies formatter when provided', () => {
+      const formatter = (value: number | string) => `$${value}`;
+      render(<StatCard title="Revenue" value={1000} formatter={formatter} />);
+      expect(screen.getByText('$1000')).toBeInTheDocument();
     });
     
-    it('displays trend correctly', () => {
+    it('handles string values correctly', () => {
+      render(<StatCard title="Status" value="Active" />);
+      expect(screen.getByText('Active')).toBeInTheDocument();
+    });
+    
+    it('displays trend information', () => {
       render(
         <StatCard 
           title="Growth" 
           value={15} 
-          trend={{ value: 5.2, direction: 'up' }} 
+          trend={{
+            value: 5.2,
+            direction: 'up',
+            label: 'vs last month',
+            isGood: true
+          }}
         />
       );
-      expect(screen.getByText('+5.2%')).toBeInTheDocument();
+      
+      expect(screen.getByText('+5.2')).toBeInTheDocument();
+      expect(screen.getByText('vs last month')).toBeInTheDocument();
+    });
+    
+    it('is interactive when onClick is provided', () => {
+      const handleClick = jest.fn();
+      render(<StatCard title="Clickable" value={100} onClick={handleClick} />);
+      
+      const card = screen.getByRole('button');
+      fireEvent.click(card);
+      
+      expect(handleClick).toHaveBeenCalledTimes(1);
     });
   });
   ```
 
-- [x] Create Storybook stories
+### 2. Migration Phase (Planned)
+
+- [ ] Create adapter component for backward compatibility
   ```tsx
-  export default {
-    title: 'Data Display/StatCard',
-    component: StatCard,
-  };
+  // Planned adapter - not yet implemented
+  import { StatCard as NewStatCard } from './StatCard';
+  import type { StatCardProps as OldStatCardProps } from '../components/common/cards/StatCard';
   
-  export const Default = () => (
-    <StatCard title="Total Users" value={2543} />
-  );
-  
-  export const WithTrend = () => (
-    <StatCard 
-      title="Revenue" 
-      value="$15,234" 
-      trend={{ value: 12.5, direction: 'up', label: 'vs last month' }} 
-    />
-  );
-  
-  export const Variants = () => (
-    <div style={{ display: 'flex', gap: '1rem' }}>
-      <StatCard title="Default" value={100} variant="default" />
-      <StatCard title="Outline" value={100} variant="outline" />
-      <StatCard title="Filled" value={100} variant="filled" />
-    </div>
-  );
+  export function LegacyStatCard(props: OldStatCardProps) {
+    // Map old props to new props
+    return <NewStatCard {...props} />;
+  }
   ```
 
-### 2. Migration Phase
+- [ ] Update imports in all files
+- [ ] Test component in all contexts
 
-- [x] Move component to appropriate directory
-- [x] Update imports in all files
-- [x] Test component in all contexts
-- [x] Fix any issues during testing
+### 3. Documentation Phase (Planned)
 
-### 3. Documentation Phase
+- [ ] Add JSDoc comments
+- [ ] Document accessibility considerations
+- [ ] Create Storybook stories
 
-- [x] Add JSDoc comments
-  ```tsx
-  /**
-   * StatCard displays a key metric with optional trend indicator.
-   * 
-   * @example
-   * <StatCard 
-   *   title="Total Revenue" 
-   *   value={1500} 
-   *   formatter={(val) => `$${val}`}
-   *   trend={{ value: 12, direction: 'up', label: 'vs last month' }}
-   * />
-   */
-  ```
+### 4 & 5. Cleanup and Review Phases (Planned)
 
-- [x] Document accessibility considerations
-  ```markdown
-  ## Accessibility
-  - Uses semantic heading for title
-  - Trend direction is conveyed by both color and icon
-  - ARIA attributes for screen readers
-  ```
+- [ ] Verify all uses working correctly
+- [ ] Conduct code review
+- [ ] Verify accessibility compliance
 
-### 4. Cleanup Phase
+## Migration Status
 
-- [x] Verify all uses working correctly
-- [x] Remove unused imports
-- [x] Run linting and formatting
+- [ ] Implementation: Not started
+- [ ] Code review: Not started
+- [ ] Migration approval: Not started
 
-### 5. Review Phase
+## Implementation Notes
 
-- [x] Conduct code review
-- [x] Verify accessibility compliance
-- [x] Ensure documentation is complete
-- [x] Update component status in tracking
+This document represents the planned approach for migrating the StatCard component. The actual implementation has not yet begun. The current StatCard component is implemented in `components/common/cards/StatCard.tsx` and already has a well-designed API with good accessibility features.
 
-## Migration Completion
+### Current Implementation
 
-- [x] Implementation completed by: Alex Johnson (Date: 2025-04-24)
-- [x] Code review completed by: Maria Garcia (Date: 2025-04-25)
-- [x] Migration approved by: Miguel Rodriguez (Date: 2025-04-25)
-
-## Post-Migration Notes
-
-The StatCard migration was straightforward with the main challenge being the unification of two similar but differently named interfaces. The adapter pattern worked well for maintaining backward compatibility.
+The current StatCard component is a feature-rich component with support for various display options, trends, tooltips, and accessibility features. The migration will preserve all current functionality while standardizing the styling approach with LESS modules and ensuring consistency with other components in the new system.

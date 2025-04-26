@@ -16,30 +16,63 @@ We organize our components into the following categories:
 
 ## Directory Structure
 
+Our component architecture follows a functional organization while adhering to atomic design principles:
+
 ```
-components/
-├── ui/                 # Core UI components (atoms)
-│   ├── button.tsx
-│   ├── input.tsx
-│   ├── card.tsx
-│   └── ...
-├── common/             # Composite reusable components (molecules)
-│   ├── cards/
-│   ├── forms/
-│   └── display/
-├── features/           # Feature-specific components (organisms)
-│   ├── auth/
-│   ├── notification/
-│   ├── search/
-│   └── ...
-├── layout/             # Layout components
-│   ├── header.tsx
-│   ├── footer.tsx
-│   ├── sidebar.tsx
-│   └── ...
-└── [feature-name]/     # Feature-specific component directories
-    └── ...
+src/
+  components/
+    ui/                        # Core UI components (atoms)
+      button/
+      input/
+      card/
+    data-display/              # Data presentation components (molecules)
+      stat-card/
+      quote-display/
+      metrics/
+    charts/                    # Chart components (molecules)
+      core/                    # Shared chart utilities and types
+      bar/
+      line/
+      pie/
+    layout/                    # Layout components
+      wrappers/
+      header/
+      footer/
+      sidebar/
+    navigation/                # Navigation components (molecules)
+      main-nav/
+      breadcrumbs/
+      tabs/
+      pagination/
+    lists/                     # List components (molecules)
+      activity-list/
+      projects-list/
+      virtualized-list/
+    forms/                     # Form components (molecules)
+      inputs/
+      selects/
+      buttons/
+      validation/
+    features/                  # Feature-specific components (organisms)
+      auth/
+      media/
+      analysis/
+      dashboard/
+      projects/
+  styles/                      # Global styles
+    variables.less
+    mixins.less
+    global.less
+  hooks/                       # Custom hooks
+  utils/                       # Utility functions
+  types/                       # TypeScript type definitions
 ```
+
+Each component directory contains:
+- Component file(s)
+- Component-specific styles (LESS module)
+- Tests
+- Documentation (README.md or Storybook stories)
 
 ## Component Design Patterns
 
@@ -269,14 +302,14 @@ const DataRow = React.memo(function DataRow({ data }: DataRowProps) {
 We use a combination of Tailwind CSS and CSS LESS Modules for styling:
 
 1. **Tailwind CSS** - For rapid UI development and consistent design tokens
-2. **CSS Modules** - For component-specific styles that go beyond Tailwind
+2. **LESS Modules** - For component-specific styles that go beyond Tailwind
 3. **CSS Variables** - For theme values and dynamic styling
 
 ### Example Styling
 
 ```tsx
-// Component with Tailwind and CSS Module
-import styles from './Button.module.css'
+// Component with Tailwind and LESS Module
+import styles from './Button.less'
 
 function Button({ variant = 'primary', size = 'md', children, className, ...props }: ButtonProps) {
   return (

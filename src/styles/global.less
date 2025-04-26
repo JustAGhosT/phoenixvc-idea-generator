@@ -1,0 +1,94 @@
+// Global styles
+@import './variables.less';
+@import './mixins.less';
+
+// Reset and base styles
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: @text-primary;
+  background-color: @background-page;
+}
+
+a {
+  color: @primary;
+  text-decoration: none;
+  .transition(color);
+  
+  &:hover {
+    color: @primary-dark;
+  }
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+// Focus styles for accessibility
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  .focus-ring();
+}
+
+// Typography
+h1 {
+  .heading-1();
+}
+
+h2 {
+  .heading-2();
+}
+
+h3 {
+  .heading-3();
+}
+
+p {
+  .body-text();
+  margin-bottom: @spacing-md;
+}
+
+// Utility classes
+.container {
+  .responsive-container();
+  padding-left: @spacing-md;
+  padding-right: @spacing-md;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// Responsive utilities
+.hide-on-mobile {
+  @media (max-width: @breakpoint-md) {
+    display: none !important;
+  }
+}
+
+.hide-on-desktop {
+  @media (min-width: @breakpoint-md) {
+    display: none !important;
+  }
+}

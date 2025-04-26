@@ -1,446 +1,370 @@
 # BarChart Component Migration - Phase B
 
-This checklist covers the implementation, migration, documentation, cleanup, and review phases for the BarChart component migration.
+This checklist will cover the implementation, migration, documentation, cleanup, and review phases for the BarChart component.
 
 ## Component Name: BarChart
 
-### 1. Implementation Phase
+### 1. Implementation Phase (Planned)
 
-- [x] Create the LESS module with component-specific styles
+- [ ] Create LESS module
   ```less
+  // Planned structure for BarChart.less
   .bar-chart {
     &__container {
-      position: relative;
       width: 100%;
     }
     
     &__title {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
+      font-weight: 600;
+      font-size: @font-size-base;
     }
     
     &__description {
       color: @text-secondary;
-      margin-bottom: 1rem;
-      font-size: 0.875rem;
+      font-size: @font-size-sm;
     }
     
-    &__bar {
-      transition: all 0.3s ease;
-      cursor: pointer;
-      
-      &:hover {
-        opacity: 0.8;
-      }
+    &__item {
+      margin-bottom: @spacing-md;
+    }
+    
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: @spacing-xs;
     }
     
     &__label {
-      font-size: 0.75rem;
-      white-space: nowrap;
+      font-size: @font-size-sm;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 180px;
     }
     
     &__value {
-      font-weight: bold;
-      font-size: 0.875rem;
+      font-size: @font-size-sm;
+      font-weight: 500;
     }
     
-    // Variants
-    &--horizontal {
-      .bar-chart__label {
-        text-align: right;
-        padding-right: 0.5rem;
-      }
-    }
-    
-    &--stacked {
-      .bar-chart__bar {
-        transition: all 0.2s ease;
-      }
-    }
-    
-    // Responsive
-    @media (max-width: @breakpoint-md) {
-      &__label {
-        font-size: 0.7rem;
+    &__progress {
+      &--blue {
+        background-color: @blue-100;
+        .progress-indicator {
+          background-color: @blue-600;
+        }
       }
       
-      &__value {
-        font-size: 0.8rem;
+      &--green {
+        background-color: @green-100;
+        .progress-indicator {
+          background-color: @green-600;
+        }
       }
+      
+      &--purple {
+        background-color: @purple-100;
+        .progress-indicator {
+          background-color: @purple-600;
+        }
+      }
+      
+      &--orange {
+        background-color: @orange-100;
+        .progress-indicator {
+          background-color: @orange-600;
+        }
+      }
+      
+      &--red {
+        background-color: @red-100;
+        .progress-indicator {
+          background-color: @red-600;
+        }
+      }
+    }
+    
+    &__divider {
+      margin: @spacing-sm 0;
+      border-bottom: 1px solid @border-color;
+    }
+    
+    &__empty {
+      text-align: center;
+      padding: @spacing-lg;
+      color: @text-secondary;
     }
   }
   ```
-- [x] Create custom hook for chart logic
-  ```typescript
-  function useBarChart(props: BarChartProps) {
-    const { series, horizontal, stacked, formatter } = props;
+
+- [ ] Implement unified component with LESS module
+  ```tsx
+  // Planned implementation - not yet implemented
+  import React from 'react';
+  import { Progress } from "@/components/ui/progress";
+  import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+  import './BarChart.less';
+  
+  export interface ChartDataPoint {
+    label: string;
+    value: number;
+    max?: number;
+    [key: string]: any;
+  }
+
+  export interface ChartSeries {
+    name: string;
+    data: ChartDataPoint[];
+    color?: string;
+  }
+
+  export interface BarChartProps {
+    series: ChartSeries[];
+    height?: string | number;
+    width?: string | number;
+    formatter?: (value: number) => string;
+    colors?: string[];
+    title?: string;
+    description?: string;
+    className?: string;
+    horizontal?: boolean;
+    stacked?: boolean;
+    maxItems?: number;
+    onBarClick?: (item: ChartDataPoint) => void;
+  }
+  
+  export function BarChart({
+    height = "auto",
+    width = "100%",
+    title,
+    description,
+    series,
+    colors = ["blue", "green", "purple", "orange", "red"],
+    formatter = (value) => value.toString(),
+    maxItems = 5,
+    className = "",
+    onBarClick,
+  }: BarChartProps) {
+    // Get the first series or return empty if none
+    const primarySeries = series[0] || { name: "", data: [] };
     
-    // Calculate scales, dimensions, etc.
-    const dimensions = useMemo(() => calculateDimensions(series, horizontal), [series, horizontal]);
-    
-    // Format values
-    const formatValue = useCallback((value: number) => {
-      if (formatter) return formatter(value);
-      return value.toString();
-    }, [formatter]);
+    // Sort and limit data points
+    const sortedData = [...primarySeries.data]
+      .sort((a, b) => b.value - a.value)
+      .slice(0, maxItems);
     
     // Handle bar click
-    const handleBarClick = useCallback((item: ChartDataPoint) => {
-      if (props.onBarClick) {
-        props.onBarClick(item);
+    const handleClick = (item: ChartDataPoint) => {
+      if (onBarClick) {
+        onBarClick(item);
       }
-    }, [props.onBarClick]);
-    
-    return {
-      dimensions,
-      formatValue,
-      handleBarClick,
     };
-  }
-  ```
-- [x] Create the unified component with standardized interface
-  ```typescript
-  export function BarChart(props: BarChartProps) {
-    const {
-      series,
-      height = 300,
-      width = '100%',
-      colors = defaultColors,
-      title,
-      description,
-      className,
-      horizontal = false,
-      stacked = false,
-    } = props;
-    
-    const { dimensions, formatValue, handleBarClick } = useBarChart(props);
     
     return (
-      <div 
-        className={cn('bar-chart__container', className, {
-          'bar-chart--horizontal': horizontal,
-          'bar-chart--stacked': stacked
-        })}
-        style={{ height, width }}
-      >
-        {title && <h3 className="bar-chart__title">{title}</h3>}
-        {description && <p className="bar-chart__description">{description}</p>}
-        
-        <svg 
-          width="100%" 
-          height="100%"
-          role="img"
-          aria-labelledby={title ? 'chart-title' : undefined}
-        >
-          {title && <title id="chart-title">{title}</title>}
-          <desc>{description || `Bar chart with ${series.length} data series`}</desc>
-          
-          {/* Chart implementation */}
-          {series.map((s, seriesIndex) => (
-            <g key={s.name} aria-label={`Data series: ${s.name}`}>
-              {s.data.map((d, i) => (
-                <rect
-                  key={`${s.name}-${d.label}`}
-                  className="bar-chart__bar"
-                  x={horizontal ? 0 : dimensions.getX(i, seriesIndex)}
-                  y={horizontal ? dimensions.getY(i, seriesIndex) : dimensions.getBarY(d.value)}
-                  width={horizontal ? dimensions.getBarWidth(d.value) : dimensions.barWidth}
-                  height={horizontal ? dimensions.barHeight : dimensions.getBarHeight(d.value)}
-                  fill={s.color || colors[seriesIndex % colors.length]}
-                  onClick={() => handleBarClick(d)}
-                  role="graphics-symbol"
-                  aria-label={`${d.label}: ${d.value}`}
-                  tabIndex={0}
+      <Card className={`bar-chart__container ${className}`}>
+        {(title || description) && (
+          <CardHeader>
+            {title && <CardTitle className="bar-chart__title">{title}</CardTitle>}
+            {description && <CardDescription className="bar-chart__description">{description}</CardDescription>}
+          </CardHeader>
+        )}
+        <CardContent>
+          <div style={{ height, width }} className="flex flex-col justify-center">
+            <div className="space-y-4 w-full">
+              {sortedData.map((item, i) => (
+                <div 
+                  key={i} 
+                  className="bar-chart__item"
+                  onClick={() => handleClick(item)}
+                  role={onBarClick ? "button" : undefined}
+                  tabIndex={onBarClick ? 0 : undefined}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      handleBarClick(d);
+                    if (onBarClick && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      handleClick(item);
                     }
                   }}
-                />
+                >
+                  <div className="bar-chart__header">
+                    <span className="bar-chart__label">{item.label}</span>
+                    <span className="bar-chart__value">{formatter(item.value)}</span>
+                  </div>
+                  <Progress 
+                    value={item.value} 
+                    max={item.max || 100} 
+                    className={`bar-chart__progress--${colors[0]}`}
+                    aria-label={`${item.label}: ${formatter(item.value)}`}
+                  />
+                  {i < sortedData.length - 1 && <div className="bar-chart__divider"></div>}
+                </div>
               ))}
-            </g>
-          ))}
-          
-          {/* Axes, labels, etc. */}
-          <g className="bar-chart__axes">
-            {/* Axis implementation */}
-          </g>
-        </svg>
-        
-        {/* Screen reader accessible data table */}
-        <div className="sr-only">
-          <table>
-            <caption>{title}</caption>
-            <thead>
-              <tr>
-                <th>Category</th>
-                {series.map(s => <th key={s.name}>{s.name}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {/* Generate accessible table from chart data */}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              
+              {sortedData.length === 0 && (
+                <div className="bar-chart__empty">
+                  No data available
+                </div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
   ```
-- [x] Add proper TypeScript typing
-- [x] Ensure responsive behavior
-- [x] Add accessibility features
-  - [x] ARIA roles and labels
-  - [x] Keyboard navigation
-  - [x] Screen reader accessible data table
-  - [x] Color contrast considerations
-- [x] Optimize for performance:
-  - [x] Memoize calculations with useMemo
-  - [x] Use useCallback for event handlers
-  - [x] Implement virtualization for large datasets
-- [x] Write unit tests
-  ```typescript
+
+- [ ] Create adapter functions for existing implementations
+  ```tsx
+  // Adapter for dashboard BarChart
+  export function adaptIdeasToChartSeries(ideas: Idea[], toNumber: (value: string | number) => number): ChartSeries[] {
+    return [{
+      name: "Confidence",
+      data: ideas
+        .filter(idea => idea.title && (idea.confidence || idea.rating))
+        .map(idea => ({
+          label: idea.title,
+          value: toNumber(idea.confidence),
+          originalIdea: idea
+        }))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 5)
+    }];
+  }
+  ```
+
+- [ ] Write unit tests
+  ```tsx
+  // Planned tests - not yet implemented
   describe('BarChart', () => {
-    it('renders correctly with default props', () => {
-      const { container } = render(<BarChart series={mockSeries} />);
-      expect(container.querySelector('.bar-chart__container')).toBeInTheDocument();
+    it('renders with basic props', () => {
+      const series = [{
+        name: 'Test Series',
+        data: [
+          { label: 'Item 1', value: 75 },
+          { label: 'Item 2', value: 50 }
+        ]
+      }];
+      
+      render(<BarChart series={series} />);
+      
+      expect(screen.getByText('Item 1')).toBeInTheDocument();
+      expect(screen.getByText('75')).toBeInTheDocument();
+      expect(screen.getByText('Item 2')).toBeInTheDocument();
+      expect(screen.getByText('50')).toBeInTheDocument();
     });
     
-    it('renders the correct number of bars', () => {
-      const { container } = render(<BarChart series={mockSeries} />);
-      const bars = container.querySelectorAll('.bar-chart__bar');
-      const expectedBars = mockSeries.reduce((acc, s) => acc + s.data.length, 0);
-      expect(bars.length).toBe(expectedBars);
+    it('applies formatter when provided', () => {
+      const series = [{
+        name: 'Test Series',
+        data: [{ label: 'Item 1', value: 75 }]
+      }];
+      
+      const formatter = (value: number) => `${value}%`;
+      
+      render(<BarChart series={series} formatter={formatter} />);
+      
+      expect(screen.getByText('75%')).toBeInTheDocument();
+    });
+    
+    it('limits items based on maxItems prop', () => {
+      const series = [{
+        name: 'Test Series',
+        data: [
+          { label: 'Item 1', value: 75 },
+          { label: 'Item 2', value: 50 },
+          { label: 'Item 3', value: 25 }
+        ]
+      }];
+      
+      render(<BarChart series={series} maxItems={2} />);
+      
+      expect(screen.getByText('Item 1')).toBeInTheDocument();
+      expect(screen.getByText('Item 2')).toBeInTheDocument();
+      expect(screen.queryByText('Item 3')).not.toBeInTheDocument();
     });
     
     it('calls onBarClick when a bar is clicked', () => {
       const onBarClick = jest.fn();
-      const { container } = render(<BarChart series={mockSeries} onBarClick={onBarClick} />);
-      const firstBar = container.querySelector('.bar-chart__bar');
-      fireEvent.click(firstBar);
+      const series = [{
+        name: 'Test Series',
+        data: [{ label: 'Item 1', value: 75 }]
+      }];
+      
+      render(<BarChart series={series} onBarClick={onBarClick} />);
+      
+      const item = screen.getByText('Item 1').closest('.bar-chart__item');
+      fireEvent.click(item);
+      
       expect(onBarClick).toHaveBeenCalledTimes(1);
-    });
-    
-    it('is accessible', async () => {
-      const { container } = render(<BarChart series={mockSeries} title="Test Chart" />);
-      const results = await axe(container);
-      expect(results).toHaveNoViolations();
+      expect(onBarClick).toHaveBeenCalledWith({ label: 'Item 1', value: 75 });
     });
   });
   ```
-- [x] Create Storybook stories
-  ```typescript
-  export default {
-    title: 'Charts/BarChart',
-    component: BarChart,
-    parameters: {
-      docs: {
-        description: {
-          component: 'A flexible bar chart component that supports multiple series, horizontal orientation, and stacking.'
-        }
-      }
-    },
-    argTypes: {
-      series: { control: 'object' },
-      horizontal: { control: 'boolean' },
-      stacked: { control: 'boolean' },
-      height: { control: 'text' },
-      width: { control: 'text' },
-    }
-  };
 
-  const Template = (args) => <BarChart {...args} />;
+### 2. Migration Phase (Planned)
 
-  export const Default = Template.bind({});
-  Default.args = {
-    series: [
-      {
-        name: 'Revenue',
-        data: [
-          { label: 'Jan', value: 1000 },
-          { label: 'Feb', value: 1500 },
-          { label: 'Mar', value: 1200 },
-          { label: 'Apr', value: 1800 },
-        ]
-      }
-    ],
-    title: 'Monthly Revenue',
-    description: 'Revenue figures for the first quarter'
-  };
+- [ ] Create adapter component for backward compatibility
+- [ ] Update imports in all files
+- [ ] Test component in all contexts
 
-  export const MultiSeries = Template.bind({});
-  MultiSeries.args = {
-    series: [
-      {
-        name: '2024',
-        data: [
-          { label: 'Q1', value: 1000 },
-          { label: 'Q2', value: 1500 },
-          { label: 'Q3', value: 1200 },
-          { label: 'Q4', value: 1800 },
-        ]
-      },
-      {
-        name: '2025',
-        data: [
-          { label: 'Q1', value: 1200 },
-          { label: 'Q2', value: 1700 },
-          { label: 'Q3', value: 1400 },
-          { label: 'Q4', value: 2000 },
-        ]
-      }
-    ],
-    title: 'Quarterly Revenue Comparison',
-  };
+### 3. Documentation Phase (Planned)
 
-  export const Horizontal = Template.bind({});
-  Horizontal.args = {
-    ...Default.args,
-    horizontal: true,
-    height: 400,
-  };
-
-  export const Stacked = Template.bind({});
-  Stacked.args = {
-    ...MultiSeries.args,
-    stacked: true,
-  };
-  ```
-
-### 2. Migration Phase
-
-- [x] Move the component to its appropriate directory
-  - `src/components/charts/bar/BarChart.tsx`
-- [x] Create adapter functions for backward compatibility
-  ```typescript
-  // Adapter for dashboard version
-  export function adaptIdeasToSeries(ideas: Idea[], toNumber: (value: string | number) => number): ChartSeries[] {
-    return [{
-      name: 'Ideas',
-      data: ideas.map(idea => ({
-        label: idea.name,
-        value: toNumber(idea.value),
-        originalIdea: idea // Keep reference to original data
-      }))
-    }];
-  }
-
-  // Adapter for chart.js version
-  export function adaptChartJsToSeries(data: any, options: any): ChartSeries[] {
-    // Implementation to convert Chart.js data format to our series format
-  }
-  ```
-- [x] Update imports in all files that use the component
-- [x] Implement feature flag for gradual rollout
-  ```typescript
-  // In app/dashboard/page.tsx
-  {useNewCharts ? (
-    <BarChart 
-      series={adaptIdeasToSeries(ideas, toNumber)} 
-      onBarClick={handleIdeaSelect}
-    />
-  ) : (
-    <OldBarChart ideas={ideas} toNumber={toNumber} onSelect={handleIdeaSelect} />
-  )}
-  ```
-- [x] Test the component in all contexts where it's used
-- [x] Fix any issues that arise during testing
-- [x] Address any design inconsistencies
-
-### 3. Documentation Phase
-
-- [x] Add JSDoc comments to the component
-  ```typescript
+- [ ] Add JSDoc comments
+  ```tsx
   /**
-   * A flexible bar chart component that supports multiple data series,
-   * horizontal orientation, and stacked bars.
+   * BarChart component for displaying data as horizontal bars.
    * 
    * @example
    * ```tsx
    * <BarChart
+   *   title="Top Projects"
    *   series={[{
-   *     name: 'Revenue',
+   *     name: 'Completion',
    *     data: [
-   *       { label: 'Jan', value: 1000 },
-   *       { label: 'Feb', value: 1500 },
+   *       { label: 'Project A', value: 85 },
+   *       { label: 'Project B', value: 65 }
    *     ]
    *   }]}
-   *   title="Monthly Revenue"
-   *   horizontal={false}
-   *   stacked={false}
-   *   onBarClick={(item) => console.log(item)}
+   *   formatter={(value) => `${value}%`}
    * />
    * ```
-   * 
-   * @param props - BarChart component props
-   * @returns A bar chart component
    */
   ```
-- [x] Create usage examples in documentation
-- [x] Document accessibility considerations
+
+- [ ] Document accessibility considerations
   ```markdown
   ## Accessibility
-
+  
   The BarChart component includes the following accessibility features:
-
-  - SVG has appropriate ARIA roles and labels
-  - Interactive bars can be navigated with keyboard
-  - Screen reader accessible data table is included
-  - Color contrast meets WCAG AA standards
-  - Data is available in multiple formats (visual and tabular)
+  
+  - Progress bars have appropriate ARIA labels
+  - Interactive bars have keyboard navigation support
+  - Color combinations meet WCAG contrast requirements
+  - Screen reader friendly structure
   ```
-- [x] Document performance considerations
-  ```markdown
-  ## Performance
 
-  For large datasets (more than 100 data points), consider:
+### 4 & 5. Cleanup and Review Phases (Planned)
 
-  - Using the virtualization option to render only visible bars
-  - Aggregating data to reduce the number of bars
-  - Using the `height` and `width` props to control rendering size
-  ```
-- [x] Update component library documentation
+- [ ] Verify all uses working correctly
+- [ ] Conduct code review
+- [ ] Verify accessibility compliance
 
-### 4. Cleanup Phase
+## Migration Status
 
-- [x] Verify all uses of the component are working correctly
-- [ ] Remove the old component (scheduled for next sprint)
-- [x] Remove any unused imports or dependencies
-- [x] Clean up any temporary files or code
-- [ ] Remove feature flags (scheduled for next sprint)
-- [x] Run linting and formatting on all modified files
+- [ ] Implementation: Not started
+- [ ] Code review: Not started
+- [ ] Migration approval: Not started
 
-### 5. Review Phase
+## Implementation Notes
 
-- [x] Conduct a code review
-- [x] Check for any performance issues
-  - Identified and fixed rendering optimization for large datasets
-- [x] Verify accessibility compliance
-  - Passed automated axe tests
-  - Verified keyboard navigation
-  - Tested with screen reader
-- [x] Ensure documentation is complete and accurate
-- [x] Conduct final testing in all contexts
-- [x] Get sign-off from design team
-- [x] Update component status in migration tracking
+This document represents the planned approach for migrating the BarChart component. The actual implementation has not yet begun. 
 
-## Migration Completion
+### Current Implementation
 
-- [x] Implementation completed by: John Smith (Date: 2025-04-24)
-- [x] Code review completed by: Maria Garcia (Date: 2025-04-25)
-- [x] Migration approved by: Miguel Rodriguez (Date: 2025-04-25)
+Currently, there are two different BarChart implementations:
 
-## Post-Migration Notes
+1. `components/dashboard/BarChart.tsx` - A dashboard-specific implementation that takes ideas data directly and displays confidence and rating metrics using Progress components.
 
-The BarChart component migration was successful overall, with a few key learnings:
+2. `components/charts/bar/BarChart.tsx` - A more generalized implementation that takes standardized series data and displays it using Progress components wrapped in a Card.
 
-1. The SVG-based approach provides much better accessibility and styling control compared to the previous Chart.js implementation.
-
-2. The adapter pattern worked well for maintaining backward compatibility while introducing the new interface.
-
-3. Performance optimizations were needed for datasets with more than 50 bars, which we addressed with virtualization.
-
-4. For future chart components, we should extract some of the common chart logic into shared hooks to avoid duplication.
-
-5. The feature flag approach allowed us to gradually roll out the new implementation and gather feedback before fully replacing the old component.
+The migration will unify these implementations while maintaining the current visual design using the Progress component rather than switching to an SVG-based approach as suggested in the previous documentation.
