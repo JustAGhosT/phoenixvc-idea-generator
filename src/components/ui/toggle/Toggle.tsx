@@ -1,6 +1,7 @@
+import React, { forwardRef, useState, useEffect } from 'react';
 import { cn } from '@/utils/classnames';
-import React, { forwardRef, useEffect, useState } from 'react';
 import styles from './Toggle.module.css';
+import animations from './ToggleAnimations.module.css';
 
 export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   /**
@@ -35,10 +36,17 @@ export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
    * @default false
    */
   labelLeft?: boolean;
-/**
+  
+  /**
    * Default checked state (uncontrolled)
- */
+   */
   defaultChecked?: boolean;
+  
+  /**
+   * Whether to use enhanced animations
+   * @default false
+   */
+  enhancedAnimation?: boolean;
 }
 
 /**
@@ -70,6 +78,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
     disabled,
     id,
     labelLeft = false,
+    enhancedAnimation = false,
     onChange,
     ...props
   }, ref) => {
@@ -122,20 +131,24 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
               ref={ref}
               checked={isChecked}
               disabled={disabled}
-              className={styles.toggleInput}
+              className={cn(
+                styles.toggleInput,
+                enhancedAnimation && animations.toggleEnhanced
+              )}
               onChange={handleChange}
               {...props}
             />
             <div 
               className={cn(
                 styles.toggleSwitch,
+                animations.toggleSwitch,
                 styles[`toggleSwitch--${size}`],
                 styles[`toggleSwitch--${variant}`],
                 disabled && styles['toggleSwitch--disabled'],
                 error && styles['toggleSwitch--error']
               )}
             >
-              <div className={styles.toggleKnob}></div>
+              <div className={cn(styles.toggleKnob, animations.toggleKnob)}></div>
             </div>
           </div>
         </div>

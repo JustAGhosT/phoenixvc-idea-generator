@@ -1,6 +1,7 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { cn } from '@/utils/classnames';
 import styles from './Select.module.css';
+import animations from './SelectAnimations.module.css';
 
 export interface SelectOption {
   /**
@@ -62,6 +63,12 @@ export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectE
    * @default false
    */
   fullWidth?: boolean;
+  
+  /**
+   * Whether to show error animation
+   * @default false
+   */
+  showErrorAnimation?: boolean;
 }
 
 /**
@@ -100,9 +107,23 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     id,
     placeholder,
     fullWidth = false,
+    showErrorAnimation = false,
+    onFocus,
+    onBlur,
     ...props
   }, ref) => {
+    const [isFocused, setIsFocused] = useState(false);
     const selectId = id || `select-${Math.random().toString(36).substring(2, 9)}`;
+    
+    const handleFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
+      setIsFocused(true);
+      onFocus?.(e);
+    };
+    
+    const handleBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
+      setIsFocused(false);
+      onBlur?.(e);
+    };
     
     return (
       <div className={cn(
@@ -129,11 +150,16 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             disabled={disabled}
             className={cn(
               styles.select,
+              animations.select,
               styles[`select--${size}`],
               styles[`select--${variant}`],
               disabled && styles['select--disabled'],
-              error && styles['select--error']
+              error && styles['select--error'],
+              error && showErrorAnimation && animations.selectError,
+              isFocused && animations.selectOpen
             )}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             {...props}
           >
             {placeholder && (
@@ -146,12 +172,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 key={option.value} 
                 value={option.value} 
                 disabled={option.disabled}
+                className={animations.selectOption}
               >
                 {option.label}
               </option>
             ))}
           </select>
-          <div className={styles.selectArrow}>
+          <div className={cn(styles.selectArrow, animations.selectArrow)}>
             <svg 
               width="12" 
               height="12" 

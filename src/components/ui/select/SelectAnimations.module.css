@@ -1,0 +1,63 @@
+/* Select animations */
+
+.select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.selectArrow {
+  transition: transform 0.2s ease;
+}
+
+/* Focus state animation */
+.select:focus {
+  animation: selectFocus 0.2s ease forwards;
+}
+
+@keyframes selectFocus {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+}
+
+/* Arrow animation on focus/open */
+.select:focus + .selectArrow,
+.selectOpen + .selectArrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* Option hover animation */
+.selectOption:hover {
+  animation: optionPulse 0.2s ease;
+}
+
+@keyframes optionPulse {
+  0% { background-color: rgba(59, 130, 246, 0.05); }
+  50% { background-color: rgba(59, 130, 246, 0.1); }
+  100% { background-color: rgba(59, 130, 246, 0.05); }
+}
+
+/* Error state animation */
+.selectError {
+  animation: errorShake 0.4s ease;
+}
+
+@keyframes errorShake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .select,
+  .selectArrow,
+  .select:focus,
+  .select:focus + .selectArrow,
+  .selectOpen + .selectArrow,
+  .selectOption:hover,
+  .selectError {
+    transition: none;
+    animation: none;
+  }
+}

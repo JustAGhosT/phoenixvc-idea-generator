@@ -1,0 +1,70 @@
+/* Radio animations */
+
+.radioControl {
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.radioIndicator {
+  transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+}
+
+/* Check animation */
+.radio:checked + .radioControl .radioIndicator {
+  animation: radioCheck 0.2s ease forwards;
+}
+
+@keyframes radioCheck {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Focus animation */
+.radio:focus + .radioControl {
+  animation: radioFocus 0.2s ease forwards;
+}
+
+@keyframes radioFocus {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+}
+
+/* Hover animation */
+.radioControl:hover {
+  animation: radioHover 0.3s ease;
+}
+
+@keyframes radioHover {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Error state animation */
+.radioError {
+  animation: errorPulse 0.5s ease;
+}
+
+@keyframes errorPulse {
+  0% { border-color: rgba(220, 38, 38, 0.7); }
+  50% { border-color: rgba(220, 38, 38, 1); }
+  100% { border-color: rgba(220, 38, 38, 0.7); }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .radioControl,
+  .radioIndicator,
+  .radio:checked + .radioControl .radioIndicator,
+  .radio:focus + .radioControl,
+  .radioControl:hover,
+  .radioError {
+    transition: none;
+    animation: none;
+  }
+  
+  .radio:checked + .radioControl .radioIndicator {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

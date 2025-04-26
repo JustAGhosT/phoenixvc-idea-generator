@@ -1,6 +1,7 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { cn } from '@/utils/classnames';
 import styles from './Radio.module.css';
+import animations from './RadioAnimations.module.css';
 
 export interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   /**
@@ -29,6 +30,12 @@ export interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
    * Error message to display
    */
   error?: string;
+  
+  /**
+   * Whether to show error animation
+   * @default false
+   */
+  showErrorAnimation?: boolean;
 }
 
 /**
@@ -58,13 +65,33 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
     error,
     disabled,
     id,
+    showErrorAnimation = false,
+    onMouseEnter,
+    onMouseLeave,
     ...props
   }, ref) => {
+    const [isHovered, setIsHovered] = useState(false);
     const radioId = id || `radio-${Math.random().toString(36).substring(2, 9)}`;
+    
+    const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!disabled) {
+        setIsHovered(true);
+      }
+      onMouseEnter?.(e as any);
+    };
+    
+    const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+      setIsHovered(false);
+      onMouseLeave?.(e as any);
+    };
     
     return (
       <div className={cn(styles.radioContainer, className)}>
-        <div className={styles.radioWrapper}>
+        <div 
+          className={styles.radioWrapper}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <input
             type="radio"
             id={radioId}
@@ -79,8 +106,15 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
             )}
             {...props}
           />
-          <div className={styles.radioControl}>
-            <div className={styles.radioIndicator} />
+          <div 
+            className={cn(
+              styles.radioControl,
+              animations.radioControl,
+              error && showErrorAnimation && animations.radioError,
+              isHovered && !disabled && animations.radioHover
+            )}
+          >
+            <div className={cn(styles.radioIndicator, animations.radioIndicator)} />
           </div>
           {label && (
             <label 
