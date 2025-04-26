@@ -4,6 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { cn } from "@/lib/utils";
 import { Inter } from "next/font/google";
 import { ReactNode } from "react";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +21,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <ThemeProvider defaultTheme="dark" storageKey="app-theme">
             {children}
             <Toaster />
+            <Analytics />
+            <SpeedInsights />
           </ThemeProvider>
         </ClientProviders>
       </body>
