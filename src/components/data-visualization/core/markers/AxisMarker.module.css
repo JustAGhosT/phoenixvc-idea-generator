@@ -1,0 +1,12 @@
+.marker {
+  pointer-events: none;
+}
+
+.line {
+  vector-effect: non-scaling-stroke;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 500;
+}

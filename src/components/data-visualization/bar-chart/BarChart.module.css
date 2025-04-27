@@ -1,0 +1,61 @@
+.container {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--background-color, #ffffff);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+}
+
+.headerContainer {
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  color: var(--text-secondary, #64748b);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.barsContainer {
+  transition: opacity 0.3s ease;
+}
+
+.empty {
+  fill: var(--text-secondary, #64748b);
+  font-size: 14px;
+}
+
+/* Data labels */
+.dataLabel {
+  fill: var(--text-color, #334155);
+  font-size: 10px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary, #64748b);
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  margin-right: 4px;
+}

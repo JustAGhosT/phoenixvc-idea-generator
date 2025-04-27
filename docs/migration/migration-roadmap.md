@@ -21,7 +21,7 @@ This roadmap outlines the phased approach for migrating components from LESS to 
 | Task | Description | Priority | Estimated Effort | Status |
 |------|-------------|----------|------------------|--------|
 | Migrate StatCard | Simple UI component with icon support | High | 2 days | ✅ Completed |
-| Migrate QuoteDisplay | Merge floating and card implementations | High | 2 days | 🔄 In Progress |
+| Migrate QuoteDisplay | Merge floating and card implementations | High | 2 days | ✅ Completed |
 | Create documentation templates | Templates for component docs | Medium | 1 day | ✅ Completed |
 | Set up CI checks | Linting, testing, and build validation | Medium | 1 day | ✅ Completed |
 | Initial testing | Validate migrated components | High | 1 day | 🔄 In Progress |
@@ -32,11 +32,11 @@ This roadmap outlines the phased approach for migrating components from LESS to 
 
 | Task | Description | Priority | Estimated Effort | Status |
 |------|-------------|----------|------------------|--------|
-| Create chart core types | Define shared chart interfaces | High | 1 day | ⏳ Not Started |
-| Migrate BarChart | Convert LESS to CSS Modules with Tailwind | High | 2 days | ⏳ Not Started |
+| Create chart core types | Define shared chart interfaces | High | 1 day |  ✅ Completed |
+| Migrate BarChart | Convert LESS to CSS Modules with Tailwind | High | 2 days | 🔄 In Progress |
 | Migrate LineChart | Convert LESS to CSS Modules with Tailwind | Medium | 2 days | ⏳ Not Started |
 | Migrate PieChart | Convert LESS to CSS Modules with Tailwind | Medium | 2 days | ⏳ Not Started |
-| Test chart components | Validate all chart implementations | High | 1 day | ⏳ Not Started |
+| Test chart components | Validate all chart implementations | High | 1 day | 🔄 In Progress |
 
 ### Week 4: Layout Components
 
@@ -173,8 +173,8 @@ After the migration is complete:
 | Phase | Total Components | Completed | In Progress | Not Started | Progress |
 |-------|------------------|-----------|-------------|-------------|----------|
 | Phase 1: Foundation | 2 | 1 | 1 | 0 | 50% |
-| Phase 2: Core UI | 9 | 0 | 0 | 9 | 0% |
+| Phase 2: Core UI | 9 | 1 | 2 | 6 | 22% |
 | Phase 3: Feature | 7 | 0 | 0 | 7 | 0% |
 | Phase 4: Navigation & Forms | 8 | 0 | 0 | 8 | 0% |
 | Phase 5: Integration & Cleanup | 0 | 0 | 0 | 0 | 0% |
-| **Overall** | **26** | **1** | **1** | **24** | **4%** |
+| **Overall** | **26** | **2** | **3** | **21** | **13%** |

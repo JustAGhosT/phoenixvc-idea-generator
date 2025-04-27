@@ -1,0 +1,78 @@
+.legend {
+  display: flex;
+  font-size: 0.75rem;
+}
+
+.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.vertical {
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.top {
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.right {
+  margin-left: 1rem;
+  align-items: flex-start;
+}
+
+.bottom {
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.left {
+  margin-right: 1rem;
+  align-items: flex-start;
+}
+
+.scrollContainer {
+  max-height: 100px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: inherit;
+  gap: inherit;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary, #64748b);
+}
+
+.interactive {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.interactive:hover {
+  opacity: 0.8;
+}
+
+.interactive:focus-visible {
+  outline: 2px solid var(--focus-ring, #3b82f6);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.symbol {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}

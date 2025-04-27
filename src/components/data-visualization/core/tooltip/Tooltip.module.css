@@ -1,0 +1,66 @@
+.tooltip {
+  position: absolute;
+  pointer-events: none;
+  background-color: var(--tooltip-bg, rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--tooltip-border, #e2e8f0);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-width: 200px;
+  transition: opacity 0.15s ease;
+}
+
+/* Default tooltip styles */
+.defaultTooltip {
+  display: flex;
+}
+
+.tooltipTitle {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.tooltipBody {
+  margin: 0;
+  color: var(--text-secondary, #64748b);
+}
+
+.tooltipContent {
+  flex: 1;
+}
+
+.colorIndicator {
+  width: 4px;
+  height: 100%;
+  margin-right: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Data point tooltip styles */
+.dataPointTooltip {
+  display: flex;
+}
+
+/* Multi-series tooltip styles */
+.multiSeriesDataPointTooltip {
+  min-width: 150px;
+}
+
+.seriesItem {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.seriesName {
+  margin-right: 4px;
+  font-weight: 500;
+}
+
+.value {
+  font-weight: 600;
+}

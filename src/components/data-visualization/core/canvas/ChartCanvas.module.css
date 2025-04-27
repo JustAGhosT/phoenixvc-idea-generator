@@ -1,0 +1,14 @@
+.container {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.svg {
+  display: block;
+  overflow: visible;
+}
+
+.contentGroup {
+  pointer-events: all;
+}

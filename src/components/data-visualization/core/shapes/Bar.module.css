@@ -1,0 +1,12 @@
+.bar {
+  transition: opacity 0.2s ease;
+}
+
+.bar:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.stackedBar, .groupedBar {
+  transition: opacity 0.2s ease;
+}

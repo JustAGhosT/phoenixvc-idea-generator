@@ -1,0 +1,148 @@
+/* Bar Chart specific animations */
+
+/* Vertical bar grow animation */
+.barGrow {
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: barGrow 0.5s ease-out forwards;
+}
+
+@keyframes barGrow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+/* Horizontal bar grow animation */
+.barGrowHorizontal {
+  transform-origin: left;
+  transform: scaleX(0);
+  animation: barGrowHorizontal 0.5s ease-out forwards;
+}
+
+@keyframes barGrowHorizontal {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Staggered animation delays for bars */
+.delay0 { animation-delay: 0ms; }
+.delay50 { animation-delay: 50ms; }
+.delay100 { animation-delay: 100ms; }
+.delay150 { animation-delay: 150ms; }
+.delay200 { animation-delay: 200ms; }
+.delay250 { animation-delay: 250ms; }
+.delay300 { animation-delay: 300ms; }
+.delay350 { animation-delay: 350ms; }
+.delay400 { animation-delay: 400ms; }
+.delay450 { animation-delay: 450ms; }
+.delay500 { animation-delay: 500ms; }
+
+/* Tooltip animation */
+.tooltipFade {
+  opacity: 0;
+  animation: tooltipFade 0.2s ease-out forwards;
+}
+
+@keyframes tooltipFade {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header animations */
+.titleFade {
+  opacity: 0;
+  animation: titleFade 0.4s ease-out forwards;
+}
+
+@keyframes titleFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.subtitleFade {
+  opacity: 0;
+  animation: subtitleFade 0.4s ease-out 0.2s forwards;
+}
+
+@keyframes subtitleFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Axis animations */
+.axisDrawX {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: axisDraw 0.6s ease-out forwards;
+}
+
+.axisDrawY {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: axisDraw 0.6s ease-out forwards;
+}
+
+@keyframes axisDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Grid line animations */
+.gridLinesFade {
+  opacity: 0;
+  animation: gridLinesFade 0.5s ease-out 0.3s forwards;
+}
+
+@keyframes gridLinesFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Data label animations */
+.dataLabelFade {
+  opacity: 0;
+  animation: dataLabelFade 0.3s ease-out 0.5s forwards;
+}
+
+@keyframes dataLabelFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Hover effects */
+.barHover {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.barHover:hover {
+  opacity: 0.8;
+  transform: scale(1.02);
+}
+
+/* Active bar effect */
+.barActive {
+  filter: brightness(1.1);
+  stroke: #ffffff;
+  stroke-width: 2px;
+}
+
+/* Series highlight effect */
+.seriesHighlight {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.seriesDim {
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+/* No data animation */
+.noDataFade {
+  opacity: 0;
+  animation: noDataFade 0.5s ease-out 0.2s forwards;
+}
+
+@keyframes noDataFade {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
