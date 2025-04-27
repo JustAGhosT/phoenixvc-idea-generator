@@ -1,0 +1,72 @@
+.buttonToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* Avoid unnecessary hardware acceleration */
+  will-change: auto;
+}
+
+/* Spacing variants - use gap for better performance than margins */
+.buttonToolbar--spacing-xs {
+  gap: 0.25rem;
+}
+
+.buttonToolbar--spacing-sm {
+  gap: 0.5rem;
+}
+
+.buttonToolbar--spacing-md {
+  gap: 1rem;
+}
+
+.buttonToolbar--spacing-lg {
+  gap: 1.5rem;
+}
+
+/* Alignment variants */
+.buttonToolbar--align-left {
+  justify-content: flex-start;
+}
+
+.buttonToolbar--align-center {
+  justify-content: center;
+}
+
+.buttonToolbar--align-right {
+  justify-content: flex-end;
+}
+
+.buttonToolbar--align-space-between {
+  justify-content: space-between;
+}
+
+/* Full width variant */
+.buttonToolbar--fullWidth {
+  width: 100%;
+}
+
+/* Responsive variant */
+@media (max-width: 640px) {
+  .buttonToolbar--responsive {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .buttonToolbar--responsive > * {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* Use direct child selectors for better performance */
+.buttonToolbar > * {
+  display: inline-flex;
+}
+
+/* Optimize for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .buttonToolbar {
+    transition: none;
+  }
+}
