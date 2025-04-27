@@ -1,9 +1,9 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, useEffect } from "react"
 import { searchService } from "@/lib/search-service"
 import { SearchResult } from "@/lib/types"
-import { useDebounce } from "./use-debounce"
+import { createContext, useCallback, useContext, useEffect, useState } from "react"
+import { useDebounce } from "../src/hooks/use-debounce"
 
 interface SearchContextType {
   query: string

@@ -10,18 +10,22 @@ import React from 'react';
  * Basic data point interface for charts
  */
 export interface ChartDataPoint {
+  /** Unique identifier for the data point */
+  id?: string;
   /** The label for this data point */
   label: string;
   /** The value for this data point */
   value: number;
+  /** Optional color for this data point */
+  color?: string;
+  /** Calculated percentage of total (set by chart components) */
+  percentage?: number;
 }
 
 /**
  * Extended data point with optional properties
  */
 export interface ExtendedChartDataPoint extends ChartDataPoint {
-  /** Optional color override for this specific data point */
-  color?: string;
   /** Optional tooltip content for this data point */
   tooltip?: string | React.ReactNode;
   /** Optional flag to highlight this data point */

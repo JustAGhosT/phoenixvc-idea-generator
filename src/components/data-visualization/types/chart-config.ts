@@ -101,6 +101,10 @@ export interface ChartAccessibility {
   announceDataPoints?: boolean;
   /** Custom announcement formatter */
   announceFormatter?: (dataPoint: ChartDataPoint | ExtendedChartDataPoint) => string;
+  /** ID of the element that labels this chart (for aria-labelledby) */
+  labelledBy?: string;
+  /** ID of the element that describes this chart (for aria-describedby) */
+  describedBy?: string;
 }
 
 /**

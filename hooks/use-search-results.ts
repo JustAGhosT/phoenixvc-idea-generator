@@ -3,7 +3,7 @@
 import { searchService } from "@/lib/search-service"
 import type { SearchResult } from "@/lib/types"
 import { useCallback, useEffect, useState } from "react"
-import { useDebounce } from "./use-debounce"
+import { useDebounce } from "../src/hooks/use-debounce"
 import { useResourceList } from "./use-resource-list"
 
 /**
