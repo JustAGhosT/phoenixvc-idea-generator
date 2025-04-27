@@ -34,15 +34,15 @@ This roadmap outlines the phased approach for migrating components from LESS to 
 |------|-------------|----------|------------------|--------|
 | Create chart core types | Define shared chart interfaces | High | 1 day |  ✅ Completed |
 | Migrate BarChart | Convert LESS to CSS Modules with Tailwind | High | 2 days | 🔄 In Progress |
-| Migrate LineChart | Convert LESS to CSS Modules with Tailwind | Medium | 2 days | ⏳ Not Started |
-| Migrate PieChart | Convert LESS to CSS Modules with Tailwind | Medium | 2 days | ⏳ Not Started |
+| Migrate LineChart | Convert LESS to CSS Modules with Tailwind | Medium | 2 days | 🔄 In Progress |
+| Migrate PieChart | Convert LESS to CSS Modules with Tailwind | Medium | 2 days | 🔄 In Progress |
 | Test chart components | Validate all chart implementations | High | 1 day | 🔄 In Progress |
 
 ### Week 4: Layout Components
 
 | Task | Description | Priority | Estimated Effort | Status |
 |------|-------------|----------|------------------|--------|
-| Migrate Sidebar | Create unified sidebar with CSS Modules and Tailwind | High | 3 days | ⏳ Not Started |
+| Migrate Sidebar | Create unified sidebar with CSS Modules and Tailwind | High | 3 days | 🔄 In Progress |
 | Migrate PageHeader | Standardize page header component | Medium | 1 day | ⏳ Not Started |
 | Migrate PageFooter | Standardize page footer component | Medium | 1 day | ⏳ Not Started |
 | Migrate ContentWrapper | Create content wrapper component | Medium | 1 day | ⏳ Not Started |

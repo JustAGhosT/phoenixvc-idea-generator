@@ -9,6 +9,12 @@ src/
       button/
       input/
       card/
+      tooltip/
+    patterns/                  # Composite component patterns
+      sidebar/                 # Compound components with composition patterns
+      data-table/
+      command-menu/
+      form-layout/
     data-display/              # Data presentation components (molecules)
       stat-card/
       quote-display/
@@ -22,7 +28,7 @@ src/
       wrappers/
       header/
       footer/
-      sidebar/
+      app-sidebar/             # Application-specific sidebar implementation
     navigation/                # Navigation components (molecules)
       main-nav/
       breadcrumbs/
@@ -43,6 +49,10 @@ src/
       analysis/
       dashboard/
       projects/
+  contexts/                    # React contexts for state management
+    sidebar-context.tsx        # Contains both context and associated hook
+    theme-context.tsx
+    auth-context.tsx
   styles/                      # Global styles
     variables.css
     mixins.css
@@ -97,6 +107,101 @@ src/components/navigation/tabs/
     └── Tabs.stories.tsx       # Storybook stories
 ```
 
+### Pattern Component Structure
+
+For pattern components that use a composition API, we use this structure:
+
+```
+src/components/patterns/sidebar/
+├── sidebar-root.tsx           # Root container component
+├── sidebar-header.tsx         # Header component part
+├── sidebar-content.tsx        # Content component part
+├── sidebar-footer.tsx         # Footer component part
+├── sidebar-rail.tsx           # Rail component part
+├── sidebar-trigger.tsx        # Trigger component part
+├── sidebar.module.css         # CSS Module styles
+├── index.tsx                  # Exports components as namespace and individually
+├── README.md                  # Documentation with usage examples
+└── __tests__/
+    ├── sidebar.test.tsx       # Unit tests
+    └── sidebar.stories.tsx    # Storybook stories with examples
+```
+
+All components that are part of the reusable pattern should be in this directory. For example, with the sidebar pattern:
+
+- `sidebar-root.tsx`, `sidebar-header.tsx`, `sidebar-content.tsx`, etc. are all part of the reusable pattern
+- Utility components like `sidebar-item.tsx` and `sidebar-section.tsx` that are meant to be used with the pattern should also be here
+- These components are exported together as a namespace: `Sidebar.Root`, `Sidebar.Header`, `Sidebar.Item`, etc.
+
+### Implementation Example
+
+Pattern components are used to create specific implementations:
+
+```
+src/components/layout/app-sidebar/
+├── AppSidebar.tsx             # Application-specific sidebar implementation
+├── AppSidebar.module.css      # Implementation-specific styles
+├── index.ts                   # Re-export for clean imports
+└── __tests__/
+    └── AppSidebar.test.tsx    # Unit tests
+```
+
+The implementation uses the pattern components but doesn't define new pattern pieces. For example:
+
+```tsx
+// src/components/layout/app-sidebar/AppSidebar.tsx
+import { Sidebar } from "@/components/patterns/sidebar";
+
+export function AppSidebar() {
+  return (
+    <Sidebar.Root>
+      <Sidebar.Header>...</Sidebar.Header>
+      <Sidebar.Content>
+        <Sidebar.Section>
+          <Sidebar.Item>...</Sidebar.Item>
+        </Sidebar.Section>
+      </Sidebar.Content>
+    </Sidebar.Root>
+  );
+}
+```
+
+Implementation-specific components that aren't meant to be reused elsewhere can be placed in the implementation directory.
+
+### Context Organization
+
+We organize React contexts in a dedicated `contexts/` directory at the root level:
+
+```
+src/contexts/
+├── sidebar-context.tsx        # Sidebar state management
+├── theme-context.tsx          # Theme state management
+└── auth-context.tsx           # Authentication state management
+```
+
+Each context file contains both the context definition and its associated hook:
+
+```tsx
+// src/contexts/sidebar-context.tsx
+export const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+
+export function SidebarProvider({ children }: { children: React.ReactNode }) {
+  // Provider implementation
+}
+
+export function useSidebarContext() {
+  // Hook implementation
+}
+```
+
+We keep the context and its hook in the same file because:
+
+1. **Encapsulation and cohesion** - They are tightly coupled and designed to work together
+2. **Single source of truth** - All related state management is in one place
+3. **Import simplicity** - Consumers can import everything with a single import
+4. **Preventing circular dependencies** - Avoids potential circular reference issues
+5. **Easier maintenance** - Changes to the context almost always require changes to the hook
+
 ### File Structure Best Practices
 
 1. **Group related files** - Keep component files together in directories
@@ -104,6 +209,7 @@ src/components/navigation/tabs/
 3. **Export from index** - Use index files to simplify imports
 4. **Separate animations** - Keep animations in separate files
 5. **Co-locate tests** - Keep tests close to the components they test
+6. **Context cohesion** - Keep contexts and their hooks in the same file
 
 ### Example Index File
 
@@ -140,8 +246,9 @@ Path aliases are configured in the tsconfig.json file and provide several benefi
 Components are organized by their function and complexity level:
 
 1. **Core UI Components** (`ui/`) - Basic building blocks used throughout the application
-2. **Composite Components** - Components that combine multiple core components
-3. **Feature Components** - Components tied to specific business features
-4. **Layout Components** - Components that define the structure of the application
+2. **Pattern Components** (`patterns/`) - Composable component patterns that follow specific design patterns
+3. **Composite Components** - Components that combine multiple core components
+4. **Feature Components** - Components tied to specific business features
+5. **Layout Components** - Components that define the structure of the application
 
 This organization makes it easy to find components and understand their purpose in the application.

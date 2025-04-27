@@ -6,7 +6,7 @@ import animations from './ButtonAnimations.module.css';
 import { ButtonIcon, ButtonSpinner } from './parts';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'link';
-export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'icon';
 export type ButtonColor = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'default';
 
 // Grouped props interfaces
@@ -100,7 +100,37 @@ const getAnimationClass = (
     default:
       return '';
   }
-    };
+};
+
+// Helper function to determine size class
+const getSizeClass = (
+  size: ButtonSize,
+  isIconOnly: boolean,
+  styles: Record<string, string>
+): string => {
+  // For icon-only buttons
+  if (isIconOnly || size === 'icon') {
+    // Map regular sizes to icon sizes
+    switch (size) {
+      case 'xs':
+        return styles.iconXs;
+      case 'sm':
+        return styles.iconSm;
+      case 'md':
+      case 'icon': // Default icon size is medium
+        return styles.iconMd;
+      case 'lg':
+        return styles.iconLg;
+      case 'xl':
+        return styles.iconXl;
+      default:
+        return styles.iconMd;
+    }
+  }
+  
+  // For regular buttons
+  return styles[size];
+};
     
 /**
  * Button component for user interactions.
@@ -114,6 +144,8 @@ const getAnimationClass = (
  * <Button icons={{ left: <IconMail /> }}>Send Email</Button>
  * 
  * <Button loading={{ isLoading: true, loadingText: "Saving..." }}>Save</Button>
+ * 
+ * <Button size="icon" variant="ghost"><IconMenu /></Button>
  * ```
  */
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -154,7 +186,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Extract icon props
     const leftIcon = icons?.left;
     const rightIcon = icons?.right;
-    const iconOnly = icons?.only || false;
+    // Determine if this is an icon-only button
+    const isIconOnly = Boolean(
+      icons?.only || 
+      size === 'icon' || 
+      (!children && (leftIcon || rightIcon))
+    );
     
     // Extract animation props
     const animationEffect = typeof animation === 'string' 
@@ -174,6 +211,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       getAnimationClass(animationEffect, shouldAnimate, animations), 
       [animationEffect, shouldAnimate]
     );
+
+    // Get the appropriate size class
+    const sizeClass = getSizeClass(size, isIconOnly, styles);
     
     // Handle ripple effect
     const handleRipple = (event: React.MouseEvent<HTMLElement>) => {
@@ -242,8 +282,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       styles[variant],
       // Color
       styles[`color${color.charAt(0).toUpperCase() + color.slice(1)}`],
-      // Size (different for icon buttons)
-      iconOnly ? styles[`icon${size.charAt(0).toUpperCase() + size.slice(1)}`] : styles[size],
+      // Size (using the helper function)
+      sizeClass,
       // States
       disabled || isLoading ? styles.disabled : '',
       isLoading ? styles.loading : '',
@@ -272,11 +312,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         buttonSpecificProps['aria-disabled'] = true;
         // Add tabIndex=-1 to remove from tab order when disabled
         buttonSpecificProps.tabIndex = -1;
-  }
+      }
     }
     
     // Determine if an aria-label is needed for icon-only buttons
-    const needsAriaLabel = iconOnly && !props['aria-label'] && !props['aria-labelledby'];
+    const needsAriaLabel = isIconOnly && !props['aria-label'] && !props['aria-labelledby'];
     
     // Create the content elements
     const contentElements = [];
@@ -289,7 +329,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           className={cn(styles.leftIcon, animations.spinnerAnimation)} 
           size={size === 'xs' || size === 'sm' ? 'sm' : size === 'lg' || size === 'xl' ? 'lg' : 'md'}
         />
-);
+      );
     }
     
     // Progress bar
@@ -353,17 +393,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         Component,
         {
           ref,
-        className: buttonClasses,
-        'aria-busy': isLoading,
-        'aria-pressed': pressed,
-        'aria-label': needsAriaLabel ? 'Button' : props['aria-label'],
-        onClick: handleClick,
-        onKeyDown: handleKeyDown,
-        ...buttonSpecificProps,
-        ...props
-      },
+          className: buttonClasses,
+          'aria-busy': isLoading,
+          'aria-pressed': pressed,
+          'aria-label': needsAriaLabel ? 'Button' : props['aria-label'],
+          onClick: handleClick,
+          onKeyDown: handleKeyDown,
+          ...buttonSpecificProps,
+          ...props
+        },
         ...contentElements
-    );
+      );
     } else {
       // For React components
       return React.createElement(
@@ -380,7 +420,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           ...props
         },
         ...contentElements
-);
+      );
     }
   }
 );

@@ -1,0 +1,49 @@
+/* Base sidebar styles */
+.root {
+  @apply fixed inset-y-0 z-20 flex h-full flex-col border-r bg-background transition-all duration-300;
+  @apply data-[state=open]:translate-x-0 data-[state=closed]:-translate-x-full;
+  @apply md:relative md:data-[state=closed]:translate-x-0;
+}
+
+.expanded {
+  @apply md:w-64;
+}
+
+.collapsed {
+  @apply md:w-16;
+}
+
+/* Header styles */
+.header {
+  @apply flex h-14 items-center border-b px-4;
+}
+
+.headerCollapsed {
+  @apply justify-center px-2;
+}
+
+/* Content styles */
+.content {
+  @apply flex-1 overflow-auto py-2;
+}
+
+/* Footer styles */
+.footer {
+  @apply border-t px-4 py-2;
+}
+
+/* Rail for resizing */
+.rail {
+  @apply absolute right-0 top-1/2 hidden h-20 w-1.5 -translate-y-1/2;
+  @apply cursor-ew-resize rounded-full bg-border opacity-0 transition-opacity;
+  @apply hover:opacity-100 md:block;
+}
+
+/* Trigger button */
+.trigger {
+  @apply h-8 w-8 md:hidden;
+}
+
+.triggerIcon {
+  @apply h-4 w-4;
+}

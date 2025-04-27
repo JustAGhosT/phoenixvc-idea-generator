@@ -1,0 +1,37 @@
+/* Logo styles */
+.logo {
+  @apply flex items-center gap-2;
+}
+
+.logoIcon {
+  @apply h-6 w-6 text-primary;
+}
+
+.logoText {
+  @apply font-bold text-lg;
+}
+
+/* Footer card styles */
+.footerCard {
+  @apply flex flex-col gap-2 rounded-lg bg-muted p-3;
+}
+
+.footerCardHeader {
+  @apply flex items-center gap-2;
+}
+
+.footerCardIcon {
+  @apply h-5 w-5 text-secondary;
+}
+
+.footerCardTitle {
+  @apply font-medium;
+}
+
+.footerCardText {
+  @apply text-xs text-muted-foreground;
+}
+
+.footerCardKbd {
+  @apply rounded bg-muted-foreground/20 px-1;
+}
