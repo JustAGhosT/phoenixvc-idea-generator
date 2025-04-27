@@ -15,12 +15,16 @@ The StatCard component is used to display statistics and metrics with support fo
 - Accessibility features
 - Value formatting options
 
+## Installation
+
+This component is part of the main component library and doesn't require additional installation.
+
 ## Usage
 
 ### Basic Usage
 
 ```tsx
-import { StatCard } from '@/components/data-display/stat-card/StatCard';
+import { StatCard } from '@/components/data-display/stat-card';
 
 <StatCard 
   title="Total Users" 
@@ -151,6 +155,26 @@ import { Zap } from 'lucide-react';
 />
 ```
 
+### Grid Layout
+
+```tsx
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
+  <StatCard title="Users" value={1234} icon="users" variant="primary" />
+  <StatCard title="Revenue" value="$8,492" icon="trending" variant="success" />
+  <StatCard title="Ideas" value={42} icon="lightbulb" variant="info" />
+  <StatCard title="Issues" value={7} icon="alert-circle" variant="danger" />
+</div>
+```
+
+## Component Structure
+
+The StatCard component is composed of several parts:
+
+- `StatCardHeader` - Displays the title and icon
+- `StatCardValue` - Shows the main value
+- `StatCardDescription` - Renders the description text
+- `StatCardTrend` - Displays trend information
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -182,6 +206,39 @@ interface StatCardTrend {
 }
 ```
 
+### Available Icon Identifiers
+
+The following string identifiers can be used for the `icon` prop:
+
+- `"lightbulb"` - For ideas or insights
+- `"check"` - For completed items or success
+- `"rocket"` - For growth or launches
+- `"chart"` - For general charts or statistics
+- `"users"` - For user-related metrics
+- `"trending"` - For trend-related metrics
+- `"activity"` - For activity or usage metrics
+- `"pie"` - For percentage-based metrics
+- `"alert-circle"` - For alerts or issues
+
+## Styling
+
+The StatCard component uses CSS Modules for styling with the following files:
+
+- `StatCard.module.css` - Main styles for the component
+- `StatCardAnimations.module.css` - Animation-specific styles
+
+### Customizing Styles
+
+You can customize the appearance of the StatCard by passing a `className` prop:
+
+```tsx
+<StatCard 
+  title="Custom Styled Card" 
+  value={1000} 
+  className="my-custom-class" 
+/>
+```
+
 ## Accessibility
 
 The StatCard component implements the following accessibility features:
@@ -199,3 +256,29 @@ The StatCard component implements the following accessibility features:
 - Ensures loading states are properly announced to screen readers
 - Provides ariaLabel prop for custom screen reader announcements
 - Includes descriptive labels for trend indicators
+
+## Performance Considerations
+
+The StatCard component is optimized for performance:
+
+- Uses React.memo to prevent unnecessary re-renders
+- Implements useMemo for expensive calculations
+- Uses useCallback for event handlers
+- Splits into smaller component parts for better code organization
+- Optimizes CSS with direct selectors and minimal specificity
+- Respects user preferences for reduced motion
+
+## Browser Support
+
+The StatCard component is compatible with all modern browsers:
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Related Components
+
+- `Card` - Base card component used by StatCard
+- `Tooltip` - Used for displaying additional information
+- `Badge` - Can be used alongside StatCard for additional status indicators

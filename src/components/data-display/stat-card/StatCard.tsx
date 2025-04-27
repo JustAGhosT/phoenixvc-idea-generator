@@ -17,23 +17,28 @@
 
 import { Card } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@utils/classnames';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { cn } from '@/utils/classnames';
 import {
   ActivityIcon,
   AlertCircleIcon,
   BarChartIcon,
   CheckCircleIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
   LightbulbIcon,
-  MinusIcon,
   PieChartIcon,
   RocketIcon,
   TrendingUpIcon,
   UsersIcon
 } from 'lucide-react';
-import React, { useId } from 'react';
-import styles from './StatCard.less';
+import React, { memo, useCallback, useId, useMemo } from 'react';
+import styles from './StatCard.module.css';
+import animations from './StatCardAnimations.module.css';
+import {
+  StatCardDescription,
+  StatCardHeader,
+  StatCardTrend,
+  StatCardValue
+} from './parts';
 
 /**
  * Supported color variants for the StatCard
@@ -88,12 +93,29 @@ export interface StatCardProps {
   ariaLabel?: string;
   /** Optional formatter function for the value */
   formatter?: (value: number | string) => string;
+  /** Animation effect to apply */
+  animation?: 'none' | 'fadeIn' | 'scaleIn' | 'bounceIn' | 'pulse';
 }
 
 /**
+ * Maps icon string identifiers to their corresponding components
+ */
+const iconMap = {
+  'lightbulb': LightbulbIcon,
+  'check': CheckCircleIcon,
+  'rocket': RocketIcon,
+  'chart': BarChartIcon,
+  'users': UsersIcon,
+  'trending': TrendingUpIcon,
+  'activity': ActivityIcon,
+  'pie': PieChartIcon,
+  'alert-circle': AlertCircleIcon,
+};
+  
+/**
  * StatCard component for displaying statistics and metrics
  */
-export const StatCard: React.FC<StatCardProps> = ({
+export const StatCard = memo<StatCardProps>(({
   title,
   value,
   description,
@@ -108,8 +130,12 @@ export const StatCard: React.FC<StatCardProps> = ({
   compact = false,
   tooltipContent,
   ariaLabel,
-  formatter
+  formatter,
+  animation = 'none'
 }) => {
+  // Check if reduced motion is preferred
+  const prefersReducedMotion = useReducedMotion();
+  
   // Generate unique IDs for accessibility
   const titleId = useId();
   const descriptionId = useId();
@@ -117,125 +143,97 @@ export const StatCard: React.FC<StatCardProps> = ({
   // Determine if the card is interactive
   const isInteractive = !!onClick;
   
+  // Format the value
+  const formattedValue = useMemo(() => {
+    if (formatter && (typeof value === 'number' || typeof value === 'string')) {
+      return formatter(value);
+    }
+    return `${valuePrefix}${value}${valueSuffix}`;
+  }, [value, formatter, valuePrefix, valueSuffix]);
+  
+  // Handle keyboard interaction for accessibility
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (isInteractive && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      onClick?.();
+    }
+  }, [isInteractive, onClick]);
+  
+  // Determine animation class
+  const animationClass = useMemo(() => {
+    if (prefersReducedMotion || animation === 'none') return '';
+    
+    switch (animation) {
+      case 'fadeIn':
+        return animations.fadeIn;
+      case 'scaleIn':
+        return animations.scaleIn;
+      case 'bounceIn':
+        return animations.bounceIn;
+      case 'pulse':
+        return animations.pulseAnimation;
+      default:
+        return '';
+    }
+  }, [animation, prefersReducedMotion]);
+  
   // Build the CSS class names
   const cardClasses = cn(
     styles.statCard,
     styles[`variant${variant.charAt(0).toUpperCase() + variant.slice(1)}`],
     loading && styles.loading,
     compact && styles.compact,
+    isInteractive && !prefersReducedMotion && animations.hoverLift,
+    animationClass,
+    loading && !prefersReducedMotion && animations.shimmerAnimation,
     className
   );
   
-  // ARIA attributes for accessibility
-  const ariaAttributes = {
-    role: isInteractive ? 'button' : undefined,
-    tabIndex: isInteractive ? 0 : undefined,
-    onClick: isInteractive ? onClick : undefined,
-    onKeyDown: isInteractive ? (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onClick?.();
-      }
-    } : undefined,
-    'aria-labelledby': titleId,
-    'aria-describedby': description ? descriptionId : undefined,
-    'aria-label': ariaLabel || title
-  };
-  
-  // Format the value
-  let formattedValue: string;
-  if (formatter && (typeof value === 'number' || typeof value === 'string')) {
-    formattedValue = formatter(value);
-  } else {
-    formattedValue = `${valuePrefix}${value}${valueSuffix}`;
-  }
-  
   // Render the icon based on the icon prop
-  const renderIcon = () => {
-    if (!icon) return null;
+  const iconElement = useMemo(() => {
+    if (!icon) return undefined;
     
     if (typeof icon === 'string') {
-      switch (icon) {
-        case 'lightbulb':
-          return <LightbulbIcon className={styles.icon} aria-hidden="true" />;
-        case 'check':
-          return <CheckCircleIcon className={styles.icon} aria-hidden="true" />;
-        case 'rocket':
-          return <RocketIcon className={styles.icon} aria-hidden="true" />;
-        case 'chart':
-          return <BarChartIcon className={styles.icon} aria-hidden="true" />;
-        case 'users':
-          return <UsersIcon className={styles.icon} aria-hidden="true" />;
-        case 'trending':
-          return <TrendingUpIcon className={styles.icon} aria-hidden="true" />;
-        case 'activity':
-          return <ActivityIcon className={styles.icon} aria-hidden="true" />;
-        case 'pie':
-          return <PieChartIcon className={styles.icon} aria-hidden="true" />;
-        case 'alert-circle':
-          return <AlertCircleIcon className={styles.icon} aria-hidden="true" />;
-        default:
-          return null;
-      }
+      const IconComponent = iconMap[icon as keyof typeof iconMap];
+      return IconComponent ? <IconComponent className={styles.icon} aria-hidden="true" /> : undefined;
     }
     
     return icon;
-  };
-  
-  // Render the trend indicator
-  const renderTrend = () => {
-    if (!trend) return null;
-    
-    const { value, label, direction, isGood = true } = trend;
-    const isPositive = direction === 'up';
-    const isNegative = direction === 'down';
-    
-    const trendClass = cn(
-      styles.trendIndicator,
-      styles[direction],
-      isGood ? styles.good : styles.bad
-    );
-    
-    const TrendIcon = isPositive 
-      ? ChevronUpIcon 
-      : isNegative 
-        ? ChevronDownIcon 
-        : MinusIcon;
-    
-    const formattedTrendValue = `${isPositive ? '+' : ''}${value}`;
-    
-    return (
-      <div 
-        className={trendClass}
-        aria-label={`Trend: ${formattedTrendValue} ${label}, ${isGood ? 'positive' : 'negative'} trend`}
-        data-testid="trend-indicator"
-      >
-        <span className={styles.trendIcon} aria-hidden="true">
-          <TrendIcon className={styles.trendIconSvg} />
-        </span>
-        <span className={styles.trendValue}>{formattedTrendValue}</span>
-        <span className={styles.trendLabel}>{label}</span>
-      </div>
-    );
-  };
+  }, [icon]);
   
   // Create the card content
   const cardContent = (
-    <Card className={cardClasses} {...ariaAttributes}>
-      <div className={styles.header}>
-        <h3 id={titleId} className={styles.title}>{title}</h3>
-        {icon && <div className={styles.iconContainer}>{renderIcon()}</div>}
-      </div>
+    <Card 
+      className={cardClasses}
+      role={isInteractive ? 'button' : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
+      onClick={isInteractive ? onClick : undefined}
+      onKeyDown={isInteractive ? handleKeyDown : undefined}
+      aria-labelledby={titleId}
+      aria-describedby={description ? descriptionId : undefined}
+      aria-label={ariaLabel || title}
+      aria-busy={loading}
+    >
+      <StatCardHeader 
+        title={title} 
+        titleId={titleId} 
+        icon={iconElement} 
+      />
+      
       <div className={styles.content}>
-        <div className={styles.value}>
-          {loading ? '—' : formattedValue}
-        </div>
+        <StatCardValue 
+          formattedValue={formattedValue} 
+          loading={loading} 
+        />
+        
         {description && (
-          <p id={descriptionId} className={styles.description}>
-            {description}
-          </p>
+          <StatCardDescription 
+            description={description} 
+            descriptionId={descriptionId} 
+          />
         )}
-        {renderTrend()}
+        
+        {trend && <StatCardTrend trend={trend} />}
       </div>
     </Card>
   );
@@ -257,6 +255,8 @@ export const StatCard: React.FC<StatCardProps> = ({
   }
   
   return cardContent;
-};
+});
+
+StatCard.displayName = 'StatCard';
 
 export default StatCard;

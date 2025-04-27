@@ -1,0 +1,116 @@
+/* Animation classes for StatCard */
+
+.shimmerAnimation {
+  animation: shimmer 1.5s infinite;
+}
+
+.fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.scaleIn {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.pulseAnimation {
+  animation: pulse 2s infinite;
+}
+
+.bounceIn {
+  animation: bounceIn 0.5s ease;
+}
+
+.hoverLift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hoverLift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.spinnerAnimation {
+  animation: spin 1s linear infinite;
+}
+
+/* Animation keyframes */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .shimmerAnimation,
+  .fadeIn,
+  .scaleIn,
+  .pulseAnimation,
+  .bounceIn,
+  .spinnerAnimation {
+    animation: none;
+  }
+  
+  .hoverLift:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

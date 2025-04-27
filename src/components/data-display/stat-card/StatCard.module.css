@@ -1,0 +1,224 @@
+/* Base styles */
+.statCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 1rem;
+}
+
+/* Variants */
+.variantDefault {
+  background-color: var(--color-background-card);
+  color: var(--color-text-primary);
+}
+
+.variantPrimary {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.variantSuccess {
+  background-color: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.variantWarning {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}
+
+.variantDanger {
+  background-color: var(--color-danger-light);
+  color: var(--color-danger-dark);
+}
+
+.variantInfo {
+  background-color: var(--color-info-light);
+  color: var(--color-info-dark);
+}
+
+/* Interactive state */
+.statCard[role="button"] {
+  cursor: pointer;
+}
+
+.statCard[role="button"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.statCard[role="button"]:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.loading .value {
+  position: relative;
+  color: transparent;
+}
+
+.loading .value::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.1)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Compact state */
+.compact .header {
+  margin-bottom: 0.25rem;
+}
+
+.compact .title {
+  font-size: 0.875rem;
+}
+
+.compact .value {
+  font-size: 1.25rem;
+  margin: 0.25rem 0;
+}
+
+.compact .description {
+  font-size: 0.75rem;
+}
+
+.compact .trendIndicator {
+  font-size: 0.75rem;
+}
+
+/* Header section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Content section */
+.content {
+  flex: 1;
+}
+
+.value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+  line-height: 1.2;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Trend indicator */
+.trendIndicator {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.up.good {
+  color: var(--color-success);
+}
+
+.up.bad {
+  color: var(--color-danger);
+}
+
+.down.good {
+  color: var(--color-success);
+}
+
+.down.bad {
+  color: var(--color-danger);
+}
+
+.neutral {
+  color: var(--color-text-secondary);
+}
+
+.trendIcon {
+  display: flex;
+  align-items: center;
+  margin-right: 0.25rem;
+}
+
+.trendIconSvg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.trendValue {
+  font-weight: 500;
+  margin-right: 0.25rem;
+}
+
+.trendLabel {
+  color: var(--color-text-secondary);
+}
+
+/* Animation for loading state */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Dark mode overrides */
+:global(:root[data-theme="dark"]) .statCard {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+:global(:root[data-theme="dark"]) .description,
+:global(:root[data-theme="dark"]) .trendLabel {
+  color: var(--color-text-secondary-dark);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .value {
+    font-size: 1.25rem;
+  }
+  
+  .title {
+    font-size: 0.875rem;
+  }
+}
