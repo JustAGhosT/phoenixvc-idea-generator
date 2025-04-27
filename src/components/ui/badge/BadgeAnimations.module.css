@@ -1,0 +1,95 @@
+/* Badge animation styles */
+
+.badgeAnimation {
+  transition: all 0.2s ease;
+}
+
+/* Pulse animation */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Glow animation */
+.glow {
+  animation: glow 2s infinite;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--badge-color-rgb, 59, 130, 246), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(var(--badge-color-rgb, 59, 130, 246), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--badge-color-rgb, 59, 130, 246), 0);
+  }
+}
+
+/* Bounce animation */
+.bounce {
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Fade in animation */
+.fadeIn {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Hover scale animation */
+.hoverScale:hover {
+  transform: scale(1.1);
+}
+
+/* Hover lift animation */
+.hoverLift:hover {
+  transform: translateY(-2px);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .badgeAnimation,
+  .pulse,
+  .glow,
+  .bounce,
+  .fadeIn,
+  .hoverScale:hover,
+  .hoverLift:hover {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
