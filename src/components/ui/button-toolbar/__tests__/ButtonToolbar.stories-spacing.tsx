@@ -1,18 +1,17 @@
 import type { StoryObj } from '@storybook/react';
-import { Button } from '../Button';
+import { Button } from '../../button/Button';
+import { ButtonToolbar } from '../../button/ButtonToolbar';
 import { ButtonGroup } from '../ButtonGroup';
-import { ButtonToolbar } from '../ButtonToolbar';
-import meta from './ButtonToolbar.stories-meta';
 
 type Story = StoryObj<typeof ButtonToolbar>;
 
-// Different alignment options
-export const Alignment: Story = {
+// Different spacing options
+export const Spacing: Story = {
   render: () => (
     <div className="space-y-8">
       <div>
-        <h3 className="text-sm font-medium mb-2">Left Alignment (Default)</h3>
-        <ButtonToolbar align="left" className="border p-4 w-full">
+        <h3 className="text-sm font-medium mb-2">Extra Small Spacing</h3>
+        <ButtonToolbar spacing="xs">
           <ButtonGroup>
             <Button variant="outline">Copy</Button>
             <Button variant="outline">Paste</Button>
@@ -25,8 +24,8 @@ export const Alignment: Story = {
       </div>
       
       <div>
-        <h3 className="text-sm font-medium mb-2">Center Alignment</h3>
-        <ButtonToolbar align="center" className="border p-4 w-full">
+        <h3 className="text-sm font-medium mb-2">Small Spacing</h3>
+        <ButtonToolbar spacing="sm">
           <ButtonGroup>
             <Button variant="outline">Copy</Button>
             <Button variant="outline">Paste</Button>
@@ -39,8 +38,8 @@ export const Alignment: Story = {
       </div>
       
       <div>
-        <h3 className="text-sm font-medium mb-2">Right Alignment</h3>
-        <ButtonToolbar align="right" className="border p-4 w-full">
+        <h3 className="text-sm font-medium mb-2">Medium Spacing (Default)</h3>
+        <ButtonToolbar spacing="md">
           <ButtonGroup>
             <Button variant="outline">Copy</Button>
             <Button variant="outline">Paste</Button>
@@ -53,8 +52,8 @@ export const Alignment: Story = {
       </div>
       
       <div>
-        <h3 className="text-sm font-medium mb-2">Space Between</h3>
-        <ButtonToolbar align="space-between" className="border p-4 w-full">
+        <h3 className="text-sm font-medium mb-2">Large Spacing</h3>
+        <ButtonToolbar spacing="lg">
           <ButtonGroup>
             <Button variant="outline">Copy</Button>
             <Button variant="outline">Paste</Button>

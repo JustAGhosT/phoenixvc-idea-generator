@@ -1,13 +1,13 @@
-import React, { forwardRef, useState, useMemo } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/utils/classnames';
+import React, { ElementType, forwardRef, useMemo, useState } from 'react';
 import styles from './Button.module.css';
 import animations from './ButtonAnimations.module.css';
 import { ButtonIcon, ButtonSpinner } from './parts';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'link';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type ButtonColor = 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'default';
+export type ButtonColor = 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info' | 'default';
 
 // Grouped props interfaces
 export interface ButtonLoadingProps {
@@ -37,48 +37,8 @@ export interface ButtonAnimationProps {
   ripple?: boolean;
 }
 
-// Polymorphic component type
-type AsProp<C extends React.ElementType> = {
-  as?: C;
-};
-
-type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P);
-
-type PolymorphicComponentProp<
-  C extends React.ElementType,
-  Props = {}
-> = React.PropsWithChildren<Props & AsProp<C>> &
-  Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>;
-
-type PolymorphicRef<C extends React.ElementType> = React.ComponentPropsWithRef<C>['ref'];
-
-type PolymorphicComponentPropWithRef<
-  C extends React.ElementType,
-  Props = {}
-> = PolymorphicComponentProp<C, Props> & { ref?: PolymorphicRef<C> };
-
-// Helper function for animation class - moved outside component
-const getAnimationClass = (
-  animation: ButtonAnimationProps['effect'] | 'none',
-  shouldAnimate: boolean,
-  animationStyles: typeof animations
-): string => {
-  if (!shouldAnimate) return '';
-  
-  switch (animation) {
-    case 'scale':
-      return animationStyles.hoverScale;
-    case 'lift':
-      return animationStyles.hoverLift;
-    case 'pulse':
-      return animationStyles.pulse;
-    default:
-      return '';
-  }
-};
-
 // Base Button props
-export interface ButtonProps {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /** The visual style variant of the button */
   variant?: ButtonVariant;
   
@@ -115,22 +75,33 @@ export interface ButtonProps {
   /** Whether the button is in a pressed state (for toggle buttons) */
   pressed?: boolean;
   
-  /** Additional CSS class for the button */
-  className?: string;
+  /** Element to render as (for polymorphic usage) */
+  as?: ElementType;
   
   /** Whether to show ripple effect on click (legacy prop) */
   ripple?: boolean;
 }
 
-type ButtonComponentProps<C extends React.ElementType> = PolymorphicComponentPropWithRef<
-  C,
-  ButtonProps
->;
-
-type ButtonComponent = <C extends React.ElementType = 'button'>(
-  props: ButtonComponentProps<C>
-) => React.ReactElement | null;
-
+// Helper function for animation class - moved outside component
+const getAnimationClass = (
+  animation: ButtonAnimationProps['effect'] | 'none',
+  shouldAnimate: boolean,
+  animationStyles: typeof animations
+): string => {
+  if (!shouldAnimate) return '';
+  
+  switch (animation) {
+    case 'scale':
+      return animationStyles.hoverScale;
+    case 'lift':
+      return animationStyles.hoverLift;
+    case 'pulse':
+      return animationStyles.pulse;
+    default:
+      return '';
+  }
+    };
+    
 /**
  * Button component for user interactions.
  * 
@@ -145,35 +116,34 @@ type ButtonComponent = <C extends React.ElementType = 'button'>(
  * <Button loading={{ isLoading: true, loadingText: "Saving..." }}>Save</Button>
  * ```
  */
-export const Button: ButtonComponent = forwardRef(
-  <C extends React.ElementType = 'button'>(
-    {
-      children,
-      variant = 'primary',
-      size = 'md',
-      color = 'primary',
-      disabled = false,
-      loading = false,
-      icons,
-      animation = 'none',
-      fullWidth = false,
-      rounded = false,
-      pill = false,
-      active = false,
-      pressed,
-      as,
-      className,
-      onClick,
-      onKeyDown,
-      ripple: legacyRipple,
-      ...props
-    }: ButtonComponentProps<C>,
-    ref?: PolymorphicRef<C>
-  ) => {
-    const Component = as || 'button';
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({
+    children,
+    variant = 'primary',
+    size = 'md',
+    color = 'primary',
+    disabled = false,
+    loading = false,
+    icons,
+    animation = 'none',
+    fullWidth = false,
+    rounded = false,
+    pill = false,
+    active = false,
+    pressed,
+    as,
+    className,
+    onClick,
+    onKeyDown,
+    ripple: legacyRipple,
+    ...props
+  }, ref) => {
     const prefersReducedMotion = useReducedMotion();
     const [rippleStyle, setRippleStyle] = useState<React.CSSProperties>({});
     const [isRippling, setIsRippling] = useState(false);
+    
+    // Use the provided component or default to button
+    const Component = as || 'button';
     
     // Extract loading props
     const isLoading = typeof loading === 'boolean' ? loading : loading?.isLoading || false;
@@ -236,7 +206,7 @@ export const Button: ButtonComponent = forwardRef(
       handleRipple(event);
       
       if (onClick && !disabled && !isLoading) {
-        onClick(event);
+        onClick(event as any);
       }
     };
     
@@ -251,13 +221,17 @@ export const Button: ButtonComponent = forwardRef(
         
         // Only trigger if not disabled or loading
         if (!disabled && !isLoading && onClick) {
-          onClick(event as unknown as React.MouseEvent<HTMLElement>);
+          // Instead of converting the event, we'll create a synthetic click
+          const target = event.currentTarget;
+          
+          // Simulate a click programmatically rather than converting the event
+          target.click();
         }
       }
       
       // Call the original onKeyDown handler if provided
       if (onKeyDown) {
-        onKeyDown(event);
+        onKeyDown(event as any);
       }
     };
     
@@ -287,7 +261,7 @@ export const Button: ButtonComponent = forwardRef(
     );
     
     // Handle button-specific props
-    const buttonSpecificProps: Record<string, unknown> = {};
+    const buttonSpecificProps: Record<string, any> = {};
     
     if (Component === 'button') {
       buttonSpecificProps.type = props.type || 'button';
@@ -298,67 +272,116 @@ export const Button: ButtonComponent = forwardRef(
         buttonSpecificProps['aria-disabled'] = true;
         // Add tabIndex=-1 to remove from tab order when disabled
         buttonSpecificProps.tabIndex = -1;
-      }
+  }
     }
     
     // Determine if an aria-label is needed for icon-only buttons
     const needsAriaLabel = iconOnly && !props['aria-label'] && !props['aria-labelledby'];
     
-    return (
-      <Component
-        ref={ref}
-        className={buttonClasses}
-        aria-busy={isLoading}
-        aria-pressed={pressed}
-        aria-label={needsAriaLabel ? 'Button' : props['aria-label']}
-        onClick={handleClick}
-        onKeyDown={handleKeyDown}
-        {...buttonSpecificProps}
-        {...props}
-      >
-        {isLoading && showSpinner && !progress && (
-          <ButtonSpinner 
-            className={cn(styles.leftIcon, animations.spinnerAnimation)} 
-            size={size === 'xs' || size === 'sm' ? 'sm' : size === 'lg' || size === 'xl' ? 'lg' : 'md'}
+    // Create the content elements
+    const contentElements = [];
+    
+    // Loading spinner
+    if (isLoading && showSpinner && !progress) {
+      contentElements.push(
+        <ButtonSpinner 
+          key="spinner"
+          className={cn(styles.leftIcon, animations.spinnerAnimation)} 
+          size={size === 'xs' || size === 'sm' ? 'sm' : size === 'lg' || size === 'xl' ? 'lg' : 'md'}
+        />
+);
+    }
+    
+    // Progress bar
+    if (isLoading && progress !== undefined) {
+      contentElements.push(
+        <div key="progress" className={styles.progressContainer}>
+          <div 
+            className={styles.progressBar} 
+            style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
+            role="progressbar"
+            aria-valuenow={progress}
+            aria-valuemin={0}
+            aria-valuemax={100}
           />
-        )}
-        
-        {isLoading && progress !== undefined && (
-          <div className={styles.progressContainer}>
-            <div 
-              className={styles.progressBar} 
-              style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
-              role="progressbar"
-              aria-valuenow={progress}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            />
-          </div>
-        )}
-        
-        {leftIcon && !isLoading && (
-          <ButtonIcon className={styles.leftIcon}>
-            {leftIcon}
-          </ButtonIcon>
-        )}
-        
-        {isLoading && loadingText ? loadingText : children}
-        
-        {rightIcon && !isLoading && (
-          <ButtonIcon className={styles.rightIcon}>
-            {rightIcon}
-          </ButtonIcon>
-        )}
-        
-        {useRipple && !prefersReducedMotion && isRippling && (
-          <span 
-            className={styles.rippleEffect} 
-            style={rippleStyle}
-            aria-hidden="true"
-          />
-        )}
-      </Component>
+        </div>
+      );
+    }
+    
+    // Left icon
+    if (leftIcon && !isLoading) {
+      contentElements.push(
+        <ButtonIcon key="leftIcon" className={styles.leftIcon}>
+          {leftIcon}
+        </ButtonIcon>
+      );
+    }
+    
+    // Content
+    const content = isLoading && loadingText ? loadingText : children;
+    if (content) {
+      contentElements.push(
+        <React.Fragment key="content">{content}</React.Fragment>
+      );
+    }
+    
+    // Right icon
+    if (rightIcon && !isLoading) {
+      contentElements.push(
+        <ButtonIcon key="rightIcon" className={styles.rightIcon}>
+          {rightIcon}
+        </ButtonIcon>
+      );
+    }
+    
+    // Ripple effect
+    if (useRipple && !prefersReducedMotion && isRippling) {
+      contentElements.push(
+        <span 
+          key="ripple"
+          className={styles.rippleEffect} 
+          style={rippleStyle}
+          aria-hidden="true"
+        />
+      );
+    }
+    
+    // Render the button using a type-safe approach for the dynamic component
+    if (typeof Component === 'string') {
+      // For intrinsic elements (like 'button', 'a', etc.)
+      return React.createElement(
+        Component,
+        {
+          ref,
+        className: buttonClasses,
+        'aria-busy': isLoading,
+        'aria-pressed': pressed,
+        'aria-label': needsAriaLabel ? 'Button' : props['aria-label'],
+        onClick: handleClick,
+        onKeyDown: handleKeyDown,
+        ...buttonSpecificProps,
+        ...props
+      },
+        ...contentElements
     );
+    } else {
+      // For React components
+      return React.createElement(
+        Component as React.ComponentType<any>,
+        {
+          ref,
+          className: buttonClasses,
+          'aria-busy': isLoading,
+          'aria-pressed': pressed,
+          'aria-label': needsAriaLabel ? 'Button' : props['aria-label'],
+          onClick: handleClick,
+          onKeyDown: handleKeyDown,
+          ...buttonSpecificProps,
+          ...props
+        },
+        ...contentElements
+);
+    }
   }
 );
 

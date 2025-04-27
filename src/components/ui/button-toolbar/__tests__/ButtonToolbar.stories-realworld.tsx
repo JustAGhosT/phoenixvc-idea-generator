@@ -1,9 +1,8 @@
 import type { StoryObj } from '@storybook/react';
-import { Button } from '../Button';
+import { Button } from '../../button/Button';
+import { ButtonToolbar } from '../../button/ButtonToolbar';
 import { ButtonGroup } from '../ButtonGroup';
-import { ButtonToolbar } from '../ButtonToolbar';
 import { SegmentedControl } from '../SegmentedControl';
-import meta from './ButtonToolbar.stories-meta';
 
 // Mock icons for stories
 const SaveIcon = () => (

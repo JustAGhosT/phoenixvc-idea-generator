@@ -1,5 +1,5 @@
 import type { Meta } from '@storybook/react';
-import { ButtonToolbar } from '../ButtonToolbar';
+import { ButtonToolbar } from '../../button/ButtonToolbar';
 
 const meta: Meta<typeof ButtonToolbar> = {
   title: 'UI/Button/ButtonToolbar',
