@@ -15,7 +15,6 @@
  * ```
  */
 
-import { Card } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/utils/classnames';
@@ -24,11 +23,16 @@ import {
   AlertCircleIcon,
   BarChartIcon,
   CheckCircleIcon,
+  DollarSignIcon,
   LightbulbIcon,
+  LineChartIcon,
+  PercentIcon,
   PieChartIcon,
   RocketIcon,
+  TargetIcon,
   TrendingUpIcon,
-  UsersIcon
+  UsersIcon,
+  ZapIcon
 } from 'lucide-react';
 import React, { memo, useCallback, useId, useMemo } from 'react';
 import styles from './StatCard.module.css';
@@ -60,6 +64,25 @@ export interface StatCardTrend {
 }
 
 /**
+ * Supported icon identifiers for the StatCard
+ */
+export type StatCardIconIdentifier = 
+  | 'lightbulb' 
+  | 'check' 
+  | 'rocket' 
+  | 'chart' 
+  | 'users' 
+  | 'trending' 
+  | 'activity' 
+  | 'pie' 
+  | 'alert-circle'
+  | 'zap'
+  | 'line-chart'
+  | 'target'
+  | 'dollar'
+  | 'percent';
+
+/**
  * Props for the StatCard component
  */
 export interface StatCardProps {
@@ -70,7 +93,7 @@ export interface StatCardProps {
   /** Optional description text displayed below the value */
   description?: string;
   /** Icon to display (can be a string identifier or a React node) */
-  icon?: string | React.ReactNode;
+  icon?: StatCardIconIdentifier | React.ReactNode;
   /** Optional trend information to display */
   trend?: StatCardTrend;
   /** Color variant for the card */
@@ -95,12 +118,19 @@ export interface StatCardProps {
   formatter?: (value: number | string) => string;
   /** Animation effect to apply */
   animation?: 'none' | 'fadeIn' | 'scaleIn' | 'bounceIn' | 'pulse';
+  /** Optional data attributes for testing or custom data */
+  dataAttributes?: Record<string, string>;
+  /** Optional heading level for the title (default is h3) */
+  headingLevel?: 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
+
+// Define a more specific type for the icon components
+type IconComponent = React.ComponentType<{ className?: string }>;
 
 /**
  * Maps icon string identifiers to their corresponding components
  */
-const iconMap = {
+const iconMap: Record<StatCardIconIdentifier, IconComponent> = {
   'lightbulb': LightbulbIcon,
   'check': CheckCircleIcon,
   'rocket': RocketIcon,
@@ -110,6 +140,11 @@ const iconMap = {
   'activity': ActivityIcon,
   'pie': PieChartIcon,
   'alert-circle': AlertCircleIcon,
+  'zap': ZapIcon,
+  'line-chart': LineChartIcon,
+  'target': TargetIcon,
+  'dollar': DollarSignIcon,
+  'percent': PercentIcon
 };
   
 /**
@@ -131,7 +166,9 @@ export const StatCard = memo<StatCardProps>(({
   tooltipContent,
   ariaLabel,
   formatter,
-  animation = 'none'
+  animation = 'none',
+  dataAttributes = {},
+  headingLevel = 'h3'
 }) => {
   // Check if reduced motion is preferred
   const prefersReducedMotion = useReducedMotion();
@@ -176,7 +213,7 @@ export const StatCard = memo<StatCardProps>(({
         return '';
     }
   }, [animation, prefersReducedMotion]);
-  
+    
   // Build the CSS class names
   const cardClasses = cn(
     styles.statCard,
@@ -194,16 +231,24 @@ export const StatCard = memo<StatCardProps>(({
     if (!icon) return undefined;
     
     if (typeof icon === 'string') {
-      const IconComponent = iconMap[icon as keyof typeof iconMap];
-      return IconComponent ? <IconComponent className={styles.icon} aria-hidden="true" /> : undefined;
+      const IconComponent = iconMap[icon as StatCardIconIdentifier];
+      if (IconComponent) {
+        return <IconComponent className={styles.icon} aria-hidden="true" />;
     }
-    
+      return null;
+    }
     return icon;
   }, [icon]);
   
+  // Prepare data attributes
+  const dataProps = Object.entries(dataAttributes).reduce((acc, [key, value]) => {
+    acc[`data-${key}`] = value;
+    return acc;
+  }, {} as Record<string, string>);
+  
   // Create the card content
   const cardContent = (
-    <Card 
+    <article 
       className={cardClasses}
       role={isInteractive ? 'button' : undefined}
       tabIndex={isInteractive ? 0 : undefined}
@@ -213,11 +258,13 @@ export const StatCard = memo<StatCardProps>(({
       aria-describedby={description ? descriptionId : undefined}
       aria-label={ariaLabel || title}
       aria-busy={loading}
+      {...dataProps}
     >
       <StatCardHeader 
         title={title} 
         titleId={titleId} 
-        icon={iconElement} 
+        icon={iconElement}
+        headingLevel={headingLevel}
       />
       
       <div className={styles.content}>
@@ -235,8 +282,8 @@ export const StatCard = memo<StatCardProps>(({
         
         {trend && <StatCardTrend trend={trend} />}
       </div>
-    </Card>
-  );
+    </article>
+    );
   
   // Wrap with tooltip if tooltipContent is provided
   if (tooltipContent) {

@@ -1,0 +1,273 @@
+/* Base styles */
+.quoteDisplay {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  background-color: var(--color-background-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Variants */
+.variantDefault {
+  color: var(--color-text-primary);
+  border-left: 4px solid var(--color-border);
+}
+
+.variantPrimary {
+  color: var(--color-primary-dark);
+  background-color: var(--color-primary-light);
+  border-left: 4px solid var(--color-primary);
+}
+
+.variantSecondary {
+  color: var(--color-secondary-dark);
+  background-color: var(--color-secondary-light);
+  border-left: 4px solid var(--color-secondary);
+}
+
+.variantSuccess {
+  color: var(--color-success-dark);
+  background-color: var(--color-success-light);
+  border-left: 4px solid var(--color-success);
+}
+
+.variantWarning {
+  color: var(--color-warning-dark);
+  background-color: var(--color-warning-light);
+  border-left: 4px solid var(--color-warning);
+}
+
+.variantDanger {
+  color: var(--color-danger-dark);
+  background-color: var(--color-danger-light);
+  border-left: 4px solid var(--color-danger);
+}
+
+.variantInfo {
+  color: var(--color-info-dark);
+  background-color: var(--color-info-light);
+  border-left: 4px solid var(--color-info);
+}
+
+/* Sizes */
+.sizeSM {
+  font-size: 0.875rem;
+  padding: 1rem;
+}
+
+.sizeSM .quoteContent {
+  font-size: 1rem;
+}
+
+.sizeMD {
+  font-size: 1rem;
+  padding: 1.5rem;
+}
+
+.sizeMD .quoteContent {
+  font-size: 1.25rem;
+}
+
+.sizeLG {
+  font-size: 1.125rem;
+  padding: 2rem;
+}
+
+.sizeLG .quoteContent {
+  font-size: 1.5rem;
+}
+
+/* Layouts */
+.layoutDefault {
+  text-align: left;
+}
+
+.layoutCentered {
+  text-align: center;
+  border-left: none;
+  border-top: 4px solid;
+  border-top-color: inherit;
+}
+
+.layoutBordered {
+  border: 1px solid var(--color-border);
+  border-left-width: 4px;
+}
+
+.layoutMinimal {
+  background-color: transparent;
+  padding: 0 0 0 1.5rem;
+}
+
+/* Quote content */
+.quoteContent {
+  margin: 0 0 1rem 0;
+  padding: 0;
+  font-style: italic;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.quoteContent::before,
+.quoteContent::after {
+  content: none;
+}
+
+/* Attribution */
+.attribution {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875em;
+  margin-top: 0.5rem;
+}
+
+.author {
+  font-weight: 600;
+  font-style: normal;
+}
+
+.source {
+  color: var(--color-text-secondary);
+  font-style: normal;
+  margin-top: 0.25rem;
+}
+
+.date {
+  font-style: normal;
+}
+
+.separator {
+  margin: 0 0.25rem;
+}
+
+/* Icon */
+.iconContainer {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0.5;
+}
+
+/* Interactive state */
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.interactive:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.loading .quoteContent,
+.loading .attribution {
+  color: transparent;
+}
+
+.loadingText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.loadingLine {
+  height: 1rem;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.1)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+.loadingLine:nth-child(1) {
+  width: 100%;
+}
+
+.loadingLine:nth-child(2) {
+  width: 90%;
+}
+
+.loadingLine:nth-child(3) {
+  width: 80%;
+}
+
+.loadingAuthor {
+  width: 50%;
+  height: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Animation effects */
+.fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.scaleIn {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* Animation keyframes */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Dark mode overrides */
+:global(:root[data-theme="dark"]) .quoteDisplay {
+  background-color: var(--color-background-card-dark, rgba(0, 0, 0, 0.2));
+}
+
+:global(:root[data-theme="dark"]) .source {
+  color: var(--color-text-secondary-dark, rgba(255, 255, 255, 0.6));
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .quoteDisplay {
+    padding: 1rem;
+  }
+  
+  .sizeLG .quoteContent {
+    font-size: 1.25rem;
+  }
+}
