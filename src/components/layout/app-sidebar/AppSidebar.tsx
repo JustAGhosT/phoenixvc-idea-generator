@@ -1,8 +1,8 @@
 "use client"
 
-import { useSidebarContext } from '@/contexts/sidebar-context';
-import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/patterns/sidebar";
+import { useSidebarContext } from '@/contexts/sidebar-context';
+import { cn } from '@/utils/classnames';
 import {
   AlertTriangle,
   BarChart3,
@@ -17,8 +17,8 @@ import {
   Settings,
   TrendingUp,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useEffect } from 'react';
-import { cn } from '@/utils/classnames';
 import styles from './AppSidebar.module.css';
 import animations from './AppSidebarAnimations.module.css';
 
@@ -103,7 +103,11 @@ export function AppSidebar() {
   ];
 
   return (
-    <Sidebar.Root expanded={isOpen} open={isOpen}>
+    <Sidebar.Root 
+      expanded={isOpen} 
+      open={isOpen} 
+      onOverlayClick={toggleSidebar}
+    >
       <Sidebar.Header collapsed={!isOpen}>
         <div className={cn(styles.logo, animations.logoTransition)}>
           <LineChart className={cn(styles.logoIcon, isOpen && animations.logoSpin)} />
@@ -113,20 +117,22 @@ export function AppSidebar() {
       </Sidebar.Header>
 
       <Sidebar.Content>
-        <Sidebar.Section title="Projects">
-          {projectItems.map((item) => (
+        <Sidebar.Section title="Projects" isOpen={isOpen}>
+          {projectItems.map((item, index) => (
             <Sidebar.Item
               key={item.href}
               href={item.href}
               icon={item.icon}
               title={item.title}
               isActive={pathname === item.href}
+              isOpen={isOpen}
+              itemIndex={index}
             />
           ))}
         </Sidebar.Section>
 
-        <Sidebar.Section title="Analysis">
-          {analysisItems.map((item) => (
+        <Sidebar.Section title="Analysis" isOpen={isOpen}>
+          {analysisItems.map((item, index) => (
             <Sidebar.Item
               key={item.href}
               href={item.href}
@@ -137,30 +143,36 @@ export function AppSidebar() {
                   {item.badge}
                 </span> : undefined}
               isActive={pathname === item.href}
+              isOpen={isOpen}
+              itemIndex={index}
             />
           ))}
         </Sidebar.Section>
 
-        <Sidebar.Section title="Resources">
-          {resourceItems.map((item) => (
+        <Sidebar.Section title="Resources" isOpen={isOpen}>
+          {resourceItems.map((item, index) => (
             <Sidebar.Item
               key={item.href}
               href={item.href}
               icon={item.icon}
               title={item.title}
               isActive={pathname === item.href}
+              isOpen={isOpen}
+              itemIndex={index}
             />
           ))}
         </Sidebar.Section>
 
-        <Sidebar.Section title="Settings">
-          {settingsItems.map((item) => (
+        <Sidebar.Section title="Settings" isOpen={isOpen}>
+          {settingsItems.map((item, index) => (
             <Sidebar.Item
               key={item.href}
               href={item.href}
               icon={item.icon}
               title={item.title}
               isActive={pathname === item.href}
+              isOpen={isOpen}
+              itemIndex={index}
             />
           ))}
         </Sidebar.Section>

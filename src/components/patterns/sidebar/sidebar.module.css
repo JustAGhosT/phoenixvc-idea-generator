@@ -47,3 +47,56 @@
 .triggerIcon {
   @apply h-4 w-4;
 }
+
+/* Mobile overlay */
+.overlay {
+  @apply fixed inset-0 z-10 bg-black/50 backdrop-blur-sm;
+  @apply hidden md:hidden;
+  @apply data-[visible=true]:block;
+  will-change: opacity;
+}
+
+/* Menu styles */
+.menu {
+  @apply space-y-1;
+}
+
+.menuItem {
+  @apply relative;
+  will-change: transform, opacity;
+}
+
+.menuButton {
+  @apply flex w-full items-center gap-3 rounded-md px-3 py-2;
+  @apply hover:bg-accent hover:text-accent-foreground;
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+}
+
+.menuButtonActive {
+  @apply bg-accent text-accent-foreground;
+}
+
+.menuButtonCollapsed {
+  @apply flex justify-center;
+}
+
+.menuItemIcon {
+  @apply h-5 w-5 shrink-0;
+}
+
+.menuItemText {
+  @apply flex-1 truncate;
+}
+
+.menuItemBadge {
+  @apply ml-auto;
+}
+
+/* Group styles */
+.group {
+  @apply py-2;
+}
+
+.groupLabel {
+  @apply mb-2 px-3 text-xs font-semibold text-muted-foreground;
+}

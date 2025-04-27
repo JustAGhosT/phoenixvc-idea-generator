@@ -30,11 +30,13 @@
   .mobileOverlay {
     opacity: 1;
     pointer-events: auto;
+    transition: opacity 300ms ease;
   }
   
   .mobileOverlayHidden {
     opacity: 0;
     pointer-events: none;
+    transition: opacity 300ms ease;
   }
 }
 
@@ -60,6 +62,29 @@
   transition-delay: 0ms;
 }
 
+/* Item entrance/exit animations */
+.itemEnter {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.itemEnterActive {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 300ms, transform 300ms;
+  transition-delay: calc(var(--item-index, 0) * 50ms);
+}
+
+.itemExit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.itemExitActive {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 200ms, transform 200ms;
+}
 /* Item hover animations */
 .itemHover {
   transition: background-color 150ms ease;
@@ -74,9 +99,9 @@
 }
 
 /* Rail hover animation */
-.railHover {
+  .railHover {
   transition: opacity 150ms ease, background-color 150ms ease;
-}
+  }
 
 .railHover:hover {
   opacity: 1;
@@ -94,6 +119,10 @@
   .collapseWidth,
   .fadeIn,
   .fadeOut,
+  .itemEnter,
+  .itemEnterActive,
+  .itemExit,
+  .itemExitActive,
   .itemHover,
   .railHover {
     transition: none !important;

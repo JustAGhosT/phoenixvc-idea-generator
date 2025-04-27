@@ -2,6 +2,7 @@
 
 import { cn } from "@/utils/classnames";
 import React from 'react';
+import { SidebarOverlay } from './sidebar-overlay';
 import styles from './sidebar.module.css';
 
 interface SidebarRootProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -13,6 +14,10 @@ interface SidebarRootProps extends React.HTMLAttributes<HTMLDivElement> {
    * Whether the sidebar is open on mobile
    */
   open?: boolean;
+  /**
+   * Callback when the overlay is clicked (typically to close the sidebar)
+   */
+  onOverlayClick?: () => void;
 }
 
 /**
@@ -23,10 +28,13 @@ export function SidebarRoot({
   className,
   expanded = true,
   open = false,
+  onOverlayClick,
   ...props
 }: SidebarRootProps) {
   return (
-    <div
+    <>
+      <SidebarOverlay visible={open} onClick={onOverlayClick} />
+      <div
       className={cn(
         styles.root,
         expanded ? styles.expanded : styles.collapsed,
@@ -37,5 +45,6 @@ export function SidebarRoot({
     >
       {children}
     </div>
+    </>
   );
 }
