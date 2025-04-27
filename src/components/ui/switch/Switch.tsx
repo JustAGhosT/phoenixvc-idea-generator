@@ -1,28 +1,28 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { cn } from '@/utils/classnames';
-import styles from './Toggle.module.css';
-import animations from './ToggleAnimations.module.css';
+import styles from './Switch.module.css';
+import animations from './SwitchAnimations.module.css';
 
-export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
+export interface SwitchProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'size'> {
   /**
-   * The label for the toggle
+   * The label for the switch
    */
   label?: string;
   
   /**
-   * The size of the toggle
+   * The size of the switch
    * @default "md"
    */
   size?: 'sm' | 'md' | 'lg';
   
   /**
-   * The variant of the toggle
+   * The variant of the switch
    * @default "primary"
    */
   variant?: 'primary' | 'secondary' | 'success' | 'danger';
   
   /**
-   * Optional helper text to display below the toggle
+   * Optional helper text to display below the switch
    */
   helperText?: string;
   
@@ -50,22 +50,22 @@ export interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
 }
 
 /**
- * Toggle component for boolean input with a switch-like appearance.
+ * Switch component for boolean input with a switch-like appearance.
  * 
  * @example
  * ```tsx
  * // Uncontrolled
- * <Toggle label="Dark mode" defaultChecked={true} onChange={(e) => console.log(e.target.checked)} />
+ * <Switch label="Dark mode" defaultChecked={true} onChange={(e) => console.log(e.target.checked)} />
  * 
  * // Controlled
- * <Toggle 
+ * <Switch 
  *   label="Notifications"
  *   checked={notificationsEnabled}
  *   onChange={(e) => setNotificationsEnabled(e.target.checked)}
  * />
  * ```
  */
-export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
+export const Switch = forwardRef<HTMLInputElement, SwitchProps>(
   ({
     label,
     checked,
@@ -104,59 +104,59 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
       onChange?.(e);
     };
     
-    const toggleId = id || `toggle-${Math.random().toString(36).substring(2, 9)}`;
+    const switchId = id || `switch-${Math.random().toString(36).substring(2, 9)}`;
     
     return (
-      <div className={cn(styles.toggleContainer, className)}>
+      <div className={cn(styles.switchContainer, className)}>
         <div className={cn(
-          styles.toggleWrapper,
-          labelLeft && styles['toggleWrapper--labelLeft']
+          styles.switchWrapper,
+          labelLeft && styles['switchWrapper--labelLeft']
         )}>
           {label && (
             <label 
-              htmlFor={toggleId}
+              htmlFor={switchId}
               className={cn(
-                styles.toggleLabel,
-                disabled && styles['toggleLabel--disabled']
+                styles.switchLabel,
+                disabled && styles['switchLabel--disabled']
               )}
             >
               {label}
             </label>
           )}
           
-          <div className={styles.toggleSwitchWrapper}>
+          <div className={styles.switchSwitchWrapper}>
             <input
               type="checkbox"
-              id={toggleId}
+              id={switchId}
               ref={ref}
               checked={isChecked}
               disabled={disabled}
               className={cn(
-                styles.toggleInput,
-                enhancedAnimation && animations.toggleEnhanced
+                styles.switchInput,
+                enhancedAnimation && animations.switchEnhanced
               )}
               onChange={handleChange}
               {...props}
             />
             <div 
               className={cn(
-                styles.toggleSwitch,
-                animations.toggleSwitch,
-                styles[`toggleSwitch--${size}`],
-                styles[`toggleSwitch--${variant}`],
-                disabled && styles['toggleSwitch--disabled'],
-                error && styles['toggleSwitch--error']
+                styles.switchTrack,
+                animations.switchTrack,
+                styles[`switchTrack--${size}`],
+                styles[`switchTrack--${variant}`],
+                disabled && styles['switchTrack--disabled'],
+                error && styles['switchTrack--error']
               )}
             >
-              <div className={cn(styles.toggleKnob, animations.toggleKnob)}></div>
+              <div className={cn(styles.switchKnob, animations.switchKnob)}></div>
             </div>
           </div>
         </div>
         
         {(helperText || error) && (
           <div className={cn(
-            styles.toggleHelperText,
-            error && styles['toggleHelperText--error']
+            styles.switchHelperText,
+            error && styles['switchHelperText--error']
           )}>
             {error || helperText}
           </div>
@@ -166,6 +166,6 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
   }
 );
 
-Toggle.displayName = 'Toggle';
+Switch.displayName = 'Switch';
 
-export default Toggle;
+export default Switch;

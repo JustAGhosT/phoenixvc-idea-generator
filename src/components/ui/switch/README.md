@@ -1,6 +1,6 @@
-# Toggle Component
+# Switch Component
 
-A customizable toggle switch component for boolean input with a modern switch appearance.
+A customizable switch component for boolean input with a modern switch appearance.
 
 ## Features
 
@@ -14,61 +14,61 @@ A customizable toggle switch component for boolean input with a modern switch ap
 ## Usage
 
 ```tsx
-import { Toggle } from '@/components/ui/toggle';
+import { Switch } from '@/components/ui/switch';
 
 // Basic usage
-<Toggle label="Dark mode" />
+<Switch label="Dark mode" />
 
-// Controlled toggle
-<Toggle 
+// Controlled switch
+<Switch 
   label="Notifications"
   checked={notificationsEnabled}
   onChange={(e) => setNotificationsEnabled(e.target.checked)}
 />
 
 // With helper text
-<Toggle 
+<Switch 
   label="Auto-save"
   helperText="Automatically save your work every 5 minutes"
 />
 
 // With error message
-<Toggle 
+<Switch 
   label="Accept terms"
   error="You must accept the terms to continue"
 />
 
 // Different sizes
-<Toggle label="Small toggle" size="sm" />
-<Toggle label="Medium toggle" size="md" />
-<Toggle label="Large toggle" size="lg" />
+<Switch label="Small switch" size="sm" />
+<Switch label="Medium switch" size="md" />
+<Switch label="Large switch" size="lg" />
 
 // Different variants
-<Toggle label="Primary variant" variant="primary" />
-<Toggle label="Secondary variant" variant="secondary" />
-<Toggle label="Success variant" variant="success" />
-<Toggle label="Danger variant" variant="danger" />
+<Switch label="Primary variant" variant="primary" />
+<Switch label="Secondary variant" variant="secondary" />
+<Switch label="Success variant" variant="success" />
+<Switch label="Danger variant" variant="danger" />
 
 // Label on the left
-<Toggle label="Label on the left" labelLeft />
+<Switch label="Label on the left" labelLeft />
 
 // Disabled state
-<Toggle label="Disabled toggle" disabled />
+<Switch label="Disabled switch" disabled />
 ```
 
 ## Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| label | string | - | The text label for the toggle |
-| checked | boolean | - | Whether the toggle is checked |
-| size | 'sm' \| 'md' \| 'lg' | 'md' | The size of the toggle |
+| label | string | - | The text label for the switch |
+| checked | boolean | - | Whether the switch is checked |
+| size | 'sm' \| 'md' \| 'lg' | 'md' | The size of the switch |
 | variant | 'primary' \| 'secondary' \| 'success' \| 'danger' | 'primary' | The visual style variant |
-| helperText | string | - | Optional helper text to display below the toggle |
-| error | string | - | Error message to display (also sets the toggle to error state) |
+| helperText | string | - | Optional helper text to display below the switch |
+| error | string | - | Error message to display (also sets the switch to error state) |
 | labelLeft | boolean | false | Whether to position the label on the left side |
-| disabled | boolean | - | Whether the toggle is disabled |
-| id | string | - | The ID for the toggle input (auto-generated if not provided) |
+| disabled | boolean | - | Whether the switch is disabled |
+| id | string | - | The ID for the switch input (auto-generated if not provided) |
 | className | string | - | Additional CSS class names |
 
 The component also accepts all standard HTML input props except for `type`.
@@ -83,7 +83,7 @@ The component also accepts all standard HTML input props except for `type`.
 
 ## Testing
 
-The Toggle component is tested for:
+The Switch component is tested for:
 - Rendering with and without a label
 - Handling checked and unchecked states
 - Controlled component behavior

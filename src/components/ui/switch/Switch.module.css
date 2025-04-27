@@ -1,112 +1,112 @@
-.toggleContainer {
+.switchContainer {
   @apply flex flex-col mb-2;
 }
 
-.toggleWrapper {
+.switchWrapper {
   @apply flex items-center;
 }
 
-.toggleWrapper--labelLeft {
+.switchWrapper--labelLeft {
   @apply flex-row-reverse justify-end;
 }
 
-.toggleWrapper--labelLeft .toggleLabel {
+.switchWrapper--labelLeft .switchLabel {
   @apply mr-2 ml-0;
 }
 
-.toggleSwitchWrapper {
+.switchSwitchWrapper {
   @apply relative inline-block;
 }
 
-.toggleInput {
+.switchInput {
   @apply absolute opacity-0 w-0 h-0;
 }
 
-.toggleInput:focus + .toggleSwitch {
+.switchInput:focus + .switchTrack {
   @apply ring-2 ring-primary-300;
 }
 
-.toggleInput:checked + .toggleSwitch .toggleKnob {
+.switchInput:checked + .switchTrack .switchKnob {
   transform: translateX(100%);
 }
 
-.toggleInput:checked + .toggleSwitch--primary {
+.switchInput:checked + .switchTrack--primary {
   @apply bg-primary-500;
 }
 
-.toggleInput:checked + .toggleSwitch--secondary {
+.switchInput:checked + .switchTrack--secondary {
   @apply bg-secondary-500;
 }
 
-.toggleInput:checked + .toggleSwitch--success {
+.switchInput:checked + .switchTrack--success {
   @apply bg-success-500;
 }
 
-.toggleInput:checked + .toggleSwitch--danger {
+.switchInput:checked + .switchTrack--danger {
   @apply bg-danger-500;
 }
 
-.toggleSwitch {
+.switchTrack {
   @apply flex items-center relative cursor-pointer bg-gray-300 rounded-full transition-all duration-200;
 }
 
 /* Sizes */
-.toggleSwitch--sm {
+.switchTrack--sm {
   @apply w-8 h-4;
 }
 
-.toggleSwitch--sm .toggleKnob {
+.switchTrack--sm .switchKnob {
   @apply w-3 h-3;
   transform: translateX(2px);
 }
 
-.toggleSwitch--md {
+.switchTrack--md {
   @apply w-11 h-[22px];
 }
 
-.toggleSwitch--md .toggleKnob {
+.switchTrack--md .switchKnob {
   @apply w-[18px] h-[18px];
   transform: translateX(2px);
 }
 
-.toggleSwitch--lg {
+.switchTrack--lg {
   @apply w-14 h-7;
 }
 
-.toggleSwitch--lg .toggleKnob {
+.switchTrack--lg .switchKnob {
   @apply w-6 h-6;
   transform: translateX(2px);
 }
 
 /* States */
-.toggleSwitch--disabled {
+.switchTrack--disabled {
   @apply opacity-60 cursor-not-allowed bg-gray-200;
 }
 
-.toggleSwitch--error {
+.switchTrack--error {
   @apply bg-danger-100;
 }
 
-.toggleSwitch--error:not(:checked) {
+.switchTrack--error:not(:checked) {
   @apply border border-danger-500;
 }
 
-.toggleKnob {
+.switchKnob {
   @apply absolute bg-white rounded-full transition-transform duration-200 shadow-sm;
 }
 
-.toggleLabel {
+.switchLabel {
   @apply ml-2 text-base text-gray-900 cursor-pointer select-none;
 }
 
-.toggleLabel--disabled {
+.switchLabel--disabled {
   @apply text-gray-400 cursor-not-allowed;
 }
 
-.toggleHelperText {
+.switchHelperText {
   @apply mt-1 text-sm text-gray-600;
 }
 
-.toggleHelperText--error {
+.switchHelperText--error {
   @apply text-danger-500;
 }

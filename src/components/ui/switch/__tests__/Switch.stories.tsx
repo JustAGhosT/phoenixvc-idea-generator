@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { Toggle } from '../Toggle';
+import { Switch } from '../Switch';
 
-const meta: Meta<typeof Toggle> = {
-  component: Toggle,
-  title: 'UI/Toggle',
+const meta: Meta<typeof Switch> = {
+  component: Switch,
+  title: 'UI/Switch',
   argTypes: {
     label: { control: 'text' },
     checked: { control: 'boolean' },
@@ -26,17 +26,17 @@ const meta: Meta<typeof Toggle> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Toggle>;
+type Story = StoryObj<typeof Switch>;
 
 export const Default: Story = {
   args: {
-    label: 'Toggle me',
+    label: 'Switch me',
   },
 };
 
 export const Checked: Story = {
   args: {
-    label: 'Checked toggle',
+    label: 'Checked switch',
     checked: true,
   },
 };
@@ -44,7 +44,7 @@ export const Checked: Story = {
 export const WithHelperText: Story = {
   args: {
     label: 'With helper text',
-    helperText: 'This is some helpful information about the toggle',
+    helperText: 'This is some helpful information about the switch',
   },
 };
 
@@ -57,7 +57,7 @@ export const WithError: Story = {
 
 export const Disabled: Story = {
   args: {
-    label: 'Disabled toggle',
+    label: 'Disabled switch',
     disabled: true,
   },
 };
@@ -71,21 +71,21 @@ export const LabelOnLeft: Story = {
 
 export const Small: Story = {
   args: {
-    label: 'Small toggle',
+    label: 'Small switch',
     size: 'sm',
   },
 };
 
 export const Medium: Story = {
   args: {
-    label: 'Medium toggle',
+    label: 'Medium switch',
     size: 'md',
   },
 };
 
 export const Large: Story = {
   args: {
-    label: 'Large toggle',
+    label: 'Large switch',
     size: 'lg',
   },
 };

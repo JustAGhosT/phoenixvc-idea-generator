@@ -16,30 +16,6 @@
   line-height: 1.5;
 }
 
-/* Ripple effect */
-.button::after {
-  content: '';
-  display: block;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
-  background-repeat: no-repeat;
-  background-position: 50%;
-  transform: scale(10, 10);
-  opacity: 0;
-  transition: transform 0.5s, opacity 1s;
-}
-
-.button:active::after {
-  transform: scale(0, 0);
-  opacity: 0.3;
-  transition: 0s;
-}
-
 /* Focus styles */
 .button:focus-visible {
   outline: none;
@@ -105,198 +81,75 @@
   --button-color: var(--color-primary, #3b82f6);
   --button-color-dark: var(--color-primary-dark, #2563eb);
   --button-text: var(--color-white, white);
+  --button-color-rgb: 59, 130, 246;
 }
 
 .colorSuccess {
   --button-color: var(--color-success, #10b981);
   --button-color-dark: var(--color-success-dark, #059669);
   --button-text: var(--color-white, white);
+  --button-color-rgb: 16, 185, 129;
 }
 
 .colorWarning {
   --button-color: var(--color-warning, #f59e0b);
   --button-color-dark: var(--color-warning-dark, #d97706);
   --button-text: var(--color-black, black);
+  --button-color-rgb: 245, 158, 11;
 }
 
 .colorDanger {
   --button-color: var(--color-danger, #ef4444);
   --button-color-dark: var(--color-danger-dark, #dc2626);
   --button-text: var(--color-white, white);
+  --button-color-rgb: 239, 68, 68;
 }
 
 .colorInfo {
   --button-color: var(--color-info, #3b82f6);
   --button-color-dark: var(--color-info-dark, #2563eb);
   --button-text: var(--color-white, white);
+  --button-color-rgb: 59, 130, 246;
 }
 
 .colorDefault {
   --button-color: var(--color-gray-200, #e2e8f0);
   --button-color-dark: var(--color-gray-300, #cbd5e1);
   --button-text: var(--color-gray-900, #0f172a);
+  --button-color-rgb: 226, 232, 240;
 }
 
-/* Apply color variants to main variants */
-.primary.colorPrimary {
+/* Apply color variants to main variants - Simplified selectors */
+.primary[class*="color"] {
   background-color: var(--button-color);
   color: var(--button-text);
 }
 
-.primary.colorPrimary:hover:not(:disabled) {
+.primary[class*="color"]:hover:not(:disabled) {
   background-color: var(--button-color-dark);
 }
 
-.primary.colorSuccess {
-  background-color: var(--button-color);
-  color: var(--button-text);
-}
-
-.primary.colorSuccess:hover:not(:disabled) {
-  background-color: var(--button-color-dark);
-}
-
-.primary.colorWarning {
-  background-color: var(--button-color);
-  color: var(--button-text);
-}
-
-.primary.colorWarning:hover:not(:disabled) {
-  background-color: var(--button-color-dark);
-}
-
-.primary.colorDanger {
-  background-color: var(--button-color);
-  color: var(--button-text);
-}
-
-.primary.colorDanger:hover:not(:disabled) {
-  background-color: var(--button-color-dark);
-}
-
-.primary.colorInfo {
-  background-color: var(--button-color);
-  color: var(--button-text);
-}
-
-.primary.colorInfo:hover:not(:disabled) {
-  background-color: var(--button-color-dark);
-}
-
-.primary.colorDefault {
-  background-color: var(--button-color);
-  color: var(--button-text);
-}
-
-.primary.colorDefault:hover:not(:disabled) {
-  background-color: var(--button-color-dark);
-}
-
-/* Outline color variants */
-.outline.colorPrimary {
+/* Outline color variants - Simplified */
+.outline[class*="color"] {
   border-color: var(--button-color);
   color: var(--button-color);
 }
 
-.outline.colorPrimary:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 59, 130, 246), 0.1);
+.outline[class*="color"]:hover:not(:disabled) {
+  background-color: rgba(var(--button-color-rgb), 0.1);
 }
 
-.outline.colorSuccess {
-  border-color: var(--button-color);
+/* Ghost color variants - Simplified */
+.ghost[class*="color"] {
   color: var(--button-color);
 }
 
-.outline.colorSuccess:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 16, 185, 129), 0.1);
+.ghost[class*="color"]:hover:not(:disabled) {
+  background-color: rgba(var(--button-color-rgb), 0.1);
 }
 
-.outline.colorWarning {
-  border-color: var(--button-color);
-  color: var(--button-color);
-}
-
-.outline.colorWarning:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 245, 158, 11), 0.1);
-}
-
-.outline.colorDanger {
-  border-color: var(--button-color);
-  color: var(--button-color);
-}
-
-.outline.colorDanger:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 239, 68, 68), 0.1);
-}
-
-.outline.colorInfo {
-  border-color: var(--button-color);
-  color: var(--button-color);
-}
-
-.outline.colorInfo:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 59, 130, 246), 0.1);
-}
-
-/* Ghost color variants */
-.ghost.colorPrimary {
-  color: var(--button-color);
-}
-
-.ghost.colorPrimary:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 59, 130, 246), 0.1);
-}
-
-.ghost.colorSuccess {
-  color: var(--button-color);
-}
-
-.ghost.colorSuccess:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 16, 185, 129), 0.1);
-}
-
-.ghost.colorWarning {
-  color: var(--button-color);
-}
-
-.ghost.colorWarning:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 245, 158, 11), 0.1);
-}
-
-.ghost.colorDanger {
-  color: var(--button-color);
-}
-
-.ghost.colorDanger:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 239, 68, 68), 0.1);
-}
-
-.ghost.colorInfo {
-  color: var(--button-color);
-}
-
-.ghost.colorInfo:hover:not(:disabled) {
-  background-color: rgba(var(--button-color-rgb, 59, 130, 246), 0.1);
-}
-
-/* Link color variants */
-.link.colorPrimary {
-  color: var(--button-color);
-}
-
-.link.colorSuccess {
-  color: var(--button-color);
-}
-
-.link.colorWarning {
-  color: var(--button-color);
-}
-
-.link.colorDanger {
-  color: var(--button-color);
-}
-
-.link.colorInfo {
+/* Link color variants - Simplified */
+.link[class*="color"] {
   color: var(--button-color);
 }
 
@@ -412,6 +265,46 @@
   color: currentColor;
 }
 
+/* Enhanced ripple effect */
+.rippleContainer {
+  position: relative;
+  overflow: hidden;
+}
+
+.rippleEffect {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Progress indicator for controlled loading */
+.progressContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border-radius: 0 0 var(--radius, 0.25rem) var(--radius, 0.25rem);
+}
+
+.progressBar {
+  height: 100%;
+  background-color: var(--button-color, #3b82f6);
+  transition: width 0.3s ease;
+}
+
 /* Dark mode support */
 :global(:root[data-theme="dark"]) .outline {
   border-color: var(--color-border-dark, #334155);
@@ -434,11 +327,18 @@
   color: var(--color-primary-light, #60a5fa);
 }
 
+:global(:root[data-theme="dark"]) .progressContainer {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .button,
-  .button::after {
-    transition: none;
+  .button::after,
+  .rippleEffect,
+  .progressBar {
+    transition: none !important;
+    animation: none !important;
   }
   
   .active {

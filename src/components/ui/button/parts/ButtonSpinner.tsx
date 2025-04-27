@@ -4,13 +4,17 @@ import styles from '../Button.module.css';
 
 interface ButtonSpinnerProps {
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 /**
  * Spinner component for Button loading states
  * Displays a loading indicator with proper styling
  */
-export function ButtonSpinner({ className }: ButtonSpinnerProps) {
+export const ButtonSpinner = React.memo(function ButtonSpinner({ 
+  className,
+  size = 'md'
+}: ButtonSpinnerProps) {
   return (
     <svg 
       className={cn(styles.spinner, className)} 
@@ -18,6 +22,8 @@ export function ButtonSpinner({ className }: ButtonSpinnerProps) {
       fill="none" 
       viewBox="0 0 24 24"
       aria-hidden="true"
+      width={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
+      height={size === 'sm' ? 16 : size === 'lg' ? 24 : 20}
     >
       <circle 
         className="opacity-25" 
@@ -34,4 +40,6 @@ export function ButtonSpinner({ className }: ButtonSpinnerProps) {
       />
     </svg>
   );
-}
+});
+
+ButtonSpinner.displayName = 'ButtonSpinner';

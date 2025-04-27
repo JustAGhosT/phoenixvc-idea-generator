@@ -11,10 +11,15 @@ interface ButtonIconProps {
  * Icon component for Button
  * Handles proper styling and alignment of icons within buttons
  */
-export function ButtonIcon({ children, className }: ButtonIconProps) {
+export const ButtonIcon = React.memo(function ButtonIcon({ 
+  children, 
+  className 
+}: ButtonIconProps) {
   return (
     <span className={cn(styles.icon, className)}>
       {children}
     </span>
   );
-}
+});
+
+ButtonIcon.displayName = 'ButtonIcon';
