@@ -1,0 +1,131 @@
+/* Button animation styles */
+
+.buttonAnimation {
+  transition: all 0.2s ease;
+}
+
+/* Hover scale animation */
+.hoverScale:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+/* Hover lift animation */
+.hoverLift:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Click animation */
+.clickEffect:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Pulse animation */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--button-color-rgb, 59, 130, 246), 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--button-color-rgb, 59, 130, 246), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--button-color-rgb, 59, 130, 246), 0);
+  }
+}
+
+/* Loading spinner animation */
+.spinnerAnimation {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ripple animation */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.4) 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform 0.5s, opacity 1s;
+}
+
+.ripple:active::after {
+  transform: scale(0, 0);
+  opacity: 0.3;
+  transition: 0s;
+}
+
+/* Shimmer animation for loading state */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .buttonAnimation,
+  .hoverScale,
+  .hoverLift,
+  .clickEffect,
+  .pulse,
+  .spinnerAnimation,
+  .ripple,
+  .ripple::after,
+  .shimmer,
+  .shimmer::before {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
