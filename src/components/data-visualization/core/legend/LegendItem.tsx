@@ -11,7 +11,7 @@ export interface LegendItemProps {
   /** Whether the item is visible */
   visible?: boolean;
   /** Symbol type to display */
-  symbol?: 'square' | 'circle' | 'line' | 'triangle';
+  symbol?: 'square' | 'circle' | 'line' | 'triangle' | 'bar';
   /** Dash pattern for lines */
   dashPattern?: string;
   /** Whether the item is interactive */
@@ -49,6 +49,85 @@ export const LegendItem: React.FC<LegendItemProps> = ({
     }
   };
   
+  // Render symbol based on type
+  const renderSymbol = () => {
+    const opacity = visible ? 1 : 0.3;
+    
+    if (symbol === 'line') {
+      // Line symbol with optional point
+  return (
+        <div className={styles.lineSymbol}>
+          <svg width="24" height="12" viewBox="0 0 24 12">
+            <line 
+              x1="2" 
+              y1="6" 
+              x2="22" 
+              y2="6" 
+              stroke={color} 
+              strokeWidth="2" 
+              strokeDasharray={dashPattern || 'none'} 
+              strokeLinecap="round"
+              opacity={opacity}
+      />
+            <circle 
+              cx="12" 
+              cy="6" 
+              r="3" 
+              fill={color} 
+              stroke="white" 
+              strokeWidth="1"
+              opacity={opacity}
+            />
+          </svg>
+    </div>
+  );
+    }
+    
+    if (symbol === 'bar') {
+      // Bar symbol
+      return (
+        <div 
+          className={styles.barSymbol}
+          style={{ 
+            backgroundColor: color,
+            opacity,
+            borderRadius: '2px'
+          }}
+        />
+      );
+    }
+    
+    if (symbol === 'triangle') {
+      // Triangle symbol
+      return (
+        <div 
+          className={styles.symbol}
+          style={{ 
+            width: '0',
+            height: '0',
+            borderLeft: '6px solid transparent',
+            borderRight: '6px solid transparent',
+            borderBottom: `12px solid ${color}`,
+            backgroundColor: 'transparent',
+            opacity,
+          }}
+        />
+      );
+    }
+    
+    // Default square or circle
+    return (
+      <div 
+        className={styles.symbol}
+        style={{ 
+          backgroundColor: color,
+          borderRadius: symbol === 'circle' ? '50%' : '2px',
+          opacity,
+        }} 
+      />
+    );
+};
+
   return (
     <div 
       className={`${styles.item} ${interactive ? styles.interactive : ''} ${className}`}
@@ -58,20 +137,7 @@ export const LegendItem: React.FC<LegendItemProps> = ({
       onKeyDown={handleKeyDown}
       aria-pressed={interactive ? !visible : undefined}
     >
-      <div 
-        className={styles.symbol}
-        style={{ 
-          backgroundColor: symbol !== 'line' && symbol !== 'triangle' ? color : undefined,
-          borderTop: symbol === 'triangle' ? `6px solid ${color}` : undefined,
-          borderLeft: symbol === 'triangle' ? '6px solid transparent' : undefined,
-          borderRight: symbol === 'triangle' ? '6px solid transparent' : undefined,
-          background: symbol === 'triangle' ? 'transparent' : undefined,
-          height: symbol === 'line' ? '2px' : '12px',
-          width: symbol === 'line' ? '16px' : '12px',
-          borderRadius: symbol === 'circle' ? '50%' : '2px',
-          opacity: visible ? 1 : 0.3,
-        }} 
-      />
+      {renderSymbol()}
       <span className={styles.label}>{name}</span>
     </div>
   );

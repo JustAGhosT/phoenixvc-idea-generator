@@ -1,52 +1,44 @@
 import React, { useMemo, useState } from 'react';
-import { BarChartProps } from '../types/bar-chart-types';
 import { ChartDataPoint, ChartSeries } from '../types/base-types';
-import { ChartAxis } from '../types/index'; // Import from index to ensure consistency
-import {
-  BarChartAxes,
-  BarChartBars,
-  BarChartCanvas,
-  BarChartContainer,
-  BarChartHeader,
-  BarChartLegend,
-  BarChartNoData,
-  BarChartTooltip,
-} from './parts';
-import { defaultColors, processBarChartData } from './parts/BarChartUtils';
+import { ChartAxis } from '../types/index';
+import { LineChartProps } from '../types/line-chart-types';
+
+import { LineChartAnimation, LineChartAxes, LineChartCanvas, LineChartContainer, LineChartHeader, LineChartLegend, LineChartLines, LineChartNoData, LineChartPoints, LineChartTooltip } from './parts';
+import { defaultColors, processLineChartData } from './parts/LineChartUtils';
+
 /**
- * BarChart component for displaying data as horizontal or vertical bars.
+ * LineChart component for displaying data as lines or area charts.
  * 
  * @example
  * ```tsx
- * <BarChart
- *   title="Top Projects"
+ * <LineChart
+ *   title="Monthly Revenue"
  *   data={[
- *     { label: 'Project A', value: 85 },
- *     { label: 'Project B', value: 65 }
+ *     { label: 'Jan', value: 1000 },
+ *     { label: 'Feb', value: 1500 }
  *   ]}
  * />
  * ```
  */
-export const BarChart: React.FC<BarChartProps> = ({
+export const LineChart: React.FC<LineChartProps> = ({
   data,
   title,
   subtitle,
   width = "100%",
   height = 300,
-  orientation = "vertical",
-  stacked = false,
-  grouped = false,
-  maxBarWidth,
-  barRadius = 4,
-  barGap = 0.2,
+  showArea = false,
+  showPoints = true,
+  curved = false,
+  lineWidth = 2,
+  pointRadius = 4,
   showDataLabels = false,
   xAxis,
   yAxis,
-  showBaseline = true,
+  showGridLines = true,
   useGradient = false,
   legend,
   tooltip,
-  animation,
+  animation = { enabled: true, duration: 750, easing: 'easeOut' },
   accessibility,
   margin = { top: 20, right: 20, bottom: 40, left: 40 },
   backgroundColor = 'transparent',
@@ -78,24 +70,34 @@ export const BarChart: React.FC<BarChartProps> = ({
 
   // Process data into a standardized format
   const { series, maxValue } = useMemo(() => 
-    processBarChartData(data), [data]
+    processLineChartData(data), [data]
   );
   
   // Format values with default formatter
   const formatValue = (value: number): string => {
     if (typeof value !== 'number') return '';
+    
+    // Format large numbers
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(1)}M`;
+    }
+    
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(1)}K`;
+    }
+    
     return value.toString();
   };
 
-  // Handle bar click
-  const handleBarClick = (dataPoint: ChartDataPoint, index: number, seriesItem: ChartSeries<ChartDataPoint>) => {
+  // Handle point click
+  const handlePointClick = (dataPoint: ChartDataPoint, index: number, seriesItem: ChartSeries<ChartDataPoint>) => {
     if (onDataPointClick) {
       onDataPointClick(dataPoint, index, seriesItem);
     }
   };
   
   // Handle mouse enter for tooltip
-  const handleBarMouseEnter = (
+  const handlePointMouseEnter = (
     event: React.MouseEvent, 
     dataPoint: ChartDataPoint, 
     seriesItem: ChartSeries<ChartDataPoint>
@@ -120,7 +122,7 @@ export const BarChart: React.FC<BarChartProps> = ({
   };
   
   // Handle mouse leave for tooltip
-  const handleBarMouseLeave = () => {
+  const handlePointMouseLeave = () => {
     setTooltipData(prev => ({ ...prev, visible: false }));
   };
 
@@ -130,57 +132,90 @@ export const BarChart: React.FC<BarChartProps> = ({
       onSeriesToggle(seriesId, visible);
     }
   };
-  
-  // Render the chart content
+
+  // Render the chart content with animation
   const renderChart = (width: number, height: number) => {
     if (width <= 0 || height <= 0) return null;
     
     const primarySeries = series[0];
     
     if (!primarySeries || primarySeries.data.length === 0) {
-      return <BarChartNoData width={width} height={height} />;
+      return <LineChartNoData width={width} height={height} />;
     }
     
-  return (
+    // Determine if animation is enabled
+    const animationEnabled = animation?.enabled !== false;
+    const animationDuration = animation?.duration || 750;
+    const animationEasing = animation?.easing || 'easeOut';
+    
+    const renderChartContent = (animatedSeries: ChartSeries<ChartDataPoint>[]) => (
       <>
         {/* Axes and grid lines */}
-        <BarChartAxes
-          series={series}
-        width={width}
-      height={height}
+        <LineChartAxes
+          series={animatedSeries}
+          width={width}
+          height={height}
           maxValue={maxValue}
-          orientation={orientation}
           xAxis={xAxis as ChartAxis}
           yAxis={yAxis as ChartAxis}
-          showGridLines={true}
+          showGridLines={showGridLines}
           gridLineCount={5}
-      />
+        />
         
-        {/* Bars */}
-        <BarChartBars
+        {/* Lines */}
+        <LineChartLines
+          series={animatedSeries}
+          width={width}
+          height={height}
+          maxValue={maxValue}
+          showArea={showArea}
+          curved={curved}
+          lineWidth={lineWidth}
+          useGradient={useGradient}
+          colors={defaultColors}
+        />
+        
+        {/* Points */}
+        {showPoints && (
+          <LineChartPoints
+            series={animatedSeries}
+            width={width}
+            height={height}
+            maxValue={maxValue}
+            pointRadius={pointRadius}
+            colors={defaultColors}
+            onPointClick={handlePointClick}
+            onPointMouseEnter={handlePointMouseEnter}
+            onPointMouseLeave={handlePointMouseLeave}
+          />
+        )}
+      </>
+    );
+    
+    // Wrap with animation if enabled
+    if (animationEnabled) {
+  return (
+        <LineChartAnimation
           series={series}
           width={width}
           height={height}
           maxValue={maxValue}
-          orientation={orientation}
-          stacked={stacked}
-          grouped={grouped}
-          maxBarWidth={maxBarWidth}
-          barGap={barGap}
-          barRadius={barRadius}
-          useGradient={useGradient}
-          colors={defaultColors}
-          onBarClick={handleBarClick}
-          onBarMouseEnter={handleBarMouseEnter}
-          onBarMouseLeave={handleBarMouseLeave}
-        />
-      </>
-  );
+          duration={animationDuration}
+          easing={animationEasing as 'linear' | 'easeIn' | 'easeOut' | 'easeInOut'}
+          enabled={animationEnabled}
+        >
+          {renderChartContent}
+        </LineChartAnimation>
+      );
+    }
+      
+    // No animation
+    return renderChartContent(series);
 };
 
   // Render the component
   return (
-    <BarChartContainer
+    <LineChartContainer
       width={width}
       height={height}
       showBorder={showBorder}
@@ -192,21 +227,21 @@ export const BarChart: React.FC<BarChartProps> = ({
       dataAttributes={dataAttributes}
     >
       {/* Chart header */}
-      <BarChartHeader title={title} subtitle={subtitle} />
+      <LineChartHeader title={title} subtitle={subtitle} />
       
       {/* Chart canvas */}
-      <BarChartCanvas
+      <LineChartCanvas
         width={width}
         height={height}
         margin={margin}
         backgroundColor={backgroundColor}
       >
         {renderChart}
-      </BarChartCanvas>
+      </LineChartCanvas>
       
       {/* Legend */}
       {series.length > 1 && (
-        <BarChartLegend
+        <LineChartLegend
           series={series}
           colors={defaultColors}
           position={legend?.position || 'bottom'}
@@ -218,7 +253,7 @@ export const BarChart: React.FC<BarChartProps> = ({
       )}
       
       {/* Tooltip */}
-      <BarChartTooltip
+      <LineChartTooltip
         visible={tooltipData.visible}
         x={tooltipData.x}
         y={tooltipData.y}
@@ -227,8 +262,8 @@ export const BarChart: React.FC<BarChartProps> = ({
         customContent={tooltipData.content}
         formatValue={formatValue}
       />
-    </BarChartContainer>
+    </LineChartContainer>
   );
 };
 
-export default BarChart;
+export default LineChart;

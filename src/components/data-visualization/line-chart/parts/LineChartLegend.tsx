@@ -2,7 +2,7 @@ import React from 'react';
 import { ChartLegend } from '../../core/legend';
 import { ChartSeries } from '../../types/base-types';
 
-interface BarChartLegendProps {
+interface LineChartLegendProps {
   /** Series data to display in the legend */
   series: ChartSeries[];
   /** Colors for the series */
@@ -22,9 +22,9 @@ interface BarChartLegendProps {
 }
 
 /**
- * BarChartLegend component for displaying series information
+ * LineChartLegend component for displaying series information
  */
-const BarChartLegend: React.FC<BarChartLegendProps> = ({
+const LineChartLegend: React.FC<LineChartLegendProps> = ({
   series,
   colors,
   position = 'bottom',
@@ -42,11 +42,11 @@ const BarChartLegend: React.FC<BarChartLegendProps> = ({
       layout={layout}
       interactive={interactive}
       maxItems={maxItems}
-      symbolType="bar"
+      symbolType="line"
       onSeriesToggle={onSeriesToggle}
       className={className}
     />
   );
 };
 
-export default BarChartLegend;
+export default LineChartLegend;

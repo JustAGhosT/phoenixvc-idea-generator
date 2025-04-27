@@ -1,5 +1,6 @@
 .legend {
   display: flex;
+  margin-top: 1rem;
   font-size: 0.75rem;
 }
 
@@ -15,30 +16,30 @@
 }
 
 .top {
-  margin-bottom: 1rem;
-  justify-content: center;
-}
-
-.right {
-  margin-left: 1rem;
-  align-items: flex-start;
+  order: -1;
 }
 
 .bottom {
-  margin-top: 1rem;
-  justify-content: center;
+  order: 1;
 }
 
 .left {
+  order: -1;
   margin-right: 1rem;
-  align-items: flex-start;
+}
+
+.right {
+  order: 1;
+  margin-left: 1rem;
 }
 
 .scrollContainer {
-  max-height: 100px;
+  max-height: 150px;
   overflow-y: auto;
+  scrollbar-width: thin;
   display: flex;
   flex-direction: inherit;
+  flex-wrap: inherit;
   gap: inherit;
 }
 
@@ -46,28 +47,39 @@
   display: flex;
   align-items: center;
   color: var(--text-secondary, #64748b);
-}
-
-.interactive {
-  cursor: pointer;
   transition: opacity 0.2s ease;
 }
 
-.interactive:hover {
+.item.interactive {
+  cursor: pointer;
+}
+
+.item.interactive:hover {
   opacity: 0.8;
 }
-
-.interactive:focus-visible {
-  outline: 2px solid var(--focus-ring, #3b82f6);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
 .symbol {
   width: 12px;
   height: 12px;
-  margin-right: 4px;
-  flex-shrink: 0;
+  margin-right: 0.5rem;
+  border-radius: 2px;
+  transition: opacity 0.2s ease;
+}
+
+/* Bar symbol */
+.barSymbol {
+  width: 12px;
+  height: 12px;
+  margin-right: 0.5rem;
+  border-radius: 2px;
+}
+
+/* Line symbol */
+.lineSymbol {
+  width: 24px;
+  height: 12px;
+  margin-right: 0.5rem;
+  display: flex;
+  align-items: center;
 }
 
 .label {

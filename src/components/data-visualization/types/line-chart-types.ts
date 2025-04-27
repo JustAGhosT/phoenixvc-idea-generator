@@ -11,29 +11,25 @@ import { ChartAxis } from './chart-config';
  */
 export interface LineChartProps extends BaseChartProps {
   /** Data for the line chart */
-  data: ChartSeries<ChartDataPoint | ExtendedChartDataPoint>[];
+  data: ChartDataPoint[] | ExtendedChartDataPoint[] | ChartSeries<ChartDataPoint | ExtendedChartDataPoint>[];
+  /** Whether to show area under the line */
+  showArea?: boolean;
   /** Whether to show points on the line */
   showPoints?: boolean;
-  /** Point size in pixels */
-  pointSize?: number;
-  /** Line thickness in pixels */
-  lineThickness?: number;
-  /** Whether to fill the area under the line */
-  areaFill?: boolean;
-  /** Opacity of the area fill (0-1) */
-  areaOpacity?: number;
   /** Whether to use curved lines */
   curved?: boolean;
-  /** Whether to connect null/missing values */
-  connectNulls?: boolean;
+  /** Line width */
+  lineWidth?: number;
+  /** Point radius */
+  pointRadius?: number;
+  /** Whether to show data labels */
+  showDataLabels?: boolean;
   /** X-axis configuration */
   xAxis?: ChartAxis;
   /** Y-axis configuration */
   yAxis?: ChartAxis;
-  /** Whether to show a baseline at zero */
-  showBaseline?: boolean;
-  /** Whether to show crosshair on hover */
-  showCrosshair?: boolean;
-  /** Whether to show range selector */
-  showRangeSelector?: boolean;
+  /** Whether to show grid lines */
+  showGridLines?: boolean;
+  /** Whether lines should have gradient fill */
+  useGradient?: boolean;
 }
