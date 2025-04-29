@@ -31,10 +31,9 @@ export function SidebarRoot({
   onOverlayClick,
   ...props
 }: SidebarRootProps) {
-  return (
-    <>
-      <SidebarOverlay visible={open} onClick={onOverlayClick} />
-      <div
+  // Render the root div first to maintain compatibility with tests
+  const rootElement = (
+    <div
       className={cn(
         styles.root,
         expanded ? styles.expanded : styles.collapsed,
@@ -45,6 +44,18 @@ export function SidebarRoot({
     >
       {children}
     </div>
-    </>
   );
+
+  // If onOverlayClick is provided, wrap with overlay
+  if (onOverlayClick) {
+    return (
+      <>
+        <SidebarOverlay visible={open} onClick={onOverlayClick} />
+        {rootElement}
+      </>
+    );
+  }
+
+  // Otherwise just return the root element
+  return rootElement;
 }

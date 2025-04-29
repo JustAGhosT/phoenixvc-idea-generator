@@ -1,5 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useSidebarContext } from '@/contexts/sidebar-context';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from "@/utils/classnames";
 import Link from 'next/link';
 import React from 'react';
@@ -28,7 +30,7 @@ interface SidebarItemProps {
    */
   isActive: boolean;
   /**
-   * Whether the sidebar is open/expanded
+   * Whether the sidebar is open/expanded (optional, will use context if not provided)
    */
   isOpen?: boolean;
   /**
@@ -43,9 +45,24 @@ export function SidebarItem({
   title, 
   badge, 
   isActive, 
-  isOpen = true,
+  isOpen: isOpenProp, 
   itemIndex = 0 
 }: SidebarItemProps) {
+  // Use context as fallback if isOpen prop is not provided
+  const context = useSidebarContext();
+  const isOpen = isOpenProp !== undefined ? isOpenProp : context.isOpen;
+  
+  // Safe to use in tests
+  const prefersReducedMotion = useReducedMotion();
+  
+  // Only apply animations if reduced motion is not preferred
+  const animationClasses = !prefersReducedMotion ? {
+    itemEnter: animations.itemEnter,
+    itemEnterActive: animations.itemEnterActive,
+    itemExit: animations.itemExit,
+    itemExitActive: animations.itemExitActive,
+  } : {};
+  
   const content = (
     <Link 
       href={href} 
@@ -60,7 +77,7 @@ export function SidebarItem({
       <span className={cn(
         styles.menuItemIcon, 
         isActive && animations.fadeIn,
-        isOpen ? animations.itemEnterActive : animations.itemExitActive
+        isOpen ? animationClasses.itemEnterActive : animationClasses.itemExitActive
       )}>
         {icon}
       </span>
@@ -69,7 +86,7 @@ export function SidebarItem({
           <span className={cn(
             styles.menuItemText, 
             animations.fadeIn,
-            animations.itemEnterActive
+            animationClasses.itemEnterActive
           )}>
             {title}
           </span>
@@ -77,7 +94,7 @@ export function SidebarItem({
             <Badge className={cn(
               styles.menuItemBadge, 
               animations.fadeIn,
-              animations.itemEnterActive,
+              animationClasses.itemEnterActive,
               typeof badge === 'string' ? undefined : animations.transition
             )}>
               {badge}

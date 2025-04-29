@@ -1,31 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
- * Hook that detects if the user has requested reduced motion
- * through their operating system preferences.
- * 
- * @returns {boolean} True if the user prefers reduced motion, false otherwise
- * 
- * @example
- * ```tsx
- * const Component = () => {
- *   const prefersReducedMotion = useReducedMotion();
- *   
- *   return (
- *     <div className={prefersReducedMotion ? 'no-animation' : 'with-animation'}>
- *       Content
- *     </div>
- *   );
- * };
- * ```
+ * Hook to detect if the user prefers reduced motion
+ * Falls back to false if matchMedia is not available (e.g. in tests)
  */
 export function useReducedMotion(): boolean {
-  // Initialize with null and update after mount to avoid hydration mismatch
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean | null>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   
   useEffect(() => {
-    // Check if window is defined (for SSR compatibility)
-    if (typeof window === 'undefined') {
+    // Check if window and matchMedia are available (for SSR and tests)
+    if (typeof window === 'undefined' || !window.matchMedia) {
       return;
     }
     
@@ -35,12 +19,12 @@ export function useReducedMotion(): boolean {
     // Set initial value
     setPrefersReducedMotion(mediaQuery.matches);
     
-    // Create event listener function
+    // Define listener for changes
     const handleChange = (event: MediaQueryListEvent) => {
       setPrefersReducedMotion(event.matches);
     };
     
-    // Add event listener
+    // Add listener
     if (mediaQuery.addEventListener) {
       mediaQuery.addEventListener('change', handleChange);
     } else {
@@ -59,8 +43,5 @@ export function useReducedMotion(): boolean {
     };
   }, []);
   
-  // Return false during SSR, then update after mount
-  return prefersReducedMotion ?? false;
+  return prefersReducedMotion;
 }
-
-export default useReducedMotion;

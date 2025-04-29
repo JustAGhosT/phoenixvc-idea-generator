@@ -1,7 +1,4 @@
-// Learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
-
-// Add mock for window.matchMedia
+// Add this to your setupTests.ts file or create it if it doesn't exist
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation(query => ({

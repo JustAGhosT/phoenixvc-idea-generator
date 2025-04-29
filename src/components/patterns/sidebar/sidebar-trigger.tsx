@@ -1,6 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button";
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from "@/utils/classnames";
 import { ChevronRight, X } from "lucide-react";
 import React from 'react';
@@ -29,6 +30,8 @@ export function SidebarTrigger({
   onToggle,
   ...props
 }: SidebarTriggerProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <Button
       variant="ghost"
