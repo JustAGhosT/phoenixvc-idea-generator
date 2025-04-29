@@ -1,35 +1,35 @@
 import type { Meta } from '@storybook/react';
-import { ButtonToolbar } from '../../button/ButtonToolbar';
+import { ButtonToolbar } from '../ButtonToolbar';
 
 const meta: Meta<typeof ButtonToolbar> = {
-  title: 'UI/Button/ButtonToolbar',
+  title: 'UI/ButtonToolbar',
   component: ButtonToolbar,
-  tags: ['autodocs'],
   argTypes: {
+    align: {
+      control: 'select',
+      options: ['left', 'center', 'right', 'space-between'],
+      description: 'Alignment of button groups within the toolbar'
+    },
     fullWidth: {
       control: 'boolean',
       description: 'Whether the toolbar should take up the full width of its container'
     },
     spacing: {
       control: 'select',
-      options: ['xs', 'sm', 'md', 'lg'],
-      description: 'The spacing between button groups'
+      options: ['xs', 'sm', 'md', 'lg', 'xl'],
+      description: 'Spacing between button groups'
     },
-    align: {
-      control: 'select',
-      options: ['left', 'center', 'right', 'space-between'],
-      description: 'The alignment of the button groups'
+    vertical: {
+      control: 'boolean',
+      description: 'Whether the toolbar should be stacked vertically'
     },
     responsive: {
       control: 'boolean',
-      description: 'Whether to stack the button groups vertically on small screens'
-    }
-  },
-  parameters: {
-    docs: {
-      description: {
-        component: 'ButtonToolbar component for grouping multiple ButtonGroups together.'
-      }
+      description: 'Whether the toolbar should stack vertically on small screens'
+    },
+    className: {
+      control: 'text',
+      description: 'Additional CSS class names'
     }
   }
 };

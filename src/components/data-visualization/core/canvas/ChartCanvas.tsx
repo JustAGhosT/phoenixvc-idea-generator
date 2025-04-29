@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ChartMargin } from '../../types';
 import styles from './ChartCanvas.module.css';
 
-interface ChartCanvasProps {
+export interface ChartCanvasProps {
   /** Width of the chart canvas */
   width?: number | string;
   /** Height of the chart canvas */
@@ -15,8 +15,8 @@ interface ChartCanvasProps {
   className?: string;
   /** Custom styles */
   style?: React.CSSProperties;
-  /** Chart content */
-  children: React.ReactNode;
+  /** Chart content - can be either React nodes or a render function */
+  children: React.ReactNode | ((width: number, height: number) => React.ReactNode);
   /** Callback when canvas size changes */
   onSizeChange?: (width: number, height: number) => void;
 }
@@ -74,6 +74,25 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
     };
   }, [onSizeChange]);
 
+  // Render content based on type - handle both ReactNode and function children
+  const renderContent = () => {
+    if (dimensions.width <= 0 || dimensions.height <= 0) return null;
+    
+    if (typeof children === 'function') {
+      return children(innerWidth, innerHeight);
+    }
+    
+    return React.Children.map(children, child => {
+      if (React.isValidElement(child)) {
+        return React.cloneElement(child as React.ReactElement<any>, {
+          width: innerWidth,
+          height: innerHeight,
+        });
+      }
+      return child;
+    });
+  };
+
   return (
     <div
       ref={containerRef}
@@ -103,17 +122,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
           className={styles.contentGroup}
         >
           {/* Render children with dimensions */}
-          {dimensions.width > 0 && dimensions.height > 0 && (
-            React.Children.map(children, child => {
-              if (React.isValidElement(child)) {
-                return React.cloneElement(child as React.ReactElement<any>, {
-                  width: innerWidth,
-                  height: innerHeight,
-                });
-              }
-              return child;
-            })
-          )}
+          {renderContent()}
         </g>
       </svg>
     </div>

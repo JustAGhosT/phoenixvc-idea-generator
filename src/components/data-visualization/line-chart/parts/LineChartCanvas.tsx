@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { ChartCanvas } from '../../core';
 import { ChartMargin } from '../../types/chart-config';
 
@@ -28,11 +28,8 @@ const LineChartCanvas: React.FC<LineChartCanvasProps> = ({
   // Calculate actual height (subtracting header height if needed)
   const actualHeight = typeof height === 'number' ? height - 60 : height;
   
-  // Create a wrapper component that will receive width and height from ChartCanvas
-  const ChartContent = useCallback(({ width, height }: { width: number, height: number }) => {
-    return <>{children(width, height)}</>;
-  }, [children]);
-  
+  // Pass the children function directly to ChartCanvas
+  // The updated ChartCanvas component can now handle function children
   return (
     <ChartCanvas
       width={width}
@@ -40,7 +37,7 @@ const LineChartCanvas: React.FC<LineChartCanvasProps> = ({
       margin={margin}
       backgroundColor={backgroundColor}
     >
-      <ChartContent width={0} height={0} />
+      {children}
     </ChartCanvas>
   );
 };

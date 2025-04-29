@@ -8,8 +8,9 @@ interface SidebarSectionProps {
   title: string;
   /**
    * Section content (typically SidebarItems)
+   * Made optional to allow empty sections
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**
    * Whether the sidebar is open/expanded
    */

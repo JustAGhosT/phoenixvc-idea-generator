@@ -8,6 +8,9 @@ const mockOptions = [
   { value: 'cherry', label: 'Cherry', disabled: true }
 ];
 
+// Create a no-op onChange handler to avoid React warnings
+const noop = () => {};
+
 describe('Select Component', () => {
   it('renders correctly with options', () => {
     render(<Select options={mockOptions} />);
@@ -49,13 +52,13 @@ describe('Select Component', () => {
   
   it('can be controlled', () => {
     const { rerender } = render(
-      <Select options={mockOptions} value="apple" data-testid="select" />
+      <Select options={mockOptions} value="apple" onChange={noop} data-testid="select" />
     );
     
     const selectElement = screen.getByTestId('select');
     expect(selectElement).toHaveValue('apple');
     
-    rerender(<Select options={mockOptions} value="banana" data-testid="select" />);
+    rerender(<Select options={mockOptions} value="banana" onChange={noop} data-testid="select" />);
     expect(selectElement).toHaveValue('banana');
   });
   
@@ -143,5 +146,33 @@ describe('Select Component', () => {
     
     const selectElement = screen.getByLabelText('Fruit');
     expect(selectElement.id).toBe('custom-select');
+  });
+  
+  it('uses defaultValue for uncontrolled component', () => {
+    render(
+      <Select 
+        options={mockOptions} 
+        defaultValue="banana" 
+        data-testid="select" 
+      />
+    );
+    
+    const selectElement = screen.getByTestId('select');
+    expect(selectElement).toHaveValue('banana');
+  });
+  
+  it('uses readOnly attribute when needed', () => {
+    render(
+      <Select 
+        options={mockOptions} 
+        value="apple" 
+        readOnly 
+        data-testid="select" 
+      />
+    );
+    
+    const selectElement = screen.getByTestId('select');
+    expect(selectElement).toHaveAttribute('readOnly');
+    expect(selectElement).toHaveValue('apple');
   });
 });

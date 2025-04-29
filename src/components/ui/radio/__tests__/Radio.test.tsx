@@ -2,6 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { Radio } from '../Radio';
 
+// Create a no-op onChange handler to avoid React warnings
+const noop = () => {};
+
 describe('Radio Component', () => {
   it('renders correctly with label', () => {
     render(<Radio name="test" label="Option 1" />);
@@ -31,13 +34,13 @@ describe('Radio Component', () => {
   
   it('can be controlled', () => {
     const { rerender } = render(
-      <Radio name="test" label="Option 1" checked={false} />
+      <Radio name="test" label="Option 1" checked={false} onChange={noop} />
     );
     
     const radio = screen.getByRole('radio');
     expect(radio).not.toBeChecked();
     
-    rerender(<Radio name="test" label="Option 1" checked={true} />);
+    rerender(<Radio name="test" label="Option 1" checked={true} onChange={noop} />);
     expect(radio).toBeChecked();
   });
   

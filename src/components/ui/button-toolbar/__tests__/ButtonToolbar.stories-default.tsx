@@ -1,7 +1,7 @@
 import type { StoryObj } from '@storybook/react';
 import { Button } from '../../button/Button';
-import { ButtonToolbar } from '../../button/ButtonToolbar';
-import { ButtonGroup } from '../ButtonGroup';
+import { ButtonToolbar } from '../ButtonToolbar';
+import { ButtonGroup } from '../../button-group/ButtonGroup';
 
 type Story = StoryObj<typeof ButtonToolbar>;
 

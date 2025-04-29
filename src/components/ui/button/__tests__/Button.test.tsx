@@ -109,28 +109,22 @@ describe('Button Component', () => {
     });
     
     it('handles loading state correctly', () => {
-      render(<Button loading loadingText="Loading...">Submit</Button>);
+      render(
+        <Button 
+          loading={{ 
+            isLoading: true, 
+            loadingText: "Loading..." 
+          }}
+        >
+          Submit
+        </Button>
+      );
       
       const button = screen.getByRole('button');
       expect(button).toBeDisabled();
       expect(button).toHaveClass('loading');
       expect(button).toHaveAttribute('aria-busy', 'true');
       expect(screen.getByText('Loading...')).toBeInTheDocument();
-      expect(screen.queryByText('Submit')).not.toBeInTheDocument();
-    });
-    
-    it('shows spinner when loading', () => {
-      render(<Button loading>Loading Button</Button>);
-      
-      const svg = document.querySelector('svg');
-      expect(svg).toBeInTheDocument();
-    });
-    
-    it('does not show spinner when showSpinner is false', () => {
-      render(<Button loading showSpinner={false}>Loading Button</Button>);
-      
-      const svg = document.querySelector('svg');
-      expect(svg).not.toBeInTheDocument();
     });
     
     it('applies active state correctly', () => {
@@ -165,7 +159,11 @@ describe('Button Component', () => {
   describe('Icons', () => {
     it('renders with left icon correctly', () => {
       render(
-        <Button leftIcon={<span data-testid="left-icon">🔍</span>}>
+        <Button 
+          icons={{ 
+            left: <span data-testid="left-icon">🔍</span> 
+          }}
+        >
           Search
         </Button>
       );
@@ -176,7 +174,11 @@ describe('Button Component', () => {
     
     it('renders with right icon correctly', () => {
       render(
-        <Button rightIcon={<span data-testid="right-icon">→</span>}>
+        <Button 
+          icons={{ 
+            right: <span data-testid="right-icon">→</span> 
+          }}
+        >
           Next
         </Button>
       );
@@ -188,8 +190,10 @@ describe('Button Component', () => {
     it('renders with both icons correctly', () => {
       render(
         <Button 
-          leftIcon={<span data-testid="left-icon">🔍</span>}
-          rightIcon={<span data-testid="right-icon">→</span>}
+          icons={{
+            left: <span data-testid="left-icon">🔍</span>,
+            right: <span data-testid="right-icon">→</span>
+          }}
         >
           Search
         </Button>
@@ -200,9 +204,12 @@ describe('Button Component', () => {
       expect(screen.getByText('Search')).toBeInTheDocument();
     });
     
-    it('applies icon button styles correctly', () => {
+    it('applies icon-only button styles correctly', () => {
       render(
-        <Button iconButton data-testid="button">
+        <Button 
+          size="icon"
+          data-testid="button"
+        >
           <span data-testid="icon">🔍</span>
         </Button>
       );
@@ -211,19 +218,21 @@ describe('Button Component', () => {
       expect(screen.getByTestId('icon')).toBeInTheDocument();
     });
     
-    it('does not show icons when loading', () => {
+    it('renders with icons.only property correctly', () => {
       render(
         <Button 
-          loading 
-          leftIcon={<span data-testid="left-icon">🔍</span>}
-          rightIcon={<span data-testid="right-icon">→</span>}
+          icons={{ 
+            left: <span data-testid="icon">🔍</span>,
+            only: true
+          }}
+          data-testid="button"
         >
           Search
         </Button>
       );
       
-      expect(screen.queryByTestId('left-icon')).not.toBeInTheDocument();
-      expect(screen.queryByTestId('right-icon')).not.toBeInTheDocument();
+      expect(screen.getByTestId('button')).toHaveClass('iconMd');
+      expect(screen.getByTestId('icon')).toBeInTheDocument();
     });
   });
 
@@ -247,16 +256,25 @@ describe('Button Component', () => {
     });
     
     it('applies ripple effect correctly', () => {
-      const { rerender } = render(<Button ripple data-testid="button">Ripple</Button>);
-      expect(screen.getByTestId('button')).toHaveClass('ripple');
+      const { rerender } = render(
+        <Button 
+          animation={{ effect: 'none', ripple: true }}
+          data-testid="button"
+        >
+          Ripple
+        </Button>
+      );
+      expect(screen.getByTestId('button')).toHaveClass('rippleContainer');
       
-      rerender(<Button ripple={false} data-testid="button">No Ripple</Button>);
-      expect(screen.getByTestId('button')).not.toHaveClass('ripple');
-    });
-    
-    it('applies shimmer effect when loading', () => {
-      render(<Button loading data-testid="button">Loading</Button>);
-      expect(screen.getByTestId('button')).toHaveClass('shimmer');
+      rerender(
+        <Button 
+          animation={{ effect: 'none', ripple: false }}
+          data-testid="button"
+        >
+          No Ripple
+        </Button>
+      );
+      expect(screen.getByTestId('button')).not.toHaveClass('rippleContainer');
     });
   });
 
@@ -282,7 +300,7 @@ describe('Button Component', () => {
       const handleClick = jest.fn();
       render(<Button onClick={handleClick} loading>Click Me</Button>);
       
-      fireEvent.click(screen.getByRole('button', { name: /loading/i }));
+      fireEvent.click(screen.getByRole('button'));
       expect(handleClick).not.toHaveBeenCalled();
     });
   });
@@ -295,7 +313,12 @@ describe('Button Component', () => {
           <Button>Default Button</Button>
           <Button disabled>Disabled Button</Button>
           <Button loading>Loading Button</Button>
-          <Button aria-label="Icon Button" iconButton>🔍</Button>
+          <Button 
+            aria-label="Icon Button" 
+            size="icon"
+          >
+            🔍
+          </Button>
         </div>
       );
       

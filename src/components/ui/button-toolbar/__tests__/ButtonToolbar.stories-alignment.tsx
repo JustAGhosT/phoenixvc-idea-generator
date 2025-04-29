@@ -1,11 +1,11 @@
 import type { StoryObj } from '@storybook/react';
 import { Button } from '../../button/Button';
-import { ButtonToolbar } from '../../button/ButtonToolbar';
-import { ButtonGroup } from '../ButtonGroup';
+import { ButtonToolbar } from '../ButtonToolbar';
+import { ButtonGroup } from '../../button-group/ButtonGroup';
 
 type Story = StoryObj<typeof ButtonToolbar>;
 
-// Different alignment options
+// Alignment examples
 export const Alignment: Story = {
   render: () => (
     <div className="space-y-8">
@@ -15,7 +15,9 @@ export const Alignment: Story = {
           <ButtonGroup>
             <Button variant="outline">Copy</Button>
             <Button variant="outline">Paste</Button>
+            <Button variant="outline">Cut</Button>
           </ButtonGroup>
+          
           <ButtonGroup>
             <Button variant="outline">Undo</Button>
             <Button variant="outline">Redo</Button>
@@ -29,7 +31,9 @@ export const Alignment: Story = {
           <ButtonGroup>
             <Button variant="outline">Copy</Button>
             <Button variant="outline">Paste</Button>
+            <Button variant="outline">Cut</Button>
           </ButtonGroup>
+          
           <ButtonGroup>
             <Button variant="outline">Undo</Button>
             <Button variant="outline">Redo</Button>
@@ -43,7 +47,9 @@ export const Alignment: Story = {
           <ButtonGroup>
             <Button variant="outline">Copy</Button>
             <Button variant="outline">Paste</Button>
+            <Button variant="outline">Cut</Button>
           </ButtonGroup>
+          
           <ButtonGroup>
             <Button variant="outline">Undo</Button>
             <Button variant="outline">Redo</Button>
@@ -57,7 +63,9 @@ export const Alignment: Story = {
           <ButtonGroup>
             <Button variant="outline">Copy</Button>
             <Button variant="outline">Paste</Button>
+            <Button variant="outline">Cut</Button>
           </ButtonGroup>
+          
           <ButtonGroup>
             <Button variant="outline">Undo</Button>
             <Button variant="outline">Redo</Button>
