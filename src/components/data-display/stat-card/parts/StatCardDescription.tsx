@@ -13,7 +13,7 @@ export const StatCardDescription = memo<StatCardDescriptionProps>(({
   descriptionId
 }) => {
   return (
-    <p id={descriptionId} className={styles.description}>
+    <p id={descriptionId} className={styles.statCardDescription}>
       {description}
     </p>
   );

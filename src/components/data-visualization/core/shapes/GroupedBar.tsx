@@ -65,7 +65,7 @@ export const GroupedBar: React.FC<GroupedBarProps> = ({
   const gapWidth = (totalWidth - barWidth * barCount) / (barCount + 1);
   
   return (
-    <g className={`${styles.groupedBar} ${className}`}>
+    <g className={`${styles.barGroupedBar} ${className}`}>
       {segments.map((segment, index) => {
         // Calculate segment position and height
         const segmentX = x + gapWidth + (barWidth + gapWidth) * index;

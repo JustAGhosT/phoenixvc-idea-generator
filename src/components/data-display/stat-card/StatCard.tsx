@@ -233,7 +233,7 @@ export const StatCard = memo<StatCardProps>(({
     if (typeof icon === 'string') {
       const IconComponent = iconMap[icon as StatCardIconIdentifier];
       if (IconComponent) {
-        return <IconComponent className={styles.icon} aria-hidden="true" />;
+        return <IconComponent className={styles.statCardIcon} aria-hidden="true" />;
     }
       return null;
     }
@@ -267,7 +267,7 @@ export const StatCard = memo<StatCardProps>(({
         headingLevel={headingLevel}
       />
       
-      <div className={styles.content}>
+      <div className={styles.statCardContent}>
         <StatCardValue 
           formattedValue={formattedValue} 
           loading={loading} 

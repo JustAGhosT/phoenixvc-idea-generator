@@ -51,14 +51,14 @@ Example:
 }
 
 /* Variants */
-.card--default { /* ... */ }
-.card--outline { /* ... */ }
-.card--elevated { /* ... */ }
+.cardPrimary { /* ... */ }
+.cardSecondary { /* ... */ }
+.cardOutline { /* ... */ }
 
 /* Subcomponents */
-.card__header { /* ... */ }
-.card__content { /* ... */ }
-.card__footer { /* ... */ }
+.cardHeader { /* ... */ }
+.cardContent { /* ... */ }
+.cardFooter { /* ... */ }
 
 /* Theme variations */
 :global(:root[data-theme="dark"]) .card { /* ... */ }
@@ -72,7 +72,7 @@ Organize component directories using the following structure:
 src/components/ui/[component-name]/
 ├── index.ts                  # Main exports
 ├── [ComponentName].tsx       # Main component
-├── [ComponentName].module.css # CSS Module styles
+├── [ComponentName].module.css # CSS Module styles at root level
 ├── README.md                 # Documentation
 ├── parts/                    # Subcomponents
 │   ├── [SubComponent1].tsx
@@ -88,33 +88,28 @@ src/components/ui/[component-name]/
 
 1. **Component Files:** PascalCase (e.g., `Card.tsx`, `CardHeader.tsx`)
 2. **CSS Module Files:** PascalCase.module.css (e.g., `Card.module.css`)
-3. **Test Files:** PascalCase.test.tsx (e.g., `Card.test.tsx`)
-4. **Story Files:** PascalCase.stories.tsx (e.g., `Card.stories.tsx`)
-5. **Directory Names:** lowercase with hyphens (e.g., `ui/card/`)
-6. **Subcomponent Directory:** `parts/` (preferred over components, subcomponents, or elements)
+3. **CSS Classes:** camelCase, prefixed with component name (e.g., `card`, `cardHeader`)
+4. **Test Files:** PascalCase.test.tsx (e.g., `Card.test.tsx`)
+5. **Story Files:** PascalCase.stories.tsx (e.g., `Card.stories.tsx`)
+6. **Directory Names:** lowercase with hyphens (e.g., `ui/card/`)
+7. **Subcomponent Directory:** `parts/` (preferred over components, subcomponents, or elements)
 
 ## Import Paths
 
-1. **For main component exports:**
-   ```tsx
-   export { Card, type CardProps } from './Card';
-   export { default } from './Card';
-   ```
-
-2. **For subcomponent exports:**
-   ```tsx
-   export { CardHeader, type CardHeaderProps } from './parts/CardHeader';
-   ```
-
-3. **For importing styles:**
+1. **For main component styles:**
    ```tsx
    import styles from './ComponentName.module.css';
    ```
 
-4. **For importing in tests:**
+2. **For subcomponent styles:**
    ```tsx
-   import { ComponentName } from '../ComponentName';
-   import { SubComponent } from '../parts/SubComponent';
+   import styles from '../ComponentName.module.css';
+   ```
+
+3. **Never use absolute paths for component styles:**
+   ```tsx
+   // Incorrect
+   import styles from '@/components/ui/card/Card.module.css';
    ```
 
 ## CSS Modules and Dark Theme Support
@@ -153,9 +148,9 @@ When mocking CSS Modules in tests, use the following pattern:
 ```tsx
 // Mock the styles import
 jest.mock('../ComponentName.module.css', () => ({
-  componentClass: 'componentClass',
-  'component--variant': 'component--variant',
-  'component__part': 'component__part',
+  card: 'card',
+  cardHeader: 'cardHeader',
+  cardPrimary: 'cardPrimary',
 }));
 ```
 

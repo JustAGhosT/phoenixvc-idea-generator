@@ -10,9 +10,9 @@ import { SidebarSection } from '../sidebar-section';
  * 3. This prevents the test from failing due to missing CSS modules
  */
 jest.mock('../sidebar.module.css', () => ({
-  group: 'group-class',
-  groupLabel: 'group-label-class',
-  menu: 'menu-class'
+  sidebarGroup: 'group-class',
+  sidebarGroupLabel: 'group-label-class',
+  sidebarMenu: 'menu-class'
 }));
 
 describe('SidebarSection Component', () => {

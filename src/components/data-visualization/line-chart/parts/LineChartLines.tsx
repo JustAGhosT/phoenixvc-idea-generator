@@ -43,7 +43,7 @@ const LineChartLines: React.FC<LineChartLinesProps> = ({
   }
 
   return (
-    <g className={styles.linesContainer}>
+    <g className={styles.lineChartLinesContainer}>
       {/* Define gradients if needed */}
       {useGradient && (
         <defs>
@@ -82,7 +82,7 @@ const LineChartLines: React.FC<LineChartLinesProps> = ({
         return (
           <path
             key={`area-${seriesIndex}`}
-            className={styles.area}
+            className={styles.lineChartArea}
             d={areaPath}
             fill={useGradient ? `url(#line-gradient-${seriesIndex})` : color}
             opacity={0.2}
@@ -107,7 +107,7 @@ const LineChartLines: React.FC<LineChartLinesProps> = ({
         return (
           <path
             key={`line-${seriesIndex}`}
-            className={styles.line}
+            className={styles.lineChartLine}
             d={linePath}
             stroke={color}
             strokeWidth={lineWidth}

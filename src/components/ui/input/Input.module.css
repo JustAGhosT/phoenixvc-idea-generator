@@ -95,7 +95,7 @@
   padding-right: 2.5rem;
 }
 
-.iconLeft {
+.inputIconLeft {
   position: absolute;
   top: 50%;
   left: 0.75rem;
@@ -104,7 +104,7 @@
   pointer-events: none;
 }
 
-.iconRight {
+.inputIconRight {
   position: absolute;
   top: 50%;
   right: 0.75rem;
@@ -113,18 +113,18 @@
 }
 
 /* Label styles */
-.label {
+.inputLabel {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--input-label, #374151);
   margin-bottom: 0.25rem;
 }
 
-.label--disabled {
+.inputLabel--disabled {
   color: var(--input-disabled-text, #6b7280);
 }
 
-.label--error {
+.inputLabel--error {
   color: var(--input-error-text, #ef4444);
 }
 
@@ -135,20 +135,20 @@
 }
 
 /* Helper text styles */
-.helperText {
+.inputHelperText {
   font-size: 0.75rem;
   margin-top: 0.25rem;
   color: var(--input-helper-text, #6b7280);
 }
 
-.errorText {
+.inputErrorText {
   font-size: 0.75rem;
   margin-top: 0.25rem;
   color: var(--input-error-text, #ef4444);
 }
 
 /* Clear and password toggle buttons */
-.actionButton {
+.inputActionButton {
   background: transparent;
   border: none;
   padding: 0;
@@ -168,28 +168,28 @@
 }
 
 /* Loading spinner */
-.spinner {
+.inputSpinner {
   color: var(--input-spinner, #6b7280);
 }
 
 /* Character count */
-.characterCount {
+.inputCharacterCount {
   font-size: 0.75rem;
   margin-top: 0.25rem;
   text-align: right;
   color: var(--input-helper-text, #6b7280);
 }
 
-.characterCount--warning {
+.inputCharacterCount--warning {
   color: var(--input-warning-text, #f59e0b);
 }
 
-.characterCount--error {
+.inputCharacterCount--error {
   color: var(--input-error-text, #ef4444);
 }
 
 /* Floating label */
-.floatingLabel {
+.inputFloatingLabel {
   position: absolute;
   top: 50%;
   left: 0.75rem;
@@ -202,7 +202,7 @@
 }
 
 .input:focus + .floatingLabel,
-.input:not(:placeholder-shown) + .floatingLabel {
+.input:not(:placeholder-shown) + .inputFloatingLabel {
   transform: translateY(-130%) scale(0.85);
   color: var(--input-focus-border, #3b82f6);
   background-color: var(--input-bg, white);
@@ -220,15 +220,15 @@
   color: var(--input-disabled-text-dark, #9ca3af);
 }
 
-:global(:root[data-theme="dark"]) .label {
+:global(:root[data-theme="dark"]) .inputLabel {
   color: var(--input-label-dark, #e5e7eb);
 }
 
-:global(:root[data-theme="dark"]) .helperText {
+:global(:root[data-theme="dark"]) .inputHelperText {
   color: var(--input-helper-text-dark, #9ca3af);
 }
 
 :global(:root[data-theme="dark"]) .input:focus + .floatingLabel,
-:global(:root[data-theme="dark"]) .input:not(:placeholder-shown) + .floatingLabel {
+:global(:root[data-theme="dark"]) .input:not(:placeholder-shown) + .inputFloatingLabel {
   background-color: var(--input-bg-dark, #1f2937);
 }

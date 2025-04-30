@@ -41,7 +41,7 @@ const LineChartContainer: React.FC<LineChartContainerProps> = ({
 }) => {
   return (
     <div 
-      className={`${styles.container} ${className}`} 
+      className={`${styles.lineChartContainer} ${className}`} 
       style={{ 
         width, 
         height, 

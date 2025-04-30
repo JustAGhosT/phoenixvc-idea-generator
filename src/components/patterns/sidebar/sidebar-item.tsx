@@ -67,15 +67,15 @@ export function SidebarItem({
     <Link 
       href={href} 
       className={cn(
-        styles.menuButton,
-        isActive && styles.menuButtonActive,
+        styles.sidebarMenuButton,
+        isActive && styles.sidebarMenuButtonActive,
         animations.itemHover,
         animations.transition
       )}
       style={{ '--item-index': itemIndex } as React.CSSProperties}
     >
       <span className={cn(
-        styles.menuItemIcon, 
+        styles.sidebarMenuItemIcon, 
         isActive && animations.fadeIn,
         isOpen ? animationClasses.itemEnterActive : animationClasses.itemExitActive
       )}>
@@ -84,7 +84,7 @@ export function SidebarItem({
       {isOpen && (
         <>
           <span className={cn(
-            styles.menuItemText, 
+            styles.sidebarMenuItemText, 
             animations.fadeIn,
             animationClasses.itemEnterActive
           )}>
@@ -92,7 +92,7 @@ export function SidebarItem({
           </span>
           {badge && (
             <Badge className={cn(
-              styles.menuItemBadge, 
+              styles.sidebarMenuItemBadge, 
               animations.fadeIn,
               animationClasses.itemEnterActive,
               typeof badge === 'string' ? undefined : animations.transition
@@ -107,11 +107,11 @@ export function SidebarItem({
   
   if (!isOpen) {
     return (
-      <li className={cn(styles.menuItem, animations.transition)}>
+      <li className={cn(styles.sidebarMenuItem, animations.transition)}>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <div className={cn(styles.menuButtonCollapsed, animations.transition)}>
+              <div className={cn(styles.sidebarMenuButtonCollapsed, animations.transition)}>
                 {content}
               </div>
             </TooltipTrigger>
@@ -122,5 +122,5 @@ export function SidebarItem({
     );
   }
   
-  return <li className={cn(styles.menuItem, animations.transition)}>{content}</li>;
+  return <li className={cn(styles.sidebarMenuItem, animations.transition)}>{content}</li>;
 }

@@ -16,7 +16,7 @@ export function SidebarContent({
 }: SidebarContentProps) {
   return (
     <div
-      className={cn(styles.content, className)}
+      className={cn(styles.sidebarContent, className)}
       {...props}
     >
       {children}

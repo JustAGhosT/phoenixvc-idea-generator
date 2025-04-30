@@ -17,7 +17,7 @@ export const ButtonSpinner = React.memo(function ButtonSpinner({
 }: ButtonSpinnerProps) {
   return (
     <svg 
-      className={cn(styles.spinner, className)} 
+      className={cn(styles.buttonSpinner, className)} 
       xmlns="http://www.w3.org/2000/svg" 
       fill="none" 
       viewBox="0 0 24 24"

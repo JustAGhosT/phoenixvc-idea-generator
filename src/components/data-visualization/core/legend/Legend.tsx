@@ -38,12 +38,12 @@ export const Legend: React.FC<LegendProps> = ({
   const needsScrolling = maxItems && items.length > maxItems;
   
   // Determine layout class
-  const layoutClass = layout === 'horizontal' ? styles.horizontal : styles.vertical;
+  const layoutClass = layout === 'horizontal' ? styles.legendHorizontal : styles.legendVertical;
   const positionClass = styles[position];
   
   return (
     <div className={`${styles.legend} ${layoutClass} ${positionClass} ${className}`}>
-      <div className={needsScrolling ? styles.scrollContainer : ''}>
+      <div className={needsScrolling ? styles.legendScrollContainer : ''}>
         {items.map((item) => (
           formatItem ? (
             <div key={item.id}>

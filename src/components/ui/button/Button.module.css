@@ -23,7 +23,7 @@
 }
 
 /* Variants */
-.primary {
+.buttonPrimary {
   background-color: var(--color-primary, #3b82f6);
   color: var(--color-white, white);
   border: 1px solid transparent;
@@ -33,7 +33,7 @@
   background-color: var(--color-primary-dark, #2563eb);
 }
 
-.secondary {
+.buttonSecondary {
   background-color: var(--color-secondary, #64748b);
   color: var(--color-white, white);
   border: 1px solid transparent;
@@ -43,7 +43,7 @@
   background-color: var(--color-secondary-dark, #475569);
 }
 
-.outline {
+.buttonOutline {
   background-color: transparent;
   border: 1px solid var(--color-border, #e2e8f0);
   color: var(--color-text, #1e293b);
@@ -53,7 +53,7 @@
   background-color: var(--color-gray-50, #f8fafc);
 }
 
-.ghost {
+.buttonGhost {
   background-color: transparent;
   border: 1px solid transparent;
   color: var(--color-text, #1e293b);
@@ -63,7 +63,7 @@
   background-color: var(--color-gray-100, #f1f5f9);
 }
 
-.link {
+.buttonLink {
   background-color: transparent;
   border: none;
   color: var(--color-primary, #3b82f6);
@@ -77,42 +77,42 @@
 }
 
 /* Color variants */
-.colorPrimary {
+.buttonColorPrimary {
   --button-color: var(--color-primary, #3b82f6);
   --button-color-dark: var(--color-primary-dark, #2563eb);
   --button-text: var(--color-white, white);
   --button-color-rgb: 59, 130, 246;
 }
 
-.colorSuccess {
+.buttonColorSuccess {
   --button-color: var(--color-success, #10b981);
   --button-color-dark: var(--color-success-dark, #059669);
   --button-text: var(--color-white, white);
   --button-color-rgb: 16, 185, 129;
 }
 
-.colorWarning {
+.buttonColorWarning {
   --button-color: var(--color-warning, #f59e0b);
   --button-color-dark: var(--color-warning-dark, #d97706);
   --button-text: var(--color-black, black);
   --button-color-rgb: 245, 158, 11;
 }
 
-.colorDanger {
+.buttonColorDanger {
   --button-color: var(--color-danger, #ef4444);
   --button-color-dark: var(--color-danger-dark, #dc2626);
   --button-text: var(--color-white, white);
   --button-color-rgb: 239, 68, 68;
 }
 
-.colorInfo {
+.buttonColorInfo {
   --button-color: var(--color-info, #3b82f6);
   --button-color-dark: var(--color-info-dark, #2563eb);
   --button-text: var(--color-white, white);
   --button-color-rgb: 59, 130, 246;
 }
 
-.colorDefault {
+.buttonColorDefault {
   --button-color: var(--color-gray-200, #e2e8f0);
   --button-color-dark: var(--color-gray-300, #cbd5e1);
   --button-text: var(--color-gray-900, #0f172a);
@@ -154,124 +154,124 @@
 }
 
 /* Sizes */
-.xs {
+.buttonXs {
   font-size: var(--text-xs, 0.75rem);
   padding: 0.25rem 0.5rem;
   height: 1.5rem;
 }
 
-.sm {
+.buttonSm {
   font-size: var(--text-sm, 0.875rem);
   padding: 0.375rem 0.75rem;
   height: 2rem;
 }
 
-.md {
+.buttonMd {
   font-size: var(--text-base, 1rem);
   padding: 0.5rem 1rem;
   height: 2.5rem;
 }
 
-.lg {
+.buttonLg {
   font-size: var(--text-lg, 1.125rem);
   padding: 0.625rem 1.25rem;
   height: 3rem;
 }
 
-.xl {
+.buttonXl {
   font-size: var(--text-xl, 1.25rem);
   padding: 0.75rem 1.5rem;
   height: 3.5rem;
 }
 
 /* Icon button sizes */
-.iconXs {
+.buttonIconXs {
   padding: 0.25rem;
   width: 1.5rem;
   height: 1.5rem;
 }
 
-.iconSm {
+.buttonIconSm {
   padding: 0.375rem;
   width: 2rem;
   height: 2rem;
 }
 
-.iconMd {
+.buttonIconMd {
   padding: 0.5rem;
   width: 2.5rem;
   height: 2.5rem;
 }
 
-.iconLg {
+.buttonIconLg {
   padding: 0.625rem;
   width: 3rem;
   height: 3rem;
 }
 
-.iconXl {
+.buttonIconXl {
   padding: 0.75rem;
   width: 3.5rem;
   height: 3.5rem;
 }
 
 /* Shape variants */
-.rounded {
+.buttonRounded {
   border-radius: var(--radius-md, 0.375rem);
 }
 
-.pill {
+.buttonPill {
   border-radius: var(--radius-full, 9999px);
 }
 
 /* States */
-.disabled {
+.buttonDisabled {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-.loading {
+.buttonLoading {
   cursor: wait;
 }
 
-.active {
+.buttonActive {
   transform: translateY(1px);
 }
 
-.fullWidth {
+.buttonFullWidth {
   width: 100%;
   display: flex;
 }
 
 /* Icon styles */
-.leftIcon {
+.buttonLeftIcon {
   margin-right: 0.5rem;
   display: inline-flex;
 }
 
-.rightIcon {
+.buttonRightIcon {
   margin-left: 0.5rem;
   display: inline-flex;
 }
 
-.icon {
+.buttonIcon {
   width: 1em;
   height: 1em;
 }
 
 /* Loading spinner */
-.spinner {
+.buttonSpinner {
   color: currentColor;
 }
 
 /* Enhanced ripple effect */
-.rippleContainer {
+.buttonRippleContainer {
   position: relative;
   overflow: hidden;
 }
 
-.rippleEffect {
+.buttonRippleEffect {
   position: absolute;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.4);
@@ -288,7 +288,7 @@
 }
 
 /* Progress indicator for controlled loading */
-.progressContainer {
+.buttonProgressContainer {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -299,14 +299,14 @@
   border-radius: 0 0 var(--radius, 0.25rem) var(--radius, 0.25rem);
 }
 
-.progressBar {
+.buttonProgressBar {
   height: 100%;
   background-color: var(--button-color, #3b82f6);
   transition: width 0.3s ease;
 }
 
 /* Dark mode support */
-:global(:root[data-theme="dark"]) .outline {
+:global(:root[data-theme="dark"]) .buttonOutline {
   border-color: var(--color-border-dark, #334155);
   color: var(--color-text-dark, #f8fafc);
 }
@@ -315,7 +315,7 @@
   background-color: var(--color-gray-800, #1e293b);
 }
 
-:global(:root[data-theme="dark"]) .ghost {
+:global(:root[data-theme="dark"]) .buttonGhost {
   color: var(--color-text-dark, #f8fafc);
 }
 
@@ -323,11 +323,11 @@
   background-color: var(--color-gray-800, #1e293b);
 }
 
-:global(:root[data-theme="dark"]) .link {
+:global(:root[data-theme="dark"]) .buttonLink {
   color: var(--color-primary-light, #60a5fa);
 }
 
-:global(:root[data-theme="dark"]) .progressContainer {
+:global(:root[data-theme="dark"]) .buttonProgressContainer {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -336,12 +336,12 @@
   .button,
   .button::after,
   .rippleEffect,
-  .progressBar {
+  .buttonProgressBar {
     transition: none !important;
     animation: none !important;
   }
   
-  .active {
+  .buttonActive {
     transform: none;
   }
 }

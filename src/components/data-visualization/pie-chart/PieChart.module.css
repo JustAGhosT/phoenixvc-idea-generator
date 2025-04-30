@@ -1,4 +1,4 @@
-.chartContent {
+.pieChartChartContent {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -8,11 +8,11 @@
   position: relative;
 }
 
-.chartSvg {
+.pieChartChartSvg {
   overflow: visible;
 }
 
-.loading {
+.pieChartLoading {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,7 +22,7 @@
   font-size: 14px;
 }
 
-.error {
+.pieChartError {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@
   padding: 1rem;
 }
 
-.slice {
+.pieChartSlice {
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
@@ -43,12 +43,12 @@
   opacity: 0.8;
 }
 
-.sliceSelected {
+.pieChartSliceSelected {
   transform: translateX(10px) translateY(10px);
   filter: drop-shadow(-5px -5px 5px rgba(0, 0, 0, 0.2));
 }
 
-.sliceLabel {
+.pieChartSliceLabel {
   font-size: 12px;
   font-weight: 500;
   fill: #fff;
@@ -56,13 +56,13 @@
   pointer-events: none;
 }
 
-.legendContainer {
+.pieChartLegendContainer {
   display: flex;
   flex-wrap: wrap;
   margin-top: 1rem;
 }
 
-.legendItem {
+.pieChartLegendItem {
   display: flex;
   align-items: center;
   margin-right: 1rem;
@@ -70,41 +70,41 @@
   cursor: pointer;
 }
 
-.legendColor {
+.pieChartLegendColor {
   width: 12px;
   height: 12px;
   border-radius: 2px;
   margin-right: 0.5rem;
 }
 
-.legendLabel {
+.pieChartLegendLabel {
   font-size: 12px;
   color: #333;
 }
 
 /* Layout variations based on legend position */
-.legendTop, .legendBottom {
+.legendTop, .pieChartLegendBottom {
   flex-direction: row;
   justify-content: center;
   width: 100%;
 }
 
-.legendLeft, .legendRight {
+.legendLeft, .pieChartLegendRight {
   flex-direction: column;
   height: 100%;
 }
 
-.horizontal {
+.pieChartHorizontal {
   flex-direction: row;
   flex-wrap: wrap;
 }
 
-.vertical {
+.pieChartVertical {
   flex-direction: column;
 }
 
 /* Tooltip */
-.tooltip {
+.pieChartTooltip {
   position: absolute;
   padding: 0.5rem;
   background-color: rgba(0, 0, 0, 0.8);
@@ -116,15 +116,15 @@
   max-width: 200px;
 }
 
-.tooltipLabel {
+.pieChartTooltipLabel {
   font-weight: bold;
   margin-bottom: 0.25rem;
 }
 
-.tooltipValue {
+.pieChartTooltipValue {
   margin-bottom: 0.25rem;
 }
 
-.tooltipPercent {
+.pieChartTooltipPercent {
   opacity: 0.8;
 }

@@ -9,32 +9,32 @@
 }
 
 /* Variants */
-.variantDefault {
+.statCardVariantDefault {
   background-color: var(--color-background-card);
   color: var(--color-text-primary);
 }
 
-.variantPrimary {
+.statCardVariantPrimary {
   background-color: var(--color-primary-light);
   color: var(--color-primary-dark);
 }
 
-.variantSuccess {
+.statCardVariantSuccess {
   background-color: var(--color-success-light);
   color: var(--color-success-dark);
 }
 
-.variantWarning {
+.statCardVariantWarning {
   background-color: var(--color-warning-light);
   color: var(--color-warning-dark);
 }
 
-.variantDanger {
+.statCardVariantDanger {
   background-color: var(--color-danger-light);
   color: var(--color-danger-dark);
 }
 
-.variantInfo {
+.statCardVariantInfo {
   background-color: var(--color-info-light);
   color: var(--color-info-dark);
 }
@@ -55,7 +55,7 @@
 }
 
 /* Loading state */
-.loading .value {
+.loading .statCardValue {
   position: relative;
   color: transparent;
 }
@@ -78,66 +78,66 @@
 }
 
 /* Compact state */
-.compact .header {
+.compact .statCardHeader {
   margin-bottom: 0.25rem;
 }
 
-.compact .title {
+.compact .statCardTitle {
   font-size: 0.875rem;
 }
 
-.compact .value {
+.compact .statCardValue {
   font-size: 1.25rem;
   margin: 0.25rem 0;
 }
 
-.compact .description {
+.compact .statCardDescription {
   font-size: 0.75rem;
 }
 
-.compact .trendIndicator {
+.compact .statCardTrendIndicator {
   font-size: 0.75rem;
 }
 
 /* Header section */
-.header {
+.statCardHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
 }
 
-.title {
+.statCardTitle {
   font-size: 1rem;
   font-weight: 500;
   margin: 0;
   line-height: 1.2;
 }
 
-.iconContainer {
+.statCardIconContainer {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.icon {
+.statCardIcon {
   width: 1.25rem;
   height: 1.25rem;
 }
 
 /* Content section */
-.content {
+.statCardContent {
   flex: 1;
 }
 
-.value {
+.statCardValue {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0.5rem 0;
   line-height: 1.2;
 }
 
-.description {
+.statCardDescription {
   font-size: 0.875rem;
   color: var(--color-text-secondary);
   margin: 0;
@@ -145,50 +145,50 @@
 }
 
 /* Trend indicator */
-.trendIndicator {
+.statCardTrendIndicator {
   display: flex;
   align-items: center;
   font-size: 0.875rem;
   margin-top: 0.5rem;
 }
 
-.up.good {
+.up.statCardGood {
   color: var(--color-success);
 }
 
-.up.bad {
+.up.statCardBad {
   color: var(--color-danger);
 }
 
-.down.good {
+.down.statCardGood {
   color: var(--color-success);
 }
 
-.down.bad {
+.down.statCardBad {
   color: var(--color-danger);
 }
 
-.neutral {
+.statCardNeutral {
   color: var(--color-text-secondary);
 }
 
-.trendIcon {
+.statCardTrendIcon {
   display: flex;
   align-items: center;
   margin-right: 0.25rem;
 }
 
-.trendIconSvg {
+.statCardTrendIconSvg {
   width: 0.875rem;
   height: 0.875rem;
 }
 
-.trendValue {
+.statCardTrendValue {
   font-weight: 500;
   margin-right: 0.25rem;
 }
 
-.trendLabel {
+.statCardTrendLabel {
   color: var(--color-text-secondary);
 }
 
@@ -208,17 +208,17 @@
 }
 
 :global(:root[data-theme="dark"]) .description,
-:global(:root[data-theme="dark"]) .trendLabel {
+:global(:root[data-theme="dark"]) .statCardTrendLabel {
   color: var(--color-text-secondary-dark);
 }
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
-  .value {
+  .statCardValue {
     font-size: 1.25rem;
   }
   
-  .title {
+  .statCardTitle {
     font-size: 0.875rem;
   }
 }

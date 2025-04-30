@@ -21,7 +21,7 @@
 }
 
 /* Pulse animation */
-.pulse {
+.buttonPulse {
   animation: pulse 2s infinite;
 }
 
@@ -38,7 +38,7 @@
 }
 
 /* Loading spinner animation */
-.spinnerAnimation {
+.buttonSpinnerAnimation {
   animation: spin 1s linear infinite;
 }
 
@@ -52,7 +52,7 @@
 }
 
 /* Ripple animation */
-.ripple {
+.buttonRipple {
   position: relative;
   overflow: hidden;
 }
@@ -81,7 +81,7 @@
 }
 
 /* Shimmer animation for loading state */
-.shimmer {
+.buttonShimmer {
   position: relative;
   overflow: hidden;
 }

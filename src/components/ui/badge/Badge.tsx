@@ -151,14 +151,14 @@ export function Badge({
   const getVariantClasses = () => {
     if (outline) {
       return [
-        styles.outline,
+        styles.badgeOutline,
         styles[`outline${variant.charAt(0).toUpperCase() + variant.slice(1)}`]
       ];
     }
     
     if (soft) {
       return [
-        styles.soft,
+        styles.badgeSoft,
         styles[`soft${variant.charAt(0).toUpperCase() + variant.slice(1)}`]
       ];
     }
@@ -172,10 +172,10 @@ export function Badge({
         styles.badge,
         styles[size],
         ...getVariantClasses(),
-        rounded && styles.rounded,
-        withDot && styles.withDot,
-        (leftIcon || rightIcon) && styles.withIcon,
-        interactive && styles.interactive,
+        rounded && styles.badgeRounded,
+        withDot && styles.badgeWithDot,
+        (leftIcon || rightIcon) && styles.badgeWithIcon,
+        interactive && styles.badgeInteractive,
         shouldAnimate && animations.badgeAnimation,
         getAnimationClass(),
         getHoverAnimationClass(),
@@ -185,13 +185,13 @@ export function Badge({
     >
       {withDot && (
         <span className={cn(
-          styles.dot,
+          styles.badgeDot,
           styles[`dot${variant.charAt(0).toUpperCase() + variant.slice(1)}`]
         )} />
       )}
       
       {leftIcon && (
-        <span className={styles.leftIcon}>
+        <span className={styles.badgeLeftIcon}>
           {leftIcon}
         </span>
       )}
@@ -199,7 +199,7 @@ export function Badge({
       {children}
       
       {rightIcon && (
-        <span className={styles.rightIcon}>
+        <span className={styles.badgeRightIcon}>
           {rightIcon}
         </span>
       )}

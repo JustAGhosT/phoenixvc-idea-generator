@@ -23,7 +23,7 @@ const LineChartNoData: React.FC<LineChartNoDataProps> = ({
       x={width / 2} 
       y={height / 2} 
       textAnchor="middle" 
-      className={styles.empty}
+      className={styles.lineChartEmpty}
     >
       {message}
     </text>

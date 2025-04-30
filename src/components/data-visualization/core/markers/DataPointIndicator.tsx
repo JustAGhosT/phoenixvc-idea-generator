@@ -50,7 +50,7 @@ export const DataPointIndicator: React.FC<DataPointIndicatorProps> = ({
             width={size}
             height={size}
             fill={color}
-            className={pulse ? styles.pulse : ''}
+            className={pulse ? styles.dataPointIndicatorPulse : ''}
           />
         );
         
@@ -59,13 +59,13 @@ export const DataPointIndicator: React.FC<DataPointIndicatorProps> = ({
           <polygon
             points={`${x},${y-size/2} ${x+size/2},${y} ${x},${y+size/2} ${x-size/2},${y}`}
             fill={color}
-            className={pulse ? styles.pulse : ''}
+            className={pulse ? styles.dataPointIndicatorPulse : ''}
           />
         );
         
       case 'cross':
         return (
-          <g className={pulse ? styles.pulse : ''}>
+          <g className={pulse ? styles.dataPointIndicatorPulse : ''}>
             <line
               x1={x - size / 2}
               y1={y - size / 2}
@@ -103,7 +103,7 @@ export const DataPointIndicator: React.FC<DataPointIndicatorProps> = ({
           <polygon
             points={points.join(' ')}
             fill={color}
-            className={pulse ? styles.pulse : ''}
+            className={pulse ? styles.dataPointIndicatorPulse : ''}
           />
         );
         
@@ -115,14 +115,14 @@ export const DataPointIndicator: React.FC<DataPointIndicatorProps> = ({
             cy={y}
             r={size / 2}
             fill={color}
-            className={pulse ? styles.pulse : ''}
+            className={pulse ? styles.dataPointIndicatorPulse : ''}
           />
         );
     }
   };
   
   return (
-    <g className={`${styles.indicator} ${className}`}>
+    <g className={`${styles.dataPointIndicatorIndicator} ${className}`}>
       {/* Crosshair */}
       {showCrosshair && (
         <>

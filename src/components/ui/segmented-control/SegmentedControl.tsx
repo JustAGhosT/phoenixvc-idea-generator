@@ -173,7 +173,7 @@ export const SegmentedControl = forwardRef<HTMLDivElement, SegmentedControlProps
         <ButtonGroup
           attached
           fullWidth={fullWidth}
-          className={styles.buttonGroup}
+          className={styles.segmentedControlButtonGroup}
         >
           {buttons}
         </ButtonGroup>

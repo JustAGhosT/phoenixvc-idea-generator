@@ -45,33 +45,33 @@
 }
 
 /* Line animations */
-.line {
+.lineChartLine {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   animation: drawLine 1.5s ease-out forwards;
 }
 
 /* Area animations */
-.area {
+.lineChartArea {
   animation: fadeInArea 1s ease-out forwards;
   animation-delay: 0.5s;
 }
 
 /* Point animations */
-.point {
+.lineChartPoint {
   animation: popPoint 0.5s ease-out forwards;
   animation-delay: calc(var(--index, 0) * 0.05s + 1s);
 }
 
 /* Data label animations */
-.dataLabel {
+.lineChartDataLabel {
   opacity: 0;
   animation: fadeInLabel 0.5s ease-out forwards;
   animation-delay: calc(var(--index, 0) * 0.05s + 1.2s);
 }
 
 /* Legend item animations */
-.legendItem {
+.lineChartLegendItem {
   opacity: 0;
   animation: fadeInLabel 0.3s ease-out forwards;
   animation-delay: calc(var(--index, 0) * 0.1s + 1.5s);

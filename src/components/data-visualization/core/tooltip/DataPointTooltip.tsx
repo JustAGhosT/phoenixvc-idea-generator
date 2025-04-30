@@ -29,10 +29,10 @@ export const DataPointTooltip: React.FC<DataPointTooltipProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`${styles.dataPointTooltip} ${className}`}>
+    <div className={`${styles.tooltipDataPointTooltip} ${className}`}>
       {color && (
         <div 
-          className={styles.colorIndicator} 
+          className={styles.tooltipColorIndicator} 
           style={{ backgroundColor: color }}
         />
       )}
@@ -40,9 +40,9 @@ export const DataPointTooltip: React.FC<DataPointTooltipProps> = ({
         <h4 className={styles.tooltipTitle}>{dataPoint.label}</h4>
         <div className={styles.tooltipBody}>
           {showSeries && series && (
-            <div className={styles.seriesName}>{series.name}: </div>
+            <div className={styles.tooltipSeriesName}>{series.name}: </div>
           )}
-          <div className={styles.value}>
+          <div className={styles.tooltipValue}>
             {formatValue(dataPoint.value)}
           </div>
         </div>

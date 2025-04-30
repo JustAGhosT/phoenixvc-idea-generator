@@ -36,6 +36,13 @@ const multiSeries: ChartSeries<ChartDataPoint>[] = [
   },
 ];
 
+// Mock the CSS module to avoid issues with CSS modules in tests
+jest.mock('../LineChart.module.css', () => ({
+  lineChartLinesContainer: 'lineChartLinesContainer',
+  lineChartLine: 'lineChartLine line', // Add 'line' class for test compatibility
+  lineChartArea: 'lineChartArea area', // Add 'area' class for test compatibility
+}));
+
 describe('LineChartLines', () => {
   it('renders a single line', () => {
     const { container } = render(
@@ -49,7 +56,7 @@ describe('LineChartLines', () => {
       </svg>
     );
     
-    const lines = container.querySelectorAll('path.line');
+    const lines = container.querySelectorAll('path.lineChartLine');
     expect(lines.length).toBe(1);
   });
   
@@ -65,7 +72,7 @@ describe('LineChartLines', () => {
       </svg>
     );
     
-    const lines = container.querySelectorAll('path.line');
+    const lines = container.querySelectorAll('path.lineChartLine');
     expect(lines.length).toBe(2);
   });
   
@@ -82,7 +89,7 @@ describe('LineChartLines', () => {
       </svg>
     );
     
-    const areas = container.querySelectorAll('path.area');
+    const areas = container.querySelectorAll('path.lineChartArea');
     expect(areas.length).toBe(1);
   });
   
@@ -99,7 +106,7 @@ describe('LineChartLines', () => {
       </svg>
     );
     
-    const areas = container.querySelectorAll('path.area');
+    const areas = container.querySelectorAll('path.lineChartArea');
     expect(areas.length).toBe(0);
   });
   
@@ -116,7 +123,7 @@ describe('LineChartLines', () => {
       </svg>
     );
     
-    const line = container.querySelector('path.line');
+    const line = container.querySelector('path.lineChartLine');
     const pathData = line?.getAttribute('d');
     expect(pathData).toContain('C'); // Cubic bezier curve command
   });
@@ -134,7 +141,7 @@ describe('LineChartLines', () => {
       </svg>
     );
     
-    const line = container.querySelector('path.line');
+    const line = container.querySelector('path.lineChartLine');
     const pathData = line?.getAttribute('d');
     expect(pathData).not.toContain('C'); // No cubic bezier curve command
     expect(pathData).toContain('L'); // Line command
@@ -153,7 +160,7 @@ describe('LineChartLines', () => {
       </svg>
     );
     
-    const line = container.querySelector('path.line');
+    const line = container.querySelector('path.lineChartLine');
     expect(line?.getAttribute('stroke-width')).toBe('4');
   });
   
@@ -176,7 +183,7 @@ describe('LineChartLines', () => {
       </svg>
     );
     
-    const lines = container.querySelectorAll('path.line');
+    const lines = container.querySelectorAll('path.lineChartLine');
     expect(lines.length).toBe(0);
   });
   
@@ -199,7 +206,7 @@ describe('LineChartLines', () => {
     expect(defs).toBeInTheDocument();
     expect(linearGradient).toBeInTheDocument();
     
-    const area = container.querySelector('path.area');
+    const area = container.querySelector('path.lineChartArea');
     expect(area?.getAttribute('fill')).toContain('url(#line-gradient-0)');
   });
 });

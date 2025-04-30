@@ -35,12 +35,12 @@ export const InputCharacterCount: React.FC<InputCharacterCountProps> = ({
 
   return (
     <div className={cn(
-      styles.characterCount,
+      styles.inputCharacterCount,
       status === 'warning' && [
-        styles['characterCount--warning'],
+        styles['inputCharacterCount--warning'],
         animations.characterCountWarning
       ],
-      status === 'error' && styles['characterCount--error'],
+      status === 'error' && styles['inputCharacterCount--error'],
       className
     )}>
       {count}{max ? `/${max}` : ''}

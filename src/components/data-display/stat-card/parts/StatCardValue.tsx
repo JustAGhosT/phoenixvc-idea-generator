@@ -19,7 +19,7 @@ export const StatCardValue = memo<StatCardValueProps>(({
   
   return (
     <div className={cn(
-      styles.value,
+      styles.statCardValue,
       loading && !prefersReducedMotion && animations.shimmerAnimation
     )}>
       {loading ? '—' : formattedValue}

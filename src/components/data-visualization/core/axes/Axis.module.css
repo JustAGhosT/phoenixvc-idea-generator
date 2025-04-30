@@ -7,22 +7,22 @@
   stroke-width: 1px;
 }
 
-.tick {
+.axisTick {
   font-size: 10px;
 }
 
-.tickLine {
+.axisTickLine {
   stroke: var(--axis-color, #64748b);
   stroke-width: 1px;
 }
 
-.gridLine {
+.axisGridLine {
   stroke: var(--grid-color, #e2e8f0);
   stroke-width: 1px;
   stroke-dasharray: 2, 2;
 }
 
-.tickLabel {
+.axisTickLabel {
   fill: var(--text-color, #334155);
   font-size: 0.75rem;
 }

@@ -1,7 +1,7 @@
 /* Checkbox animation styles */
 
 /* Checkbox check animation */
-.checkAnimation {
+.checkboxCheckAnimation {
   animation: checkScale 0.2s ease-in-out;
 }
 
@@ -21,7 +21,7 @@
 }
 
 /* Indeterminate animation */
-.indeterminateAnimation {
+.checkboxIndeterminateAnimation {
   animation: indeterminateAppear 0.2s ease-in-out;
 }
 
@@ -37,11 +37,11 @@
 }
 
 /* Focus ring animation */
-.focusRingAnimation {
+.checkboxFocusRingAnimation {
   transition: box-shadow 0.2s ease-in-out;
 }
 
-.focusRingPulse {
+.checkboxFocusRingPulse {
   animation: focusPulse 1.5s ease-in-out infinite;
 }
 
@@ -58,7 +58,7 @@
 }
 
 /* Error shake animation */
-.errorShake {
+.checkboxErrorShake {
   animation: errorShakeAnim 0.4s ease-in-out;
 }
 
@@ -71,7 +71,7 @@
 }
 
 /* Success animation */
-.successAnimation {
+.checkboxSuccessAnimation {
   animation: successPulse 0.4s ease-in-out;
 }
 
@@ -82,14 +82,14 @@
 }
 
 /* Checkbox state transition */
-.stateTransition {
+.checkboxStateTransition {
   transition: background-color 0.2s ease-in-out, 
               border-color 0.2s ease-in-out,
               color 0.2s ease-in-out;
 }
 
 /* Hover effect animation */
-.hoverAnimation {
+.checkboxHoverAnimation {
   transition: transform 0.1s ease-in-out;
 }
 
@@ -106,7 +106,7 @@
   .errorShake,
   .successAnimation,
   .stateTransition,
-  .hoverAnimation {
+  .checkboxHoverAnimation {
     animation: none !important;
     transition: none !important;
   }

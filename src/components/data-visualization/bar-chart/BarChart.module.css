@@ -1,37 +1,37 @@
-.container {
+.barChartContainer {
   width: 100%;
   padding: 1rem;
   background-color: var(--background-color, #ffffff);
   box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
 }
 
-.headerContainer {
+.barChartHeaderContainer {
   margin-bottom: 1rem;
 }
 
-.title {
+.barChartTitle {
   font-weight: 600;
   font-size: 1rem;
   margin-bottom: 0.5rem;
 }
 
-.description {
+.barChartDescription {
   color: var(--text-secondary, #64748b);
   font-size: 0.875rem;
   margin-bottom: 1rem;
 }
 
-.barsContainer {
+.barChartBarsContainer {
   transition: opacity 0.3s ease;
 }
 
-.empty {
+.barChartEmpty {
   fill: var(--text-secondary, #64748b);
   font-size: 14px;
 }
 
 /* Data labels */
-.dataLabel {
+.barChartDataLabel {
   fill: var(--text-color, #334155);
   font-size: 10px;
   text-anchor: middle;
@@ -39,23 +39,89 @@
 }
 
 /* Legend */
-.legend {
+.barChartLegend {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1rem;
 }
 
-.legendItem {
+.barChartLegendItem {
   display: flex;
   align-items: center;
   font-size: 0.75rem;
   color: var(--text-secondary, #64748b);
 }
 
-.legendColor {
+.barChartLegendColor {
   width: 12px;
   height: 12px;
   border-radius: 2px;
   margin-right: 4px;
+}
+
+/* Merged from BarChart.module.css */
+
+.barChartItem {
+  margin-bottom: 0.75rem;
+}
+
+.barChartHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.barChartLabel {
+  font-size: 0.875rem;
+  color: var(--text-color, #334155);
+}
+
+.barChartValue {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color, #334155);
+}
+
+.barChartProgressContainer {
+  width: 100%;
+  height: 8px;
+  background-color: var(--background-secondary, #f1f5f9);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barChartProgressBar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.barChartHorizontal {
+  display: flex;
+  align-items: center;
+}
+
+.barChartPrimary {
+  background-color: var(--primary-color, #3b82f6);
+}
+
+.barChartSecondary {
+  background-color: var(--secondary-color, #64748b);
+}
+
+.barChartSuccess {
+  background-color: var(--success-color, #10b981);
+}
+
+.barChartWarning {
+  background-color: var(--warning-color, #f59e0b);
+}
+
+.barChartDanger {
+  background-color: var(--danger-color, #ef4444);
+}
+
+.barChartInfo {
+  background-color: var(--info-color, #06b6d4);
 }

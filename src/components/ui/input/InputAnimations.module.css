@@ -15,11 +15,11 @@
 }
 
 /* Label float animation */
-.labelFloatContainer {
+.inputLabelFloatContainer {
   position: relative;
 }
 
-.labelFloat {
+.inputLabelFloat {
   position: absolute;
   top: 50%;
   left: 0.75rem;
@@ -29,7 +29,7 @@
   pointer-events: none;
 }
 
-.labelFloatActive {
+.inputLabelFloatActive {
   transform: translateY(-130%) scale(0.85);
   color: var(--color-primary, #3b82f6);
 }
@@ -59,7 +59,7 @@
 }
 
 /* Icon animations */
-.iconFadeIn {
+.inputIconFadeIn {
   animation: iconFadeIn 0.3s ease forwards;
 }
 
@@ -68,7 +68,7 @@
   to { opacity: 1; transform: scale(1); }
 }
 
-.iconRotate {
+.inputIconRotate {
   animation: iconRotate 0.3s ease forwards;
 }
 
@@ -78,17 +78,17 @@
 }
 
 /* Clear button animation */
-.clearButtonFade {
+.inputClearButtonFade {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
-.clearButtonVisible {
+.inputClearButtonVisible {
   opacity: 1;
 }
 
 /* Character count animation */
-.characterCountWarning {
+.inputCharacterCountWarning {
   animation: pulseWarning 1s ease infinite;
 }
 
@@ -99,7 +99,7 @@
 }
 
 /* Autocomplete dropdown animation */
-.autocompleteDropdown {
+.inputAutocompleteDropdown {
   animation: dropdownFadeIn 0.2s ease forwards;
   transform-origin: top center;
 }
@@ -148,11 +148,11 @@
     animation: none !important;
   }
   
-  .labelFloatActive {
+  .inputLabelFloatActive {
     transform: translateY(-130%) scale(0.85);
   }
   
-  .clearButtonVisible {
+  .inputClearButtonVisible {
     opacity: 1;
   }
 }

@@ -20,10 +20,10 @@ module.exports = ({ config }) => {
     ],
   });
   
-  // Add path aliases
+  // Fix path aliases to point to src directory
   config.resolve.alias = {
     ...config.resolve.alias,
-    '@': path.resolve(__dirname, '..'),
+    '@': path.resolve(__dirname, '../src'),  // Fixed: point to src directory
     'react': path.resolve(__dirname, '../node_modules/react'),
     'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
   };

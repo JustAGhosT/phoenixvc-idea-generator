@@ -116,14 +116,14 @@ describe('QuoteDisplay', () => {
     it('renders with default quote icon when showIcon is true', () => {
       render(<QuoteDisplay quote="Test quote" showIcon={true} />);
       
-      const iconContainer = screen.getByRole('figure').querySelector('.iconContainer');
+      const iconContainer = screen.getByRole('figure').querySelector('.quoteDisplayIconContainer');
       expect(iconContainer).toBeInTheDocument();
     });
 
     it('does not render icon when showIcon is false', () => {
       render(<QuoteDisplay quote="Test quote" showIcon={false} />);
       
-      const iconContainer = screen.getByRole('figure').querySelector('.iconContainer');
+      const iconContainer = screen.getByRole('figure').querySelector('.quoteDisplayIconContainer');
       expect(iconContainer).not.toBeInTheDocument();
     });
 
@@ -213,7 +213,7 @@ describe('QuoteDisplay', () => {
       );
       
       const quote = screen.getByRole('button');
-      expect(quote).toHaveClass('interactive');
+      expect(quote).toHaveClass('quoteDisplayInteractive');
     });
   });
 

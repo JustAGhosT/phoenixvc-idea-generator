@@ -31,7 +31,7 @@ export function SidebarRail({
 }: SidebarRailProps) {
   return (
     <div
-      className={cn(styles.rail, className)}
+      className={cn(styles.sidebarRail, className)}
       onMouseDown={(e) => {
         e.preventDefault();
         onResize?.(e);

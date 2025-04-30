@@ -1,6 +1,6 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
+import React from 'react';
 import { Button } from '../Button';
 
 // Extend Jest matchers with accessibility violations
@@ -105,7 +105,7 @@ describe('Button Component', () => {
       
       const button = screen.getByRole('button', { name: /disabled button/i });
       expect(button).toBeDisabled();
-      expect(button).toHaveClass('disabled');
+      expect(button).toHaveClass('buttonDisabled');
     });
     
     it('handles loading state correctly', () => {
@@ -122,7 +122,7 @@ describe('Button Component', () => {
       
       const button = screen.getByRole('button');
       expect(button).toBeDisabled();
-      expect(button).toHaveClass('loading');
+      expect(button).toHaveClass('buttonLoading');
       expect(button).toHaveAttribute('aria-busy', 'true');
       expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
@@ -130,13 +130,13 @@ describe('Button Component', () => {
     it('applies active state correctly', () => {
       render(<Button active data-testid="button">Active Button</Button>);
       
-      expect(screen.getByTestId('button')).toHaveClass('active');
+      expect(screen.getByTestId('button')).toHaveClass('buttonActive');
     });
     
     it('applies fullWidth correctly', () => {
       render(<Button fullWidth data-testid="button">Full Width Button</Button>);
       
-      expect(screen.getByTestId('button')).toHaveClass('fullWidth');
+      expect(screen.getByTestId('button')).toHaveClass('buttonFullWidth');
     });
   });
 
@@ -145,13 +145,13 @@ describe('Button Component', () => {
     it('applies rounded correctly', () => {
       render(<Button rounded data-testid="button">Rounded Button</Button>);
       
-      expect(screen.getByTestId('button')).toHaveClass('rounded');
+      expect(screen.getByTestId('button')).toHaveClass('buttonRounded');
     });
     
     it('applies pill correctly', () => {
       render(<Button pill data-testid="button">Pill Button</Button>);
       
-      expect(screen.getByTestId('button')).toHaveClass('pill');
+      expect(screen.getByTestId('button')).toHaveClass('buttonPill');
     });
   });
 
@@ -214,7 +214,7 @@ describe('Button Component', () => {
         </Button>
       );
       
-      expect(screen.getByTestId('button')).toHaveClass('iconMd');
+      expect(screen.getByTestId('button')).toHaveClass('buttonIconMd');
       expect(screen.getByTestId('icon')).toBeInTheDocument();
     });
     
@@ -231,7 +231,7 @@ describe('Button Component', () => {
         </Button>
       );
       
-      expect(screen.getByTestId('button')).toHaveClass('iconMd');
+      expect(screen.getByTestId('button')).toHaveClass('buttonIconMd');
       expect(screen.getByTestId('icon')).toBeInTheDocument();
     });
   });
@@ -264,7 +264,7 @@ describe('Button Component', () => {
           Ripple
         </Button>
       );
-      expect(screen.getByTestId('button')).toHaveClass('rippleContainer');
+      expect(screen.getByTestId('button')).toHaveClass('buttonRippleContainer');
       
       rerender(
         <Button 

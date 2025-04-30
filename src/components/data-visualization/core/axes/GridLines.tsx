@@ -42,7 +42,7 @@ export const GridLines: React.FC<GridLinesProps> = ({
         return (
           <line
             key={`${type}-grid-${i}`}
-            className={styles.gridLine}
+            className={styles.axisGridLine}
             x1={isXAxis ? position : 0}
             y1={isXAxis ? 0 : position}
             x2={isXAxis ? position : width}

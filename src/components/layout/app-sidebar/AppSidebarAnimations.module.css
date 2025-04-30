@@ -1,11 +1,11 @@
 /* App-specific sidebar animation styles */
 
 /* Logo animations */
-.logoTransition {
+.appSidebarLogoTransition {
   transition: all 200ms ease;
 }
 
-.logoSpin {
+.appSidebarLogoSpin {
   animation: spin 1s ease-in-out;
 }
 
@@ -19,7 +19,7 @@
 }
 
 /* Badge animations */
-.badgePulse {
+.appSidebarBadgePulse {
   animation: pulse 2s infinite;
 }
 
@@ -36,7 +36,7 @@
 }
 
 /* Footer card animations */
-.cardHover {
+.appSidebarCardHover {
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
@@ -46,7 +46,7 @@
 }
 
 /* Tip icon animation */
-.tipIconBounce {
+.appSidebarTipIconBounce {
   animation: bounce 2s ease infinite;
 }
 
@@ -68,7 +68,7 @@
   .logoSpin,
   .badgePulse,
   .cardHover,
-  .tipIconBounce {
+  .appSidebarTipIconBounce {
     transition: none !important;
     animation: none !important;
     transform: none !important;

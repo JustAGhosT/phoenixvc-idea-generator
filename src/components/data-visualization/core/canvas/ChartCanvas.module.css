@@ -1,14 +1,14 @@
-.container {
+.chartCanvasContainer {
   position: relative;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-.svg {
+.chartCanvasSvg {
   display: block;
   overflow: visible;
 }
 
-.contentGroup {
+.chartCanvasContentGroup {
   pointer-events: all;
 }

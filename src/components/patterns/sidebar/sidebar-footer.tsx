@@ -16,7 +16,7 @@ export function SidebarFooter({
 }: SidebarFooterProps) {
   return (
     <div
-      className={cn(styles.footer, className)}
+      className={cn(styles.sidebarFooter, className)}
       {...props}
     >
       {children}

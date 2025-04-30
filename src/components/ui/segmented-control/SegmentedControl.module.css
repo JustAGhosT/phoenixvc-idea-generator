@@ -7,7 +7,7 @@
 }
 
 /* Use direct child selectors for better performance */
-.segmentedControl > .buttonGroup {
+.segmentedControl > .segmentedControlButtonGroup {
   width: 100%;
 }
 
@@ -29,6 +29,6 @@
 }
 
 /* Use efficient selectors */
-.buttonGroup {
+.segmentedControlButtonGroup {
   /* Efficient selectors for better performance */
 }

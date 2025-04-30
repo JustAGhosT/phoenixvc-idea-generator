@@ -33,37 +33,37 @@
 }
 
 /* Slice animations */
-.slice {
+.pieChartSlice {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.sliceAnimated {
+.pieChartSliceAnimated {
   animation: sliceAppear 0.5s ease-out;
   animation-fill-mode: both;
 }
 
-.sliceSelected {
+.pieChartSliceSelected {
   animation: sliceHover 0.3s ease-out;
 }
 
 /* Label animations */
-.sliceLabel {
+.pieChartSliceLabel {
   animation: labelFadeIn 0.5s ease-out;
   animation-delay: 0.2s;
   animation-fill-mode: both;
 }
 
 /* Legend item animations */
-.legendItem {
+.pieChartLegendItem {
   transition: opacity 0.2s ease;
   animation: fadeIn 0.3s ease-out;
   animation-fill-mode: both;
 }
 
-.legendColor {
+.pieChartLegendColor {
   transition: transform 0.2s ease;
 }
 
-.legendItem:hover .legendColor {
+.legendItem:hover .pieChartLegendColor {
   transform: scale(1.2);
 }

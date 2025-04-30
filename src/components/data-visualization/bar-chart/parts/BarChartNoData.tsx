@@ -23,7 +23,7 @@ const BarChartNoData: React.FC<BarChartNoDataProps> = ({
       x={width / 2} 
       y={height / 2} 
       textAnchor="middle" 
-      className={styles.empty}
+      className={styles.barChartEmpty}
     >
       {message}
     </text>

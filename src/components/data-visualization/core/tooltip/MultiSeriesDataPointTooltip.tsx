@@ -27,17 +27,17 @@ export const MultiSeriesDataPointTooltip: React.FC<MultiSeriesDataPointTooltipPr
   className = '',
 }) => {
   return (
-    <div className={`${styles.multiSeriesDataPointTooltip} ${className}`}>
+    <div className={`${styles.tooltipMultiSeriesDataPointTooltip} ${className}`}>
       <h4 className={styles.tooltipTitle}>{label}</h4>
       <div className={styles.tooltipBody}>
         {seriesData.map((item, index) => (
-          <div key={`series-${index}`} className={styles.seriesItem}>
+          <div key={`series-${index}`} className={styles.tooltipSeriesItem}>
             <div 
-              className={styles.colorIndicator} 
+              className={styles.tooltipColorIndicator} 
               style={{ backgroundColor: item.color }}
             />
-            <div className={styles.seriesName}>{item.series.name}:</div>
-            <div className={styles.value}>
+            <div className={styles.tooltipSeriesName}>{item.series.name}:</div>
+            <div className={styles.tooltipValue}>
               {formatValue(item.dataPoint.value)}
             </div>
           </div>

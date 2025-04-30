@@ -33,7 +33,7 @@ export const InputActionButton: React.FC<InputActionButtonProps> = ({
     <button
       type="button"
       className={cn(
-        styles.actionButton,
+        styles.inputActionButton,
         animate && animations.clearButtonFade,
         visible && animations.clearButtonVisible,
         className

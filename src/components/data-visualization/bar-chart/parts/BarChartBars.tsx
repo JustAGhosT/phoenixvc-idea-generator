@@ -78,7 +78,7 @@ const BarChartBars: React.FC<BarChartBarsProps> = ({
   // Render simple bars (single series)
   if (series.length === 1 && !stacked && !grouped) {
     return (
-      <g className={styles.barsContainer}>
+      <g className={styles.barChartBarsContainer}>
         {primarySeries.data.map((item, index) => {
           const value = item.value || 0;
           const barProps = isVertical 
@@ -119,7 +119,7 @@ const BarChartBars: React.FC<BarChartBarsProps> = ({
   // Render stacked bars
   if (stacked && series.length > 1) {
     return (
-      <g className={styles.barsContainer}>
+      <g className={styles.barChartBarsContainer}>
         {primarySeries.data.map((_, dataIndex) => {
           // Calculate stacked values
           let stackedValues: { 
@@ -205,7 +205,7 @@ const BarChartBars: React.FC<BarChartBarsProps> = ({
       : individualBarWidth;
     
     return (
-      <g className={styles.barsContainer}>
+      <g className={styles.barChartBarsContainer}>
         {primarySeries.data.map((_, dataIndex) => (
           <g key={`group-${dataIndex}`}>
             {series.map((seriesItem, seriesIndex) => {

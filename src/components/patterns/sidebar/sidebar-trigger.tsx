@@ -37,12 +37,12 @@ export function SidebarTrigger({
       variant="ghost"
       size="icon"
       onClick={onToggle}
-      className={cn(styles.trigger, className)}
+      className={cn(styles.sidebarTrigger, className)}
       {...props}
     >
       {isOpen ? 
-        <X className={styles.triggerIcon} /> : 
-        <ChevronRight className={styles.triggerIcon} />
+        <X className={styles.sidebarTriggerIcon} /> : 
+        <ChevronRight className={styles.sidebarTriggerIcon} />
       }
       <span className="sr-only">Toggle sidebar</span>
     </Button>

@@ -22,7 +22,7 @@ export const InputErrorText: React.FC<InputErrorTextProps> = ({
   return (
     <p 
       id={id}
-      className={cn(styles.errorText, className)}
+      className={cn(styles.inputErrorText, className)}
     >
       {children}
     </p>

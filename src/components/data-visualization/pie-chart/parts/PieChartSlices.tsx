@@ -92,7 +92,7 @@ export const PieChartSlices: React.FC<PieChartSlicesProps> = memo(({
         const isSelected = selectedSlice === index;
         
         // Slice class with conditional selection class
-        const sliceClassName = `${styles.slice} ${isSelected ? styles.sliceSelected : ''} ${animation.enabled ? animationStyles.sliceAnimated : ''}`;
+        const sliceClassName = `${styles.pieChartSlice} ${isSelected ? styles.pieChartSliceSelected : ''} ${animation.enabled ? animationStyles.sliceAnimated : ''}`;
         
         // Prepare label text
         let labelText = slice.label;
@@ -129,7 +129,7 @@ export const PieChartSlices: React.FC<PieChartSlicesProps> = memo(({
                 x={labelX}
                 y={labelY}
                 dy=".35em"
-                className={`${styles.sliceLabel} ${animation.enabled ? animationStyles.sliceLabel : ''}`}
+                className={`${styles.pieChartSliceLabel} ${animation.enabled ? animationStyles.sliceLabel : ''}`}
                 style={{
                   opacity: animation.enabled ? 0 : 1,
                   fill: isHovered ? '#fff' : '#fff',

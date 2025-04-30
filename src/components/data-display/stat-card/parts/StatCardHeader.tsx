@@ -22,9 +22,9 @@ export const StatCardHeader = memo<StatCardHeaderProps>(({
   const Heading = headingLevel;
   
   return (
-    <header className={styles.header}>
-      <Heading id={titleId} className={styles.title}>{title}</Heading>
-      {icon && <div className={styles.iconContainer} aria-hidden="true">{icon}</div>}
+    <header className={styles.statCardHeader}>
+      <Heading id={titleId} className={styles.statCardTitle}>{title}</Heading>
+      {icon && <div className={styles.statCardIconContainer} aria-hidden="true">{icon}</div>}
     </header>
   );
 });

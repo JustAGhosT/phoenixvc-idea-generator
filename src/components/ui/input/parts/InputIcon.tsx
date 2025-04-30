@@ -25,7 +25,7 @@ export const InputIcon: React.FC<InputIconProps> = ({
 }) => {
   return (
     <div className={cn(
-      position === 'left' ? styles.iconLeft : styles.iconRight,
+      position === 'left' ? styles.inputIconLeft : styles.inputIconRight,
       isFocused && animations.iconFadeIn,
       className
     )}>

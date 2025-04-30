@@ -16,7 +16,7 @@ export const ButtonIcon = React.memo(function ButtonIcon({
   className 
 }: ButtonIconProps) {
   return (
-    <span className={cn(styles.icon, className)}>
+    <span className={cn(styles.buttonIcon, className)}>
       {children}
     </span>
   );

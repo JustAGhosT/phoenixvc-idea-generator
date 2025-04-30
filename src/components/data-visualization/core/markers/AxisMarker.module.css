@@ -1,12 +1,12 @@
-.marker {
+.axisMarkerMarker {
   pointer-events: none;
 }
 
-.line {
+.axisMarkerLine {
   vector-effect: non-scaling-stroke;
 }
 
-.label {
+.axisMarkerLabel {
   font-size: 10px;
   font-weight: 500;
 }

@@ -23,8 +23,8 @@ export function SidebarHeader({
   return (
     <div
       className={cn(
-        styles.header,
-        collapsed && styles.headerCollapsed,
+        styles.sidebarHeader,
+        collapsed && styles.sidebarHeaderCollapsed,
         className
       )}
       {...props}

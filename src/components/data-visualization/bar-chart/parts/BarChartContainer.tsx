@@ -41,7 +41,7 @@ const BarChartContainer: React.FC<BarChartContainerProps> = ({
 }) => {
   return (
     <div 
-      className={`${styles.container} ${className}`} 
+      className={`${styles.barChartContainer} ${className}`} 
       style={{ 
         width, 
         height, 

@@ -102,41 +102,73 @@ describe('PieChart Component', () => {
     expect(screen.getByText(/Category C/)).toBeInTheDocument();
   });
 
-  // Skip tests that rely on specific DOM elements that might not be available
-  it.skip('calls onSliceSelect when a slice is clicked', () => {
+  it('calls onSliceSelect when a slice is clicked', () => {
     const handleSliceSelect = jest.fn();
-    const { container } = render(
+    render(
       <PieChart 
         data={mockData} 
         selectable={true} 
         onSliceSelect={handleSliceSelect} 
+        animation={{ enabled: false }} // Disable animations for testing
+        sortSlices={false} // Disable sorting to ensure predictable order
       />
     );
     
-    // Find and click the first slice
-    const slices = container.querySelectorAll('path');
-    if (slices.length > 0) {
-      fireEvent.click(slices[0]);
-      expect(handleSliceSelect).toHaveBeenCalledTimes(1);
-    }
+    // Find and click a slice using its role and aria-label
+    // The PieChartSlices component sets role="button" on each slice
+    const sliceElements = screen.getAllByRole('button');
+    expect(sliceElements.length).toBeGreaterThan(0);
+    
+    fireEvent.click(sliceElements[0]);
+    expect(handleSliceSelect).toHaveBeenCalledTimes(1);
+    
+    // Verify that the handler was called with a valid slice data object
+    // without making assumptions about which slice was clicked
+    expect(handleSliceSelect).toHaveBeenCalledWith(
+      expect.objectContaining({
+        // Check for properties that should exist in any slice data
+        label: expect.any(String),
+        value: expect.any(Number),
+        color: expect.any(String),
+        angle: expect.any(Number),
+        percentage: expect.any(Number),
+      }),
+      expect.any(Number) // Index
+    );
   });
 
-  it.skip('calls onDataPointClick when a slice is clicked', () => {
+  it('calls onDataPointClick when a slice is clicked', () => {
     const handleDataPointClick = jest.fn();
-    const { container } = render(
+    render(
       <PieChart 
         data={mockData} 
         selectable={true} 
-        onDataPointClick={handleDataPointClick} 
+        onDataPointClick={handleDataPointClick}
+        animation={{ enabled: false }} // Disable animations for testing
+        sortSlices={false} // Disable sorting to ensure predictable order
       />
     );
     
-    // Find and click the first slice
-    const slices = container.querySelectorAll('path');
-    if (slices.length > 0) {
-      fireEvent.click(slices[0]);
-      expect(handleDataPointClick).toHaveBeenCalledTimes(1);
-    }
+    // Find and click a slice using its role
+    const sliceElements = screen.getAllByRole('button');
+    expect(sliceElements.length).toBeGreaterThan(0);
+    
+    fireEvent.click(sliceElements[0]);
+    expect(handleDataPointClick).toHaveBeenCalledTimes(1);
+    
+    // Verify that the handler was called with a valid slice data object
+    // without making assumptions about which slice was clicked
+    expect(handleDataPointClick).toHaveBeenCalledWith(
+      expect.objectContaining({
+        // Check for properties that should exist in any slice data
+        label: expect.any(String),
+        value: expect.any(Number),
+        color: expect.any(String),
+        angle: expect.any(Number),
+        percentage: expect.any(Number),
+      }),
+      expect.any(Number) // Index
+    );
   });
 
   it('renders with custom styling props', () => {

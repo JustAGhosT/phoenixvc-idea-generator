@@ -13,7 +13,7 @@
 }
 
 /* Default tooltip styles */
-.defaultTooltip {
+.tooltipDefaultTooltip {
   display: flex;
 }
 
@@ -32,7 +32,7 @@
   flex: 1;
 }
 
-.colorIndicator {
+.tooltipColorIndicator {
   width: 4px;
   height: 100%;
   margin-right: 8px;
@@ -41,26 +41,26 @@
 }
 
 /* Data point tooltip styles */
-.dataPointTooltip {
+.tooltipDataPointTooltip {
   display: flex;
 }
 
 /* Multi-series tooltip styles */
-.multiSeriesDataPointTooltip {
+.tooltipMultiSeriesDataPointTooltip {
   min-width: 150px;
 }
 
-.seriesItem {
+.tooltipSeriesItem {
   display: flex;
   align-items: center;
   margin-top: 4px;
 }
 
-.seriesName {
+.tooltipSeriesName {
   margin-right: 4px;
   font-weight: 500;
 }
 
-.value {
+.tooltipValue {
   font-weight: 600;
 }

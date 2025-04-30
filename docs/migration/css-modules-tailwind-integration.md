@@ -1,87 +1,94 @@
-# CSS Modules with Tailwind Integration
+# CSS Modules and Tailwind Integration Guide
 
-This document outlines our approach for migrating components from LESS to CSS Modules with Tailwind CSS integration.
+This guide outlines our approach to integrating CSS Modules with Tailwind CSS in our component library.
 
-## Component Structure with CSS Modules
+## Core Principles
 
-Each component will now follow this structure:
+1. **Keep all component styles at the component root level**
+   - Each component has a single CSS Module file at the root level
+   - Subcomponents import styles from the parent component's CSS file
+
+2. **Always use relative paths for style imports**
+   - Main component: `import styles from './ComponentName.module.css';`
+   - Subcomponents: `import styles from '../ComponentName.module.css';`
+
+3. **Use component-prefixed class names**
+   - All class names should be prefixed with the component name
+   - Example: `.button`, `.buttonPrimary`, `.buttonIcon`
+
+## Component Structure Example
 
 ```
-components/
-└── [category]/
-    └── [component-name]/
-        ├── index.ts                          # Main export file
-        ├── [ComponentName].tsx               # Component implementation
-        ├── [ComponentName].module.css        # Component-specific styles
-        ├── __tests__/                        # Test directory
-        │   ├── [ComponentName].test.tsx      # Component tests
-        │   └── [ComponentName].stories.tsx   # Component stories
-        └── parts/                            # Sub-components (if needed)
-            └── [ComponentPart].tsx           # Component part implementation
+button/
+├── Button.tsx               # Main component
+├── Button.module.css        # All button styles in one file
+├── index.ts                 # Exports
+└── parts/
+    ├── ButtonIcon.tsx       # Imports styles from ../Button.module.css
+    └── ButtonLabel.tsx      # Imports styles from ../Button.module.css
 ```
 
-### CSS Modules with Tailwind Integration
-
-Each component will have its own CSS Module that:
-
-1. Contains component-specific styles that extend Tailwind
-2. Uses Tailwind's `@apply` directive for common patterns
-3. Uses CSS variables for theme values
-4. Follows camelCase naming conventions for CSS classes
-5. Exports class names that can be imported in the component
-
-Example CSS Module structure:
+## CSS Module Example
 
 ```css
-/* ComponentName.module.css */
-.component {
-  @apply rounded-md p-4 shadow-sm;
+/* Button.module.css */
+.button {
+  @apply inline-flex items-center justify-center rounded-md;
+  padding: var(--button-padding, 0.5rem 1rem);
 }
 
-.header {
-  @apply flex items-center justify-between mb-2;
+.buttonPrimary {
+  @apply bg-primary-500 text-white;
 }
 
-.title {
-  @apply text-lg font-semibold;
+.buttonSecondary {
+  @apply bg-secondary-500 text-white;
 }
 
-.content {
-  @apply text-gray-700;
+.buttonIcon {
+  @apply mr-2;
 }
 
-/* Custom styles beyond Tailwind */
-.customElement {
-  position: relative;
-  transition: transform 0.2s ease;
-}
-
-.customElement:hover {
-  transform: translateY(-2px);
-}
-
-/* Responsive styles using Tailwind breakpoints */
-@media (max-width: 768px) {
-  .component {
-    @apply p-2;
-  }
+.buttonLabel {
+  @apply font-medium;
 }
 ```
 
-## Component Export Pattern
+## Component Implementation Example
 
-Each component will use a consistent export pattern:
+```tsx
+// Button.tsx
+import styles from './Button.module.css';
+import { cn } from '@/utils/classnames';
 
-```typescript
-// index.ts
-export { ComponentName } from './ComponentName';
-export type { ComponentNameProps } from './ComponentName';
+function Button({ variant = 'primary', className, children, ...props }) {
+  return (
+    <button
+      className={cn(
+        styles.button,
+        styles[`button${variant.charAt(0).toUpperCase() + variant.slice(1)}`],
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
 ```
 
-This allows for clean imports:
+```tsx
+// parts/ButtonIcon.tsx
+import styles from '../Button.module.css';
+import { cn } from '@/utils/classnames';
 
-```typescript
-import { ComponentName } from '@/components/category/component-name';
+function ButtonIcon({ className, children }) {
+  return (
+    <span className={cn(styles.buttonIcon, className)}>
+      {children}
+    </span>
+  );
+}
 ```
 
 ## Migration Process from LESS to CSS Modules with Tailwind
@@ -89,12 +96,11 @@ import { ComponentName } from '@/components/category/component-name';
 When migrating a component, follow these steps:
 
 1. Create the component directory structure
-2. Create a new CSS Module file (.module.css) for the component
+2. Create a new CSS Module file (.module.css) at the component root level
 3. Convert LESS styles to CSS Module styles, incorporating Tailwind utilities
-4. Import the CSS Module in the component
-5. Update the component to use the imported styles
-6. Update all imports throughout the codebase
-7. Remove the old LESS file once migration is complete
+4. Update all component and subcomponent files to import styles from the correct relative path
+5. Ensure class names follow the component-prefixed naming convention
+6. Remove any duplicate CSS files in subdirectories
 
 ## Utility Functions for Class Names
 
@@ -118,317 +124,86 @@ function ComponentName({ className, variant = 'primary', ...props }) {
     <div 
       className={cn(
         styles.component,
-        styles[variant],
+        styles[`component${variant.charAt(0).toUpperCase() + variant.slice(1)}`],
         className
       )}
       {...props}
-    >
-      {/* Component content */}
-    </div>
-  );
+    />
+  )
 }
-```
-
-## Global Styles Structure
-
-```
-styles/
-├── globals.css      # Global styles and Tailwind imports
-└── theme.css        # CSS variables for theming
-```
-
-Example globals.css:
-
-```css
-/* globals.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --color-primary: theme('colors.primary.500');
-  --color-secondary: theme('colors.secondary.500');
-  /* Other global CSS variables */
-}
-
-/* Global styles that can't be componentized */
-@layer base {
-  html {
-    @apply text-gray-900;
-  }
-  
-  h1 {
-    @apply text-2xl font-bold mb-4;
-  }
-  
-  /* Other global styles */
-}
-```
-
-## Tailwind Configuration
-
-The `tailwind.config.js` file extends Tailwind with our design tokens:
-
-```js
-module.exports = {
-  content: [
-    './src/**/*.{js,jsx,ts,tsx}',
-  ],
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          // ... other shades
-          500: '#0ea5e9',
-          // ... other shades
-          900: '#0c4a6e',
-        },
-        secondary: {
-          // ... color shades
-        },
-        // ... other color categories
-      },
-      spacing: {
-        // Custom spacing values
-      },
-      borderRadius: {
-        // Custom border radius values
-      },
-      // ... other theme extensions
-    },
-  },
-  plugins: [],
-}
-```
-
-## Example Component with CSS Modules and Tailwind
-
-### Directory Structure
-
-```
-components/
-└── common/
-    └── cards/
-        └── stat-card/
-            ├── index.ts
-            ├── StatCard.tsx
-            └── StatCard.module.css
-```
-
-### CSS Module (StatCard.module.css)
-
-```css
-.statCard {
-  @apply rounded-lg p-4 bg-white dark:bg-gray-800 shadow-sm;
-}
-
-.header {
-  @apply pb-2 flex flex-row items-center justify-between;
-}
-
-.title {
-  @apply text-sm font-medium text-gray-500 dark:text-gray-400;
-}
-
-.value {
-  @apply text-2xl font-bold;
-}
-
-.description {
-  @apply text-xs text-gray-500 dark:text-gray-400;
-}
-
-.trend {
-  @apply flex items-center mt-2 text-xs;
-}
-
-.trendUp {
-  @apply text-green-500;
-}
-
-.trendDown {
-  @apply text-red-500;
-}
-
-.trendNeutral {
-  @apply text-gray-500;
-}
-```
-
-### Component Implementation (StatCard.tsx)
-
-```tsx
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LucideIcon } from 'lucide-react';
-import styles from './StatCard.module.css';
-import { cn } from '@/utils/classnames';
-
-export interface StatCardProps {
-  title: string;
-  value: string | number;
-  description: string;
-  icon?: string | React.ReactNode;
-  trend?: {
-    value: number;
-    label: string;
-    direction: "up" | "down" | "neutral";
-  };
-  className?: string;
-}
-
-export function StatCard({ 
-  title, 
-  value, 
-  description, 
-  icon, 
-  trend,
-  className
-}: StatCardProps) {
-  // Component implementation...
-  
-  return (
-    <Card className={cn(styles.statCard, className)}>
-      <CardHeader className={styles.header}>
-        <CardTitle className={styles.title}>{title}</CardTitle>
-        {icon && getIcon()}
-      </CardHeader>
-      <CardContent>
-        <div className={styles.value}>{value}</div>
-        <p className={styles.description}>
-          {description}
-        </p>
-        {trend && (
-          <div className={cn(
-            styles.trend,
-            trend.direction === "up" ? styles.trendUp : 
-            trend.direction === "down" ? styles.trendDown : 
-            styles.trendNeutral
-          )}>
-            {trend.direction === "up" ? "↑" : trend.direction === "down" ? "↓" : "→"}
-            <span className="ml-1">{trend.value}% {trend.label}</span>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-```
-
-### Export (index.ts)
-
-```typescript
-export { StatCard } from './StatCard';
-export type { StatCardProps } from './StatCard';
-```
-
-## Handling Dynamic Styles
-
-For dynamic styles, use computed class names:
-
-```tsx
-// Dynamic class names with CSS Modules
-<div className={cn(
-  styles.button,
-  disabled ? styles.buttonDisabled : null,
-  size === 'large' ? styles.buttonLarge : 
-  size === 'small' ? styles.buttonSmall : 
-  styles.buttonMedium
-)}>
-  {children}
-</div>
-```
-
-## Handling LESS Mixins and Variables
-
-Convert LESS mixins and variables to CSS custom properties and Tailwind utilities:
-
-### LESS Variables to CSS Custom Properties
-
-```less
-// LESS variables
-@color-primary: #0070f3;
-@border-radius-md: 4px;
-```
-
-Becomes:
-
-```css
-/* CSS custom properties */
-:root {
-  --color-primary: #0070f3;
-  --border-radius-md: 4px;
-}
-```
-
-Or better yet, use Tailwind's theme configuration:
-
-```js
-// tailwind.config.js
-module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        primary: '#0070f3',
-      },
-      borderRadius: {
-        md: '4px',
-      },
-    },
-  },
-}
-```
-
-### LESS Mixins to Tailwind Utilities
-
-```less
-// LESS mixin
-.box-shadow() {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-```
-
-Becomes:
-
-```js
-// tailwind.config.js
-module.exports = {
-  theme: {
-    extend: {
-      boxShadow: {
-        default: '0 2px 8px rgba(0, 0, 0, 0.1)',
-      },
-    },
-  },
-}
-```
-
-Then use it in your component:
-
-```tsx
-<div className="shadow-default">Content</div>
 ```
 
 ## Migration Checklist
 
 For each component:
 
-1. ✅ Create CSS Module file (.module.css)
-2. ✅ Convert LESS styles to CSS Module styles with Tailwind
-3. ✅ Import the CSS Module in the component
-4. ✅ Update the component to use the imported styles
+1. ✅ Create CSS Module file (.module.css) at the component root level
+2. ✅ Convert styles to follow component-prefixed naming convention
+3. ✅ Update all imports to use relative paths
+4. ✅ Remove any duplicate CSS files in subdirectories
 5. ✅ Test the component visually and functionally
-6. ✅ Update all imports throughout the codebase
-7. ✅ Remove the old LESS file
+6. ✅ Update documentation to reflect the new structure
 
 ## Best Practices
 
 1. **Use Tailwind First**: Leverage Tailwind utilities before writing custom CSS
 2. **Modular Styles**: Keep styles scoped to their components
-3. **Consistent Naming**: Use camelCase for CSS class names
+3. **Consistent Naming**: Use camelCase for CSS class names, prefixed with component name
 4. **Responsive Design**: Use Tailwind's responsive utilities
 5. **Theme Consistency**: Use CSS variables for theme values
 6. **Avoid Global Styles**: Minimize global styles in favor of component-scoped styles
 7. **Composition**: Compose styles using the `cn` utility function
+
+## Implementation Tasks
+
+### Identify Components Needing Updates
+
+1. **Identify components with incorrectly placed CSS files**
+   - Look for CSS/LESS files in subdirectories that should be at the component root
+   - Check for duplicate style files across component directories
+
+2. **Identify components with incorrect import paths**
+   - Find absolute imports for styles that should be relative
+   - Check for imports using incorrect paths (e.g., wrong directory level)
+
+3. **Identify components with inconsistent class naming**
+   - Look for class names that don't follow the component-prefixed convention
+   - Check for inconsistent casing (kebab-case vs camelCase)
+
+### Update Documentation
+
+1. **Update styling best practices documentation**
+   - Ensure all documentation reflects the CSS Modules + Tailwind approach
+   - Add examples of correct and incorrect patterns
+
+2. **Update component structure documentation**
+   - Ensure component directory structure guidelines are consistent
+   - Add visual diagrams of correct component organization
+
+3. **Update migration guides**
+   - Provide step-by-step instructions for converting existing components
+   - Include before/after examples for common components
+
+### Standardize Components
+
+1. **Move all CSS Module files to component root level**
+   - Relocate any CSS files from subdirectories to the component root
+   - Update imports in all affected files
+
+2. **Update all import paths to use relative paths**
+   - Convert absolute imports to relative imports
+   - Ensure subcomponents use parent-relative paths (`../Component.module.css`)
+
+3. **Rename CSS classes to follow component-prefixed naming**
+   - Update class names to use component prefix
+   - Ensure consistent camelCase naming
+
+### Add Linting Rules
+
+1. **Consider adding ESLint rules to enforce the new standards**
+   - Create custom ESLint rules for CSS Module imports
+   - Add naming convention checks for CSS class names
+
+2. **Add path checking to prevent absolute imports for component styles**
+   - Configure ESLint to flag absolute imports for component styles
+   - Add automated testing for style import patterns

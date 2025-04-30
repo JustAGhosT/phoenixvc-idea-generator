@@ -27,29 +27,29 @@
   }
 }
 
-.chartContent {
+.pieChartAnimationChartContent {
   animation: fadeIn 0.5s ease-out;
 }
 
-.chartSvg {
+.pieChartAnimationChartSvg {
   animation: scaleIn 0.5s ease-out;
 }
 
 /* Loading and error animations */
-.loading {
+.pieChartAnimationLoading {
   animation: fadeIn 0.3s ease-out;
 }
 
-.error {
+.pieChartAnimationError {
   animation: fadeIn 0.3s ease-out;
 }
 
 /* Tooltip animations */
-.tooltip {
+.pieChartAnimationTooltip {
   animation: fadeIn 0.2s ease-out;
 }
 
 /* Legend animations */
-.legendContainer {
+.pieChartAnimationLegendContainer {
   animation: fadeIn 0.5s ease-out;
 }

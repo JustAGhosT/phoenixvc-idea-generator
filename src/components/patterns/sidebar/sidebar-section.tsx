@@ -19,10 +19,10 @@ interface SidebarSectionProps {
 
 export function SidebarSection({ title, children, isOpen = true }: SidebarSectionProps) {
   return (
-    <div className={styles.group}>
-      {isOpen && <div className={styles.groupLabel}>{title}</div>}
+    <div className={styles.sidebarGroup}>
+      {isOpen && <div className={styles.sidebarGroupLabel}>{title}</div>}
       <div>
-        <ul className={styles.menu}>
+        <ul className={styles.sidebarMenu}>
           {children}
         </ul>
       </div>

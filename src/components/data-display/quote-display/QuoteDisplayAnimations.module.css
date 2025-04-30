@@ -4,7 +4,7 @@
  */
 
 /* Fade in animation */
-.fadeIn {
+.quoteDisplayFadeIn {
   animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -18,7 +18,7 @@
 }
 
 /* Scale in animation */
-.scaleIn {
+.quoteDisplayScaleIn {
   animation: scaleIn 0.4s ease-out;
   transform-origin: center;
 }
@@ -35,7 +35,7 @@
 }
 
 /* Bounce in animation */
-.bounceIn {
+.quoteDisplayBounceIn {
   animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -55,7 +55,7 @@
 }
 
 /* Pulse animation */
-.pulseAnimation {
+.quoteDisplayPulseAnimation {
   animation: pulse 2s infinite;
 }
 
@@ -72,7 +72,7 @@
 }
 
 /* Shimmer animation for loading state */
-.shimmerAnimation {
+.quoteDisplayShimmerAnimation {
   position: relative;
   overflow: hidden;
 }
@@ -102,7 +102,7 @@
 }
 
 /* Hover lift effect for interactive quotes */
-.hoverLift {
+.quoteDisplayHoverLift {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -119,7 +119,7 @@
 }
 
 /* Slide in from left animation */
-.slideInLeft {
+.quoteDisplaySlideInLeft {
   animation: slideInLeft 0.5s ease-out;
 }
 
@@ -135,7 +135,7 @@
 }
 
 /* Slide in from right animation */
-.slideInRight {
+.quoteDisplaySlideInRight {
   animation: slideInRight 0.5s ease-out;
 }
 
@@ -151,7 +151,7 @@
 }
 
 /* Slide in from bottom animation */
-.slideInBottom {
+.quoteDisplaySlideInBottom {
   animation: slideInBottom 0.5s ease-out;
 }
 
@@ -167,7 +167,7 @@
 }
 
 /* Typewriter effect animation */
-.typewriter {
+.quoteDisplayTypewriter {
   overflow: hidden;
   white-space: nowrap;
   animation: typing 2.5s steps(40, end);

@@ -109,9 +109,9 @@ export function AppSidebar() {
       onOverlayClick={toggleSidebar}
     >
       <Sidebar.Header collapsed={!isOpen}>
-        <div className={cn(styles.logo, animations.logoTransition)}>
-          <LineChart className={cn(styles.logoIcon, isOpen && animations.logoSpin)} />
-          {isOpen && <span className={styles.logoText}>DeFi Risk Intel</span>}
+        <div className={cn(styles.appSidebarLogo, animations.logoTransition)}>
+          <LineChart className={cn(styles.appSidebarLogoIcon, isOpen && animations.logoSpin)} />
+          {isOpen && <span className={styles.appSidebarLogoText}>DeFi Risk Intel</span>}
         </div>
         <Sidebar.Trigger isOpen={isOpen} onToggle={toggleSidebar} />
       </Sidebar.Header>
@@ -180,13 +180,13 @@ export function AppSidebar() {
 
       {isOpen && (
         <Sidebar.Footer>
-          <div className={cn(styles.footerCard, animations.cardHover)}>
-            <div className={styles.footerCardHeader}>
-              <Lightbulb className={cn(styles.footerCardIcon, animations.tipIconBounce)} />
-              <span className={styles.footerCardTitle}>Pro Tip</span>
+          <div className={cn(styles.appSidebarFooterCard, animations.cardHover)}>
+            <div className={styles.appSidebarFooterCardHeader}>
+              <Lightbulb className={cn(styles.appSidebarFooterCardIcon, animations.tipIconBounce)} />
+              <span className={styles.appSidebarFooterCardTitle}>Pro Tip</span>
             </div>
-            <p className={styles.footerCardText}>
-              Use keyboard shortcut <kbd className={styles.footerCardKbd}>Ctrl+B</kbd> to toggle the sidebar.
+            <p className={styles.appSidebarFooterCardText}>
+              Use keyboard shortcut <kbd className={styles.appSidebarFooterCardKbd}>Ctrl+B</kbd> to toggle the sidebar.
             </p>
           </div>
         </Sidebar.Footer>

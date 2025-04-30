@@ -1,55 +1,55 @@
 /* Base sidebar styles */
-.root {
+.sidebarRoot {
   @apply fixed inset-y-0 z-20 flex h-full flex-col border-r bg-background transition-all duration-300;
   @apply data-[state=open]:translate-x-0 data-[state=closed]:-translate-x-full;
   @apply md:relative md:data-[state=closed]:translate-x-0;
 }
 
-.expanded {
+.sidebarExpanded {
   @apply md:w-64;
 }
 
-.collapsed {
+.sidebarCollapsed {
   @apply md:w-16;
 }
 
 /* Header styles */
-.header {
+.sidebarHeader {
   @apply flex h-14 items-center border-b px-4;
 }
 
-.headerCollapsed {
+.sidebarHeaderCollapsed {
   @apply justify-center px-2;
 }
 
 /* Content styles */
-.content {
+.sidebarContent {
   @apply flex-1 overflow-auto py-2;
 }
 
 /* Footer styles */
-.footer {
+.sidebarFooter {
   @apply border-t px-4 py-2;
 }
 
 /* Rail for resizing */
-.rail {
+.sidebarRail {
   @apply absolute right-0 top-1/2 hidden h-20 w-1.5 -translate-y-1/2;
   @apply cursor-ew-resize rounded-full bg-border opacity-0 transition-opacity;
   @apply hover:opacity-100 md:block;
 }
 
 /* Trigger button */
-.trigger {
+.sidebarTrigger {
   @apply h-8 w-8 md:hidden;
 }
 
-.triggerIcon {
+.sidebarTriggerIcon {
   @apply h-4 w-4;
 }
 
 /* Mobile overlay */
-.overlay {
+.sidebarOverlay {
   @apply fixed inset-0 z-10 bg-black/50 backdrop-blur-sm;
   @apply hidden md:hidden;
   @apply data-[visible=true]:block;
@@ -57,46 +57,46 @@
 }
 
 /* Menu styles */
-.menu {
+.sidebarMenu {
   @apply space-y-1;
 }
 
-.menuItem {
+.sidebarMenuItem {
   @apply relative;
   will-change: transform, opacity;
 }
 
-.menuButton {
+.sidebarMenuButton {
   @apply flex w-full items-center gap-3 rounded-md px-3 py-2;
   @apply hover:bg-accent hover:text-accent-foreground;
   @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
 }
 
-.menuButtonActive {
+.sidebarMenuButtonActive {
   @apply bg-accent text-accent-foreground;
 }
 
-.menuButtonCollapsed {
+.sidebarMenuButtonCollapsed {
   @apply flex justify-center;
 }
 
-.menuItemIcon {
+.sidebarMenuItemIcon {
   @apply h-5 w-5 shrink-0;
 }
 
-.menuItemText {
+.sidebarMenuItemText {
   @apply flex-1 truncate;
 }
 
-.menuItemBadge {
+.sidebarMenuItemBadge {
   @apply ml-auto;
 }
 
 /* Group styles */
-.group {
+.sidebarGroup {
   @apply py-2;
 }
 
-.groupLabel {
+.sidebarGroupLabel {
   @apply mb-2 px-3 text-xs font-semibold text-muted-foreground;
 }

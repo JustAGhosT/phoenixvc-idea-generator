@@ -54,7 +54,7 @@ const LineChartPoints: React.FC<LineChartPointsProps> = ({
           return (
             <circle
               key={`point-${seriesIndex}-${dataIndex}`}
-              className={styles.point}
+              className={styles.lineChartPoint}
               cx={x}
               cy={y}
               r={pointRadius}

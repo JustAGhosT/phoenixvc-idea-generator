@@ -1,39 +1,39 @@
 /* Sidebar animation styles */
 
 /* Base transitions */
-.transition {
+.sidebarTransition {
   transition-property: transform, width, opacity;
   transition-duration: 300ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Slide in/out animations */
-.slideIn {
+.sidebarSlideIn {
   transform: translateX(0);
 }
 
-.slideOut {
+.sidebarSlideOut {
   transform: translateX(-100%);
 }
 
 /* Mobile animations */
 @media (max-width: 768px) {
-  .mobileSlideIn {
+  .sidebarMobileSlideIn {
     transform: translateX(0);
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   }
   
-  .mobileSlideOut {
+  .sidebarMobileSlideOut {
     transform: translateX(-100%);
   }
   
-  .mobileOverlay {
+  .sidebarMobileOverlay {
     opacity: 1;
     pointer-events: auto;
     transition: opacity 300ms ease;
   }
   
-  .mobileOverlayHidden {
+  .sidebarMobileOverlayHidden {
     opacity: 0;
     pointer-events: none;
     transition: opacity 300ms ease;
@@ -41,52 +41,52 @@
 }
 
 /* Width transition animations */
-.expandWidth {
+.sidebarExpandWidth {
   width: 16rem; /* 256px */
   overflow: hidden;
 }
 
-.collapseWidth {
+.sidebarCollapseWidth {
   width: 4rem; /* 64px */
   overflow: hidden;
 }
 
 /* Content fade animations */
-.fadeIn {
+.sidebarFadeIn {
   opacity: 1;
   transition-delay: 100ms;
 }
 
-.fadeOut {
+.sidebarFadeOut {
   opacity: 0;
   transition-delay: 0ms;
 }
 
 /* Item entrance/exit animations */
-.itemEnter {
+.sidebarItemEnter {
   opacity: 0;
   transform: translateX(-10px);
 }
 
-.itemEnterActive {
+.sidebarItemEnterActive {
   opacity: 1;
   transform: translateX(0);
   transition: opacity 300ms, transform 300ms;
   transition-delay: calc(var(--item-index, 0) * 50ms);
 }
 
-.itemExit {
+.sidebarItemExit {
   opacity: 1;
   transform: translateX(0);
 }
 
-.itemExitActive {
+.sidebarItemExitActive {
   opacity: 0;
   transform: translateX(-10px);
   transition: opacity 200ms, transform 200ms;
 }
 /* Item hover animations */
-.itemHover {
+.sidebarItemHover {
   transition: background-color 150ms ease;
 }
 
@@ -99,7 +99,7 @@
 }
 
 /* Rail hover animation */
-  .railHover {
+  .sidebarRailHover {
   transition: opacity 150ms ease, background-color 150ms ease;
   }
 
@@ -124,7 +124,7 @@
   .itemExit,
   .itemExitActive,
   .itemHover,
-  .railHover {
+  .sidebarRailHover {
     transition: none !important;
   }
 }

@@ -1,7 +1,7 @@
 /* Bar Chart specific animations */
 
 /* Vertical bar grow animation */
-.barGrow {
+.barChartBarGrow {
   transform-origin: bottom;
   transform: scaleY(0);
   animation: barGrow 0.5s ease-out forwards;
@@ -13,7 +13,7 @@
 }
 
 /* Horizontal bar grow animation */
-.barGrowHorizontal {
+.barChartBarGrowHorizontal {
   transform-origin: left;
   transform: scaleX(0);
   animation: barGrowHorizontal 0.5s ease-out forwards;
@@ -25,20 +25,20 @@
 }
 
 /* Staggered animation delays for bars */
-.delay0 { animation-delay: 0ms; }
-.delay50 { animation-delay: 50ms; }
-.delay100 { animation-delay: 100ms; }
-.delay150 { animation-delay: 150ms; }
-.delay200 { animation-delay: 200ms; }
-.delay250 { animation-delay: 250ms; }
-.delay300 { animation-delay: 300ms; }
-.delay350 { animation-delay: 350ms; }
-.delay400 { animation-delay: 400ms; }
-.delay450 { animation-delay: 450ms; }
-.delay500 { animation-delay: 500ms; }
+.barChartDelay0 { animation-delay: 0ms; }
+.barChartDelay50 { animation-delay: 50ms; }
+.barChartDelay100 { animation-delay: 100ms; }
+.barChartDelay150 { animation-delay: 150ms; }
+.barChartDelay200 { animation-delay: 200ms; }
+.barChartDelay250 { animation-delay: 250ms; }
+.barChartDelay300 { animation-delay: 300ms; }
+.barChartDelay350 { animation-delay: 350ms; }
+.barChartDelay400 { animation-delay: 400ms; }
+.barChartDelay450 { animation-delay: 450ms; }
+.barChartDelay500 { animation-delay: 500ms; }
 
 /* Tooltip animation */
-.tooltipFade {
+.barChartTooltipFade {
   opacity: 0;
   animation: tooltipFade 0.2s ease-out forwards;
 }
@@ -49,7 +49,7 @@
 }
 
 /* Header animations */
-.titleFade {
+.barChartTitleFade {
   opacity: 0;
   animation: titleFade 0.4s ease-out forwards;
 }
@@ -59,7 +59,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.subtitleFade {
+.barChartSubtitleFade {
   opacity: 0;
   animation: subtitleFade 0.4s ease-out 0.2s forwards;
 }
@@ -70,13 +70,13 @@
 }
 
 /* Axis animations */
-.axisDrawX {
+.barChartAxisDrawX {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   animation: axisDraw 0.6s ease-out forwards;
 }
 
-.axisDrawY {
+.barChartAxisDrawY {
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   animation: axisDraw 0.6s ease-out forwards;
@@ -87,7 +87,7 @@
 }
 
 /* Grid line animations */
-.gridLinesFade {
+.barChartGridLinesFade {
   opacity: 0;
   animation: gridLinesFade 0.5s ease-out 0.3s forwards;
 }
@@ -98,7 +98,7 @@
 }
 
 /* Data label animations */
-.dataLabelFade {
+.barChartDataLabelFade {
   opacity: 0;
   animation: dataLabelFade 0.3s ease-out 0.5s forwards;
 }
@@ -109,7 +109,7 @@
 }
 
 /* Hover effects */
-.barHover {
+.barChartBarHover {
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -119,25 +119,25 @@
 }
 
 /* Active bar effect */
-.barActive {
+.barChartBarActive {
   filter: brightness(1.1);
   stroke: #ffffff;
   stroke-width: 2px;
 }
 
 /* Series highlight effect */
-.seriesHighlight {
+.barChartSeriesHighlight {
   opacity: 1;
   transition: opacity 0.3s ease;
 }
 
-.seriesDim {
+.barChartSeriesDim {
   opacity: 0.3;
   transition: opacity 0.3s ease;
 }
 
 /* No data animation */
-.noDataFade {
+.barChartNoDataFade {
   opacity: 0;
   animation: noDataFade 0.5s ease-out 0.2s forwards;
 }

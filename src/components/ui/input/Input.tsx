@@ -368,7 +368,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
           
           {/* Right elements (icon, clear button, password toggle, or loading spinner) */}
-          <div className={styles.iconRight}>
+          <div className={styles.inputIconRight}>
             {loading && <InputSpinner />}
             
             {!loading && rightIcon && (

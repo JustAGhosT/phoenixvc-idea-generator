@@ -4,36 +4,36 @@
   font-size: 0.75rem;
 }
 
-.horizontal {
+.legendHorizontal {
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
 }
 
-.vertical {
+.legendVertical {
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.top {
+.legendTop {
   order: -1;
 }
 
-.bottom {
+.legendBottom {
   order: 1;
 }
 
-.left {
+.legendLeft {
   order: -1;
   margin-right: 1rem;
 }
 
-.right {
+.legendRight {
   order: 1;
   margin-left: 1rem;
 }
 
-.scrollContainer {
+.legendScrollContainer {
   max-height: 150px;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -43,21 +43,21 @@
   gap: inherit;
 }
 
-.item {
+.legendItem {
   display: flex;
   align-items: center;
   color: var(--text-secondary, #64748b);
   transition: opacity 0.2s ease;
 }
 
-.item.interactive {
+.item.legendInteractive {
   cursor: pointer;
 }
 
 .item.interactive:hover {
   opacity: 0.8;
 }
-.symbol {
+.legendSymbol {
   width: 12px;
   height: 12px;
   margin-right: 0.5rem;
@@ -66,7 +66,7 @@
 }
 
 /* Bar symbol */
-.barSymbol {
+.legendBarSymbol {
   width: 12px;
   height: 12px;
   margin-right: 0.5rem;
@@ -74,7 +74,7 @@
 }
 
 /* Line symbol */
-.lineSymbol {
+.legendLineSymbol {
   width: 24px;
   height: 12px;
   margin-right: 0.5rem;
@@ -82,7 +82,7 @@
   align-items: center;
 }
 
-.label {
+.legendLabel {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

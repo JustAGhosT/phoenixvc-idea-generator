@@ -55,7 +55,7 @@ export const LineChartLegendItem: React.FC<LineChartLegendItemProps> = ({
   
   return (
     <div 
-      className={`${styles.legendItem} ${interactive ? styles.interactive : ''} ${className}`}
+      className={`${styles.lineChartLegendItem} ${interactive ? styles.lineChartInteractive : ''} ${className}`}
       onClick={handleClick}
       role={interactive ? 'button' : undefined}
       tabIndex={interactive ? 0 : undefined}
@@ -63,7 +63,7 @@ export const LineChartLegendItem: React.FC<LineChartLegendItemProps> = ({
       aria-pressed={interactive ? !visible : undefined}
       style={{ opacity: visible ? 1 : 0.5 }}
     >
-      <div className={styles.legendSymbol}>
+      <div className={styles.lineChartLegendSymbol}>
         <svg width="24" height="12" viewBox="0 0 24 12">
           {/* Line */}
           <line 
@@ -90,7 +90,7 @@ export const LineChartLegendItem: React.FC<LineChartLegendItemProps> = ({
           )}
         </svg>
       </div>
-      <span className={styles.legendLabel}>{name}</span>
+      <span className={styles.lineChartLegendLabel}>{name}</span>
     </div>
   );
 };

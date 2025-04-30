@@ -17,8 +17,8 @@ const TrendIcon = memo(({ direction }: { direction: "up" | "down" | "neutral" })
       : MinusIcon;
   
   return (
-    <span className={styles.trendIcon} aria-hidden="true">
-      <Icon className={styles.trendIconSvg} />
+    <span className={styles.statCardTrendIcon} aria-hidden="true">
+      <Icon className={styles.statCardTrendIconSvg} />
     </span>
   );
 });
@@ -31,9 +31,9 @@ export const StatCardTrend = memo<StatCardTrendProps>(({
   const isPositive = direction === 'up';
   
   const trendClass = cn(
-    styles.trendIndicator,
+    styles.statCardTrendIndicator,
     styles[direction],
-    isGood ? styles.good : styles.bad
+    isGood ? styles.statCardGood : styles.statCardBad
   );
   
   const formattedTrendValue = `${isPositive ? '+' : ''}${value}`;
@@ -45,8 +45,8 @@ export const StatCardTrend = memo<StatCardTrendProps>(({
       data-testid="trend-indicator"
     >
       <TrendIcon direction={direction} />
-      <span className={styles.trendValue}>{formattedTrendValue}</span>
-      <span className={styles.trendLabel}>{label}</span>
+      <span className={styles.statCardTrendValue}>{formattedTrendValue}</span>
+      <span className={styles.statCardTrendLabel}>{label}</span>
     </div>
   );
 });

@@ -28,7 +28,7 @@ const BarChartItem: React.FC<BarChartItemProps> = ({
   };
   
   const isHorizontal = orientation === 'horizontal';
-  const itemClassName = `${styles.item} ${isHorizontal ? styles.horizontal : ''}`;
+  const itemClassName = `${styles.barChartItem} ${isHorizontal ? styles.barChartHorizontal : ''}`;
   
   return (
     <div 
@@ -44,13 +44,13 @@ const BarChartItem: React.FC<BarChartItemProps> = ({
       }}
       aria-label={`${item.label}: ${formatValue(item.value)}`}
     >
-      <div className={styles.header}>
-        <span className={styles.label}>{item.label}</span>
-        <span className={styles.value}>{formatValue(item.value)}</span>
+      <div className={styles.barChartHeader}>
+        <span className={styles.barChartLabel}>{item.label}</span>
+        <span className={styles.barChartValue}>{formatValue(item.value)}</span>
       </div>
-      <div className={styles.progressContainer}>
+      <div className={styles.barChartProgressContainer}>
         <div 
-          className={`${styles.progressBar} ${styles[color]}`}
+          className={`${styles.barChartProgressBar} ${styles[color]}`}
           style={{ width: `${(item.value / maxValue) * 100}%` }}
           role="progressbar"
           aria-valuenow={item.value}

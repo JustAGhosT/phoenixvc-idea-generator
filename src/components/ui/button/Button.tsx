@@ -113,18 +113,18 @@ const getSizeClass = (
     // Map regular sizes to icon sizes
     switch (size) {
       case 'xs':
-        return styles.iconXs;
+        return styles.buttonIconXs;
       case 'sm':
-        return styles.iconSm;
+        return styles.buttonIconSm;
       case 'md':
       case 'icon': // Default icon size is medium
-        return styles.iconMd;
+        return styles.buttonIconMd;
       case 'lg':
-        return styles.iconLg;
+        return styles.buttonIconLg;
       case 'xl':
-        return styles.iconXl;
+        return styles.buttonIconXl;
       default:
-        return styles.iconMd;
+        return styles.buttonIconMd;
     }
   }
   
@@ -285,17 +285,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       // Size (using the helper function)
       sizeClass,
       // States
-      disabled || isLoading ? styles.disabled : '',
-      isLoading ? styles.loading : '',
-      active ? styles.active : '',
-      fullWidth ? styles.fullWidth : '',
+      disabled || isLoading ? styles.buttonDisabled : '',
+      isLoading ? styles.buttonLoading : '',
+      active ? styles.buttonActive : '',
+      fullWidth ? styles.buttonFullWidth : '',
       // Shape
-      rounded ? styles.rounded : '',
-      pill ? styles.pill : '',
+      rounded ? styles.buttonRounded : '',
+      pill ? styles.buttonPill : '',
       // Animations
       shouldAnimate ? animations.buttonAnimation : '',
       animationClass,
-      useRipple && !prefersReducedMotion ? styles.rippleContainer : '',
+      useRipple && !prefersReducedMotion ? styles.buttonRippleContainer : '',
       isLoading && !prefersReducedMotion && !progress ? animations.shimmer : '',
       className
     );
@@ -326,7 +326,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       contentElements.push(
         <ButtonSpinner 
           key="spinner"
-          className={cn(styles.leftIcon, animations.spinnerAnimation)} 
+          className={cn(styles.buttonLeftIcon, animations.spinnerAnimation)} 
           size={size === 'xs' || size === 'sm' ? 'sm' : size === 'lg' || size === 'xl' ? 'lg' : 'md'}
         />
       );
@@ -335,9 +335,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Progress bar
     if (isLoading && progress !== undefined) {
       contentElements.push(
-        <div key="progress" className={styles.progressContainer}>
+        <div key="progress" className={styles.buttonProgressContainer}>
           <div 
-            className={styles.progressBar} 
+            className={styles.buttonProgressBar} 
             style={{ width: `${Math.min(Math.max(progress, 0), 100)}%` }}
             role="progressbar"
             aria-valuenow={progress}
@@ -351,7 +351,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Left icon
     if (leftIcon && !isLoading) {
       contentElements.push(
-        <ButtonIcon key="leftIcon" className={styles.leftIcon}>
+        <ButtonIcon key="leftIcon" className={styles.buttonLeftIcon}>
           {leftIcon}
         </ButtonIcon>
       );
@@ -368,7 +368,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Right icon
     if (rightIcon && !isLoading) {
       contentElements.push(
-        <ButtonIcon key="rightIcon" className={styles.rightIcon}>
+        <ButtonIcon key="rightIcon" className={styles.buttonRightIcon}>
           {rightIcon}
         </ButtonIcon>
       );
@@ -379,7 +379,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       contentElements.push(
         <span 
           key="ripple"
-          className={styles.rippleEffect} 
+          className={styles.buttonRippleEffect} 
           style={rippleStyle}
           aria-hidden="true"
         />

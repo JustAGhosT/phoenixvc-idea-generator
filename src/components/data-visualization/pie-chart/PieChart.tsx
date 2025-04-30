@@ -158,7 +158,7 @@ export const PieChart: React.FC<PieChartProps> = ({
         style={style}
         dataAttributes={dataAttributes}
       >
-        <div className={styles.loading}>Loading chart data...</div>
+        <div className={styles.pieChartLoading}>Loading chart data...</div>
       </PieChartContainer>
     );
   }
@@ -178,7 +178,7 @@ export const PieChart: React.FC<PieChartProps> = ({
         style={style}
         dataAttributes={dataAttributes}
       >
-        <div className={styles.error}>{error}</div>
+        <div className={styles.pieChartError}>{error}</div>
       </PieChartContainer>
     );
   }
@@ -248,7 +248,7 @@ export const PieChart: React.FC<PieChartProps> = ({
         />
       )}
       
-      <div className={styles.chartContent}>
+      <div className={styles.pieChartChartContent}>
         {/* Legend (if position is top or left) */}
         {legend && (legendPosition === 'top' || legendPosition === 'left') && (
           <PieChartLegend
@@ -265,7 +265,7 @@ export const PieChart: React.FC<PieChartProps> = ({
           width={chartSize}
           height={chartSize}
           viewBox={`0 0 ${chartSize} ${chartSize}`}
-          className={`${styles.chartSvg} ${animation.enabled ? animationStyles.chartSvg : ''}`}
+          className={`${styles.pieChartChartSvg} ${animation.enabled ? animationStyles.chartSvg : ''}`}
           role="img"
           aria-label={description || title || 'Pie Chart'}
         >

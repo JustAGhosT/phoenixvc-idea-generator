@@ -96,7 +96,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
   return (
     <div
       ref={containerRef}
-      className={`${styles.container} ${className}`}
+      className={`${styles.chartCanvasContainer} ${className}`}
       style={{
         width,
         height,
@@ -104,7 +104,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
         ...style,
       }}
     >
-      <svg className={styles.svg} width={dimensions.width} height={dimensions.height}>
+      <svg className={styles.chartCanvasSvg} width={dimensions.width} height={dimensions.height}>
         {/* Chart background */}
         <rect
           x={0}
@@ -119,7 +119,7 @@ export const ChartCanvas: React.FC<ChartCanvasProps> = ({
         {/* Content group with margins applied */}
         <g
           transform={`translate(${margin.left || 0}, ${margin.top || 0})`}
-          className={styles.contentGroup}
+          className={styles.chartCanvasContentGroup}
         >
           {/* Render children with dimensions */}
           {renderContent()}

@@ -150,7 +150,7 @@ describe('Input Component', () => {
     
     // 8 characters is 80% of the 10 character limit
     const charCount = screen.getByText('8/10');
-    expect(charCount).toHaveClass('characterCount--warning');
+    expect(charCount).toHaveClass('inputCharacterCount--warning');
   });
 
   // Animation tests

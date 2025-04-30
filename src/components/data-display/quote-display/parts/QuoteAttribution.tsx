@@ -24,21 +24,21 @@ export const QuoteAttribution = memo<StatCardDescriptionProps>(({
 }) => {
   if (loading) {
     return (
-      <figcaption id={id} className={styles.attribution}>
-        <div className={cn(styles.loadingLine, styles.loadingAuthor)} />
+      <figcaption id={id} className={styles.quoteDisplayAttribution}>
+        <div className={cn(styles.quoteDisplayLoadingLine, styles.quoteDisplayLoadingAuthor)} />
       </figcaption>
     );
   }
   
   return (
-    <figcaption id={id} className={styles.attribution}>
-      {author && <cite className={styles.author}>{author}</cite>}
+    <figcaption id={id} className={styles.quoteDisplayAttribution}>
+      {author && <cite className={styles.quoteDisplayAuthor}>{author}</cite>}
       
       {(source || date) && (
-        <div className={styles.source}>
+        <div className={styles.quoteDisplaySource}>
           {source && <span className={styles.sourceText}>{source}</span>}
-          {source && date && <span className={styles.separator}>, </span>}
-          {date && <span className={styles.date}>{date}</span>}
+          {source && date && <span className={styles.quoteDisplaySeparator}>, </span>}
+          {date && <span className={styles.quoteDisplayDate}>{date}</span>}
         </div>
       )}
     </figcaption>

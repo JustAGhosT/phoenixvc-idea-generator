@@ -43,7 +43,7 @@ export const InputLabel: React.FC<InputLabelProps> = ({
       <label 
         htmlFor={htmlFor}
         className={cn(
-          styles.floatingLabel,
+          styles.inputFloatingLabel,
           animations.labelFloat,
           (isFocused || inputValue.length > 0) && animations.labelFloatActive,
           className
@@ -58,10 +58,10 @@ export const InputLabel: React.FC<InputLabelProps> = ({
     <label 
       htmlFor={htmlFor}
       className={cn(
-        styles.label,
+        styles.inputLabel,
         required && styles['label--required'],
-        disabled && styles['label--disabled'],
-        hasError && styles['label--error'],
+        disabled && styles['inputLabel--disabled'],
+        hasError && styles['inputLabel--error'],
         className
       )}
     >

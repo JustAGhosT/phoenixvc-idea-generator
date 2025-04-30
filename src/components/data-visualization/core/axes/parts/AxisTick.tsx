@@ -32,12 +32,12 @@ const AxisTick: React.FC<AxisTickProps> = ({
 }) => {
   return (
     <g
-      className={styles.tick}
+      className={styles.axisTick}
       transform={isXAxis ? `translate(${position}, 0)` : `translate(0, ${position})`}
     >
       {/* Tick mark */}
       <line
-        className={styles.tickLine}
+        className={styles.axisTickLine}
         x1={isXAxis ? 0 : -6}
         y1={isXAxis ? 0 : 0}
         x2={isXAxis ? 0 : 0}
@@ -47,7 +47,7 @@ const AxisTick: React.FC<AxisTickProps> = ({
       {/* Grid line */}
       {showGrid && (
         <line
-          className={styles.gridLine}
+          className={styles.axisGridLine}
           x1={isXAxis ? 0 : 0}
           y1={isXAxis ? 0 : 0}
           x2={isXAxis ? 0 : width}
@@ -57,7 +57,7 @@ const AxisTick: React.FC<AxisTickProps> = ({
       
       {/* Tick label */}
       <text
-        className={styles.tickLabel}
+        className={styles.axisTickLabel}
         x={isXAxis ? 0 : -8}
         y={isXAxis ? 9 : 0}
         dy={isXAxis ? '0.71em' : '0.32em'}

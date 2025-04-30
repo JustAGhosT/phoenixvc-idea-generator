@@ -105,28 +105,28 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
             // Apply special styling for attached buttons
             attached && [
               // First button
-              index === 0 && orientation === 'horizontal' && styles.buttonFirstHorizontal,
-              index === 0 && orientation === 'vertical' && styles.buttonFirstVertical,
+              index === 0 && orientation === 'horizontal' && styles.buttonGroupButtonFirstHorizontal,
+              index === 0 && orientation === 'vertical' && styles.buttonGroupButtonFirstVertical,
               
               // Middle buttons
               index > 0 && 
               index < Children.count(children) - 1 && 
               orientation === 'horizontal' && 
-              styles.buttonMiddleHorizontal,
+              styles.buttonGroupButtonMiddleHorizontal,
               
               index > 0 && 
               index < Children.count(children) - 1 && 
               orientation === 'vertical' && 
-              styles.buttonMiddleVertical,
+              styles.buttonGroupButtonMiddleVertical,
               
               // Last button
               index === Children.count(children) - 1 && 
               orientation === 'horizontal' && 
-              styles.buttonLastHorizontal,
+              styles.buttonGroupButtonLastHorizontal,
               
               index === Children.count(children) - 1 && 
               orientation === 'vertical' && 
-              styles.buttonLastVertical,
+              styles.buttonGroupButtonLastVertical,
             ]
           ),
         });

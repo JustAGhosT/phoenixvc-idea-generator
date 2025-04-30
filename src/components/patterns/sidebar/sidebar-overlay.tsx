@@ -28,7 +28,7 @@ export function SidebarOverlay({
   return (
     <div
       className={cn(
-        styles.overlay,
+        styles.sidebarOverlay,
         visible ? animations.mobileOverlay : animations.mobileOverlayHidden,
         className
       )}

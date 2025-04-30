@@ -22,7 +22,7 @@ export const InputHelperText: React.FC<InputHelperTextProps> = ({
   return (
     <p 
       id={id}
-      className={cn(styles.helperText, className)}
+      className={cn(styles.inputHelperText, className)}
     >
       {children}
     </p>

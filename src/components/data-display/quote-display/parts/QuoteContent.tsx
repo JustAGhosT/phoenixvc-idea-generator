@@ -19,7 +19,7 @@ export const QuoteContent = memo<QuoteContentProps>(({
   citationUrl
 }) => {
   const blockquoteProps = {
-    className: styles.quoteContent,
+    className: styles.quoteDisplayQuoteContent,
     id,
     cite: citationUrl
   };
@@ -27,10 +27,10 @@ export const QuoteContent = memo<QuoteContentProps>(({
   return (
     <blockquote {...blockquoteProps}>
       {loading ? (
-        <div className={styles.loadingText}>
-          <div className={styles.loadingLine} />
-          <div className={styles.loadingLine} />
-          <div className={styles.loadingLine} />
+        <div className={styles.quoteDisplayLoadingText}>
+          <div className={styles.quoteDisplayLoadingLine} />
+          <div className={styles.quoteDisplayLoadingLine} />
+          <div className={styles.quoteDisplayLoadingLine} />
         </div>
       ) : (
         quote

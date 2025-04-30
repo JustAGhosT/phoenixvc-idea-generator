@@ -26,14 +26,14 @@ export const PieChartLegend: React.FC<PieChartLegendProps> = memo(({
   };
 
   // Position-based container class
-  const containerClass = `${styles.legendContainer} ${styles[`legend${position.charAt(0).toUpperCase() + position.slice(1)}`]} ${styles[layout]}`;
+  const containerClass = `${styles.pieChartLegendContainer} ${styles[`legend${position.charAt(0).toUpperCase() + position.slice(1)}`]} ${styles[layout]}`;
 
   return (
     <div className={containerClass}>
       {data.map((item, index) => (
         <div
           key={`legend-${index}-${item.id || item.label}`}
-          className={styles.legendItem}
+          className={styles.pieChartLegendItem}
           onClick={() => handleLegendItemClick(item.id || item.label, item.visible !== false)}
           style={{ opacity: item.visible === false ? 0.5 : 1 }}
           role={interactive ? 'button' : 'presentation'}
@@ -41,10 +41,10 @@ export const PieChartLegend: React.FC<PieChartLegendProps> = memo(({
           aria-pressed={interactive ? item.visible !== false : undefined}
         >
           <div
-            className={styles.legendColor}
+            className={styles.pieChartLegendColor}
             style={{ backgroundColor: item.color }}
           />
-          <span className={styles.legendLabel}>
+          <span className={styles.pieChartLegendLabel}>
             {item.name || item.label}
             {item.percentage !== undefined && 
               ` (${(item.percentage * 100).toFixed(1)}%)`}

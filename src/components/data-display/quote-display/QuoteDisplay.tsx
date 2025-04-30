@@ -123,7 +123,7 @@ export const QuoteDisplay = memo<QuoteDisplayProps>(({
     styles[`size${size.toUpperCase()}`],
     styles[`layout${layout.charAt(0).toUpperCase() + layout.slice(1)}`],
     loading && styles.loading,
-    isInteractive && styles.interactive,
+    isInteractive && styles.quoteDisplayInteractive,
     animation !== 'none' && styles[animation],
     className
   );
@@ -155,11 +155,11 @@ export const QuoteDisplay = memo<QuoteDisplayProps>(({
           return <span className={styles.speechIcon}>🗣️</span>;
         case 'quote':
         default:
-          return <QuoteIcon className={styles.icon} />;
+          return <QuoteIcon className={styles.quoteDisplayIcon} />;
       }
     }
     
-    return icon || <QuoteIcon className={styles.icon} />;
+    return icon || <QuoteIcon className={styles.quoteDisplayIcon} />;
   }, [icon, showIcon]);
   
   // ARIA attributes for accessibility
@@ -180,7 +180,7 @@ export const QuoteDisplay = memo<QuoteDisplayProps>(({
       {...ariaAttributes}
       lang={lang}
     >
-      {quoteIcon && <div className={styles.iconContainer}>{quoteIcon}</div>}
+      {quoteIcon && <div className={styles.quoteDisplayIconContainer}>{quoteIcon}</div>}
       
       <QuoteContent 
         quote={quote} 

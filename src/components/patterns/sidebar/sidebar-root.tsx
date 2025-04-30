@@ -35,8 +35,8 @@ export function SidebarRoot({
   const rootElement = (
     <div
       className={cn(
-        styles.root,
-        expanded ? styles.expanded : styles.collapsed,
+        styles.sidebarRoot,
+        expanded ? styles.sidebarExpanded : styles.sidebarCollapsed,
         className
       )}
       data-state={open ? "open" : "closed"}

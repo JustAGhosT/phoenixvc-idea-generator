@@ -5,7 +5,7 @@
 }
 
 /* Pulse animation */
-.pulse {
+.badgePulse {
   animation: pulse 2s infinite;
 }
 
@@ -22,7 +22,7 @@
 }
 
 /* Glow animation */
-.glow {
+.badgeGlow {
   animation: glow 2s infinite;
 }
 
@@ -39,7 +39,7 @@
 }
 
 /* Bounce animation */
-.bounce {
+.badgeBounce {
   animation: bounce 1s infinite;
 }
 
@@ -53,7 +53,7 @@
 }
 
 /* Fade in animation */
-.fadeIn {
+.badgeFadeIn {
   animation: fadeIn 0.3s ease-in;
 }
 

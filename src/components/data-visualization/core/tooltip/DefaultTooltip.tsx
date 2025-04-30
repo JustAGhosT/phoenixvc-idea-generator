@@ -22,10 +22,10 @@ export const DefaultTooltip: React.FC<DefaultTooltipProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`${styles.defaultTooltip} ${className}`}>
+    <div className={`${styles.tooltipDefaultTooltip} ${className}`}>
       {color && (
         <div 
-          className={styles.colorIndicator} 
+          className={styles.tooltipColorIndicator} 
           style={{ backgroundColor: color }}
         />
       )}

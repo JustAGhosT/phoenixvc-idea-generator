@@ -20,8 +20,8 @@ describe('SidebarRoot', () => {
       </SidebarRoot>
     );
     
-    expect(container.firstChild).toHaveClass('expanded');
-    expect(container.firstChild).not.toHaveClass('collapsed');
+    expect(container.firstChild).toHaveClass('sidebarExpanded');
+    expect(container.firstChild).not.toHaveClass('sidebarCollapsed');
   });
 
   it('applies collapsed class when expanded prop is false', () => {
@@ -31,8 +31,8 @@ describe('SidebarRoot', () => {
       </SidebarRoot>
     );
     
-    expect(container.firstChild).toHaveClass('collapsed');
-    expect(container.firstChild).not.toHaveClass('expanded');
+    expect(container.firstChild).toHaveClass('sidebarCollapsed');
+    expect(container.firstChild).not.toHaveClass('sidebarExpanded');
   });
 
   it('sets data-state attribute based on open prop', () => {
@@ -71,8 +71,8 @@ describe('SidebarRoot', () => {
       </SidebarRoot>
     );
     
-    expect(container.firstChild).toHaveClass('root');
-    expect(container.firstChild).toHaveClass('expanded');
+    expect(container.firstChild).toHaveClass('sidebarRoot');
+    expect(container.firstChild).toHaveClass('sidebarExpanded');
     expect(container.firstChild).toHaveClass('custom-class');
   });
 });

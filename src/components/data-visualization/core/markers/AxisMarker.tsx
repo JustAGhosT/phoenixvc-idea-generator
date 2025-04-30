@@ -70,9 +70,9 @@ export const AxisMarker: React.FC<AxisMarkerProps> = ({
   }
   
   return (
-    <g className={`${styles.marker} ${className}`}>
+    <g className={`${styles.axisMarkerMarker} ${className}`}>
       <line
-        className={styles.line}
+        className={styles.axisMarkerLine}
         x1={isXAxis ? position : 0}
         y1={isXAxis ? 0 : position}
         x2={isXAxis ? position : width}
@@ -84,7 +84,7 @@ export const AxisMarker: React.FC<AxisMarkerProps> = ({
       
       {showLabel && label && (
         <text
-          className={styles.label}
+          className={styles.axisMarkerLabel}
           x={labelX}
           y={labelY}
           dy={isXAxis ? (labelPosition === 'start' ? '-0.5em' : '1em') : '0.3em'}

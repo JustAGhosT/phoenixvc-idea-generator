@@ -20,13 +20,8 @@ module.exports = {
     // Add TypeScript support
     config.resolve.extensions.push('.ts', '.tsx');
     
-    // Add path aliases
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@/hooks': path.resolve(__dirname, '../src/hooks'),
-      '@/utils': path.resolve(__dirname, '../src/utils'),
-      '@': path.resolve(__dirname, '../src'),
-    };
+    // Let webpack.config.js handle the path aliases
+    // to avoid conflicts between the two files
     
     return config;
   }

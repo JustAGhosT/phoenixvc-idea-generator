@@ -1,37 +1,37 @@
 /* Logo styles */
-.logo {
+.appSidebarLogo {
   @apply flex items-center gap-2;
 }
 
-.logoIcon {
+.appSidebarLogoIcon {
   @apply h-6 w-6 text-primary;
 }
 
-.logoText {
+.appSidebarLogoText {
   @apply font-bold text-lg;
 }
 
 /* Footer card styles */
-.footerCard {
+.appSidebarFooterCard {
   @apply flex flex-col gap-2 rounded-lg bg-muted p-3;
 }
 
-.footerCardHeader {
+.appSidebarFooterCardHeader {
   @apply flex items-center gap-2;
 }
 
-.footerCardIcon {
+.appSidebarFooterCardIcon {
   @apply h-5 w-5 text-secondary;
 }
 
-.footerCardTitle {
+.appSidebarFooterCardTitle {
   @apply font-medium;
 }
 
-.footerCardText {
+.appSidebarFooterCardText {
   @apply text-xs text-muted-foreground;
 }
 
-.footerCardKbd {
+.appSidebarFooterCardKbd {
   @apply rounded bg-muted-foreground/20 px-1;
 }

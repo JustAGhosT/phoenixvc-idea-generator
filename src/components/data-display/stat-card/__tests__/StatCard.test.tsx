@@ -61,7 +61,7 @@ describe('StatCard', () => {
       render(<StatCard title="Users" value={42} icon="users" />);
       
       // Check if an SVG icon is rendered
-      const iconContainer = screen.getByText('Users').parentElement?.querySelector('.iconContainer');
+      const iconContainer = screen.getByText('Users').parentElement?.querySelector('.statCardIconContainer');
       expect(iconContainer).toBeInTheDocument();
     });
 
@@ -91,7 +91,7 @@ describe('StatCard', () => {
       
       const trendIndicator = screen.getByTestId('trend-indicator');
       expect(trendIndicator).toHaveClass('up');
-      expect(trendIndicator).toHaveClass('good');
+      expect(trendIndicator).toHaveClass('statCardGood');
       expect(trendIndicator).toHaveTextContent('+12.5');
       expect(trendIndicator).toHaveTextContent('vs last month');
     });
@@ -112,7 +112,7 @@ describe('StatCard', () => {
       
       const trendIndicator = screen.getByTestId('trend-indicator');
       expect(trendIndicator).toHaveClass('up');
-      expect(trendIndicator).toHaveClass('bad');
+      expect(trendIndicator).toHaveClass('statCardBad');
       expect(trendIndicator).toHaveTextContent('+3.2');
     });
 

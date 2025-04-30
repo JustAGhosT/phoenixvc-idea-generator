@@ -56,7 +56,7 @@ export const LegendItem: React.FC<LegendItemProps> = ({
     if (symbol === 'line') {
       // Line symbol with optional point
   return (
-        <div className={styles.lineSymbol}>
+        <div className={styles.legendLineSymbol}>
           <svg width="24" height="12" viewBox="0 0 24 12">
             <line 
               x1="2" 
@@ -87,7 +87,7 @@ export const LegendItem: React.FC<LegendItemProps> = ({
       // Bar symbol
       return (
         <div 
-          className={styles.barSymbol}
+          className={styles.legendBarSymbol}
           style={{ 
             backgroundColor: color,
             opacity,
@@ -101,7 +101,7 @@ export const LegendItem: React.FC<LegendItemProps> = ({
       // Triangle symbol
       return (
         <div 
-          className={styles.symbol}
+          className={styles.legendSymbol}
           style={{ 
             width: '0',
             height: '0',
@@ -118,7 +118,7 @@ export const LegendItem: React.FC<LegendItemProps> = ({
     // Default square or circle
     return (
       <div 
-        className={styles.symbol}
+        className={styles.legendSymbol}
         style={{ 
           backgroundColor: color,
           borderRadius: symbol === 'circle' ? '50%' : '2px',
@@ -130,7 +130,7 @@ export const LegendItem: React.FC<LegendItemProps> = ({
 
   return (
     <div 
-      className={`${styles.item} ${interactive ? styles.interactive : ''} ${className}`}
+      className={`${styles.legendItem} ${interactive ? styles.legendInteractive : ''} ${className}`}
       onClick={handleClick}
       role={interactive ? 'button' : undefined}
       tabIndex={interactive ? 0 : undefined}
@@ -138,7 +138,7 @@ export const LegendItem: React.FC<LegendItemProps> = ({
       aria-pressed={interactive ? !visible : undefined}
     >
       {renderSymbol()}
-      <span className={styles.label}>{name}</span>
+      <span className={styles.legendLabel}>{name}</span>
     </div>
   );
 };

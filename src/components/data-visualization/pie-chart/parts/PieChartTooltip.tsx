@@ -34,10 +34,10 @@ export const PieChartTooltip: React.FC<PieChartTooltipProps> = ({
     ? formatter(data)
     : (
       <>
-        <div className={styles.tooltipLabel}>{data.label}</div>
-        <div className={styles.tooltipValue}>{data.value.toLocaleString()}</div>
+        <div className={styles.pieChartTooltipLabel}>{data.label}</div>
+        <div className={styles.pieChartTooltipValue}>{data.value.toLocaleString()}</div>
         {data.percentage !== undefined && (
-          <div className={styles.tooltipPercent}>
+          <div className={styles.pieChartTooltipPercent}>
             {(data.percentage * 100).toFixed(1)}%
           </div>
         )}
@@ -90,7 +90,7 @@ export const PieChartTooltip: React.FC<PieChartTooltipProps> = ({
     return (
       <div
         ref={tooltipRef}
-        className={styles.tooltip}
+        className={styles.pieChartTooltip}
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -105,7 +105,7 @@ export const PieChartTooltip: React.FC<PieChartTooltipProps> = ({
   return (
     <div 
       ref={setPopperElement}
-      className={styles.tooltip}
+      className={styles.pieChartTooltip}
       style={popperStyles.popper}
       {...attributes.popper}
     >
