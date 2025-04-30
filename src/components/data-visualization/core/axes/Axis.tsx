@@ -10,7 +10,7 @@ export interface AxisProps {
   /** Type of axis (x or y) */
   type: 'x' | 'y';
   /** Scale function that converts domain values to pixel values */
-  scale: any; // This would typically be a d3 scale function
+  scale: any; // This can be a d3 scale function or a simple function
   /** Width of the chart area */
   width: number;
   /** Height of the chart area */
@@ -56,7 +56,15 @@ export const Axis: React.FC<AxisProps> = ({
   if (!visible) return null;
 
   // Generate tick values if not provided
-  const ticks = tickValues || (scale.ticks ? scale.ticks(tickCount) : scale.domain());
+  // Check if scale is a D3 scale object with domain and ticks methods
+  const isD3Scale = typeof scale === 'function' && 
+                    typeof scale.domain === 'function' && 
+                    typeof scale.ticks === 'function';
+  
+  // Use tickValues if provided, otherwise generate them
+  const ticks = tickValues || (isD3Scale 
+    ? scale.ticks(tickCount) 
+    : Array.from({ length: tickCount }, (_, i) => i * (100 / (tickCount - 1))));
 
   // Format tick labels
   const format = formatLabel || tickFormat || (value => String(value));
@@ -83,7 +91,8 @@ export const Axis: React.FC<AxisProps> = ({
 
       {/* Ticks and labels */}
       {showTicks && ticks.map((tick: any, i: number) => {
-        const tickPosition = scale(tick);
+        // Apply scale function to get position
+        const tickPosition = typeof scale === 'function' ? scale(tick) : 0;
         
         return (
           <AxisTick
