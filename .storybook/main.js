@@ -16,9 +16,6 @@ module.exports = {
     name: '@storybook/react-webpack5',
     options: {},
   },
-  docs: {
-    autodocs: 'tag',
-  },
   webpackFinal: async (config) => {
     // Add TypeScript support
     config.resolve.extensions.push('.ts', '.tsx');
