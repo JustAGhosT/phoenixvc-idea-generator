@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 import { ChartAnimation } from '../../types/chart-config';
 import styles from '../PieChart.module.css';
-import animationStyles from '../PieChartPartsAnimation.module.css';
+import animationStyles from '../PieChartAnimations.module.css';
 import { useSliceAnimation } from '../hooks/useSliceAnimation';
 import { PieChartData } from './PieChartUtils';
 
@@ -92,7 +92,7 @@ export const PieChartSlices: React.FC<PieChartSlicesProps> = memo(({
         const isSelected = selectedSlice === index;
         
         // Slice class with conditional selection class
-        const sliceClassName = `${styles.pieChartSlice} ${isSelected ? styles.pieChartSliceSelected : ''} ${animation.enabled ? animationStyles.sliceAnimated : ''}`;
+        const sliceClassName = `${styles.pieChartSlice} ${isSelected ? styles.pieChartSliceSelected : ''} ${animation.enabled ? animationStyles.pieChartSliceAnimated : ''}`;
         
         // Prepare label text
         let labelText = slice.label;
@@ -129,7 +129,7 @@ export const PieChartSlices: React.FC<PieChartSlicesProps> = memo(({
                 x={labelX}
                 y={labelY}
                 dy=".35em"
-                className={`${styles.pieChartSliceLabel} ${animation.enabled ? animationStyles.sliceLabel : ''}`}
+                className={`${styles.pieChartSliceLabel} ${animation.enabled ? animationStyles.pieChartSliceLabel : ''}`}
                 style={{
                   opacity: animation.enabled ? 0 : 1,
                   fill: isHovered ? '#fff' : '#fff',

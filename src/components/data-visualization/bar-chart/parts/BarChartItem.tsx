@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChartDataPoint, ChartSeries } from '../../types/base-types';
-import styles from './BarChart.module.css';
+import styles from '../BarChart.module.css';
 
 interface BarChartItemProps {
   item: ChartDataPoint;
