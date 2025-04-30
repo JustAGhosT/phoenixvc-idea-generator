@@ -1,5 +1,5 @@
-import React, { forwardRef } from 'react';
 import { cn } from '@/utils/classnames';
+import React, { forwardRef } from 'react';
 import styles from './ButtonToolbar.module.css';
 
 export interface ButtonToolbarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -31,6 +31,11 @@ export interface ButtonToolbarProps extends React.HTMLAttributes<HTMLDivElement>
    * @default false
    */
   responsive?: boolean;
+/**
+   * Whether the toolbar should always be stacked vertically regardless of screen size
+   * @default false
+ */
+  vertical?: boolean;
 }
 
 /**
@@ -57,6 +62,7 @@ export const ButtonToolbar = forwardRef<HTMLDivElement, ButtonToolbarProps>(
     spacing = 'md',
     align = 'left',
     responsive = false,
+    vertical = false,
     className,
     ...props
   }, ref) => {
@@ -69,6 +75,7 @@ export const ButtonToolbar = forwardRef<HTMLDivElement, ButtonToolbarProps>(
           styles[`buttonToolbar--align-${align}`],
           fullWidth && styles['buttonToolbar--fullWidth'],
           responsive && styles['buttonToolbar--responsive'],
+          vertical && styles['buttonToolbar--vertical'],
           className
         )}
         role="toolbar"

@@ -1,98 +1,52 @@
 import type { StoryObj } from '@storybook/react';
-import { Button } from '../../button/Button';
-import { ButtonToolbar } from '../ButtonToolbar';
 import { ButtonGroup } from '../../button-group/ButtonGroup';
+import { Button } from '../../button/Button';
+import { IconButton } from '../../button/variants';
+import { ButtonToolbar } from '../ButtonToolbar';
 
 type Story = StoryObj<typeof ButtonToolbar>;
 
-// SVG icons for the example
-const BoldIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-    <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"></path>
-  </svg>
-);
+// Mock icons for the stories
+const BoldIcon = () => <span>B</span>;
+const ItalicIcon = () => <span>I</span>;
+const UnderlineIcon = () => <span>U</span>;
+const AlignLeftIcon = () => <span>←</span>;
+const AlignCenterIcon = () => <span>↔</span>;
+const AlignRightIcon = () => <span>→</span>;
 
-const ItalicIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="19" y1="4" x2="10" y2="4"></line>
-    <line x1="14" y1="20" x2="5" y2="20"></line>
-    <line x1="15" y1="4" x2="9" y2="20"></line>
-  </svg>
-);
+export const PaginationExample: Story = {
+  name: 'Pagination Example',
+  args: {
+    align: 'center',
+    children: (
+      <>
+        <Button variant="outline">Previous</Button>
+        <Button>1</Button>
+        <Button variant="outline">2</Button>
+        <Button variant="outline">3</Button>
+        <Button variant="outline">Next</Button>
+      </>
+    )
+  }
+};
 
-const UnderlineIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"></path>
-    <line x1="4" y1="21" x2="20" y2="21"></line>
-  </svg>
-);
-
-const AlignLeftIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="17" y1="10" x2="3" y2="10"></line>
-    <line x1="21" y1="6" x2="3" y2="6"></line>
-    <line x1="21" y1="14" x2="3" y2="14"></line>
-    <line x1="17" y1="18" x2="3" y2="18"></line>
-  </svg>
-);
-
-const AlignCenterIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="18" y1="10" x2="6" y2="10"></line>
-    <line x1="21" y1="6" x2="3" y2="6"></line>
-    <line x1="21" y1="14" x2="3" y2="14"></line>
-    <line x1="18" y1="18" x2="6" y2="18"></line>
-  </svg>
-);
-
-const AlignRightIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="21" y1="10" x2="7" y2="10"></line>
-    <line x1="21" y1="6" x2="3" y2="6"></line>
-    <line x1="21" y1="14" x2="3" y2="14"></line>
-    <line x1="21" y1="18" x2="7" y2="18"></line>
-  </svg>
-);
-
-// Real-world example: Text editor toolbar
-export const RealWorldExample: Story = {
+export const TextEditorToolbar: Story = {
+  name: 'Text Editor Toolbar',
   render: () => (
-    <div className="border rounded-md p-2">
+    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
       <ButtonToolbar spacing="sm">
         <ButtonGroup>
-          <Button variant="outline" iconButton aria-label="Bold">
-            <BoldIcon />
-          </Button>
-          <Button variant="outline" iconButton aria-label="Italic">
-            <ItalicIcon />
-          </Button>
-          <Button variant="outline" iconButton aria-label="Underline">
-            <UnderlineIcon />
-          </Button>
+          <IconButton variant="outline" icon={<BoldIcon />} aria-label="Bold" />
+          <IconButton variant="outline" icon={<ItalicIcon />} aria-label="Italic" />
+          <IconButton variant="outline" icon={<UnderlineIcon />} aria-label="Underline" />
         </ButtonGroup>
         
         <ButtonGroup>
-          <Button variant="outline" iconButton aria-label="Align Left">
-            <AlignLeftIcon />
-          </Button>
-          <Button variant="outline" iconButton aria-label="Align Center">
-            <AlignCenterIcon />
-          </Button>
-          <Button variant="outline" iconButton aria-label="Align Right">
-            <AlignRightIcon />
-          </Button>
-        </ButtonGroup>
-        
-        <ButtonGroup>
-          <Button variant="outline">Heading</Button>
-          <Button variant="outline">Paragraph</Button>
+          <IconButton variant="outline" icon={<AlignLeftIcon />} aria-label="Align Left" />
+          <IconButton variant="outline" icon={<AlignCenterIcon />} aria-label="Align Center" />
+          <IconButton variant="outline" icon={<AlignRightIcon />} aria-label="Align Right" />
         </ButtonGroup>
       </ButtonToolbar>
-      
-      <div className="mt-2 p-4 border rounded-md min-h-[200px]">
-        <p className="text-gray-400">Type your content here...</p>
-      </div>
     </div>
   )
 };

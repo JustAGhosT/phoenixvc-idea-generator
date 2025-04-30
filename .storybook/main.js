@@ -1,7 +1,12 @@
 const path = require('path');
 
 module.exports = {
-  stories: ['../components/**/*.stories.@(js|jsx|ts|tsx)'],
+  stories: [
+    '../components/**/*.stories.@(js|jsx|ts|tsx)',
+    '../src/**/*.stories.@(js|jsx|ts|tsx)',
+    '../src/**/__stories__/*.stories.@(js|jsx|ts|tsx)',
+    '../src/**/__tests__/*.stories.@(js|jsx|ts|tsx)'
+  ],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
@@ -21,9 +26,11 @@ module.exports = {
     // Add path aliases
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': path.resolve(__dirname, '..'),
+      '@/hooks': path.resolve(__dirname, '../src/hooks'),
+      '@/utils': path.resolve(__dirname, '../src/utils'),
+      '@': path.resolve(__dirname, '../src'),
     };
     
     return config;
-  },
+  }
 };
